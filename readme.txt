@@ -25,5 +25,8 @@ Copernicus has few heandy features:
 
 == Changelog ==
 
+= 0.9.1 =
+* Maintenance release.
+
 = 0.9.0 =
 * Initial version.
