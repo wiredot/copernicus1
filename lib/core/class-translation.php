@@ -311,8 +311,9 @@ class CP_Translation {
 		if (is_child_theme()) {
 			$textsa = $this->get_static_texts_folder( get_stylesheet_directory() . '/' );
 			$textsb = $this->get_static_texts_folder( get_stylesheet_directory() . '/templates/' );
-			$textsc = $this->get_static_texts_folder( get_stylesheet_directory() . '/config/' );
-			$texts_child = array_merge_recursive( $textsa, $textsb, $textsc );
+			$textsc = $this->get_static_texts_folder( get_stylesheet_directory() . '/lib/' );
+			$textsd = $this->get_static_texts_folder( get_stylesheet_directory() . '/config/' );
+			$texts_child = array_merge_recursive( $textsa, $textsb, $textsc, $textsd );
 		}
 		
 		$texts = array_merge_recursive( $texts_all, $texts_child );
@@ -361,7 +362,7 @@ class CP_Translation {
 		}
 		else if ( file_exists( $filename ) && preg_match( '/.html/', $filename ) ) {
 			$text = file_get_contents( $filename );
-			preg_match_all( "/{'([^\{\}\|)]+)'\|translate:([a-zA-Z0-9_]+)}/", $text, $matches );
+			preg_match_all( "/{['\"]([^\{\}\|)]+)['\"]\|translate:([a-zA-Z0-9_]+)}/", $text, $matches );
 
 			foreach ($matches[2] as $key => $match) {
 				$results[$match][$matches[1][$key]] = '';

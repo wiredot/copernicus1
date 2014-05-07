@@ -66,6 +66,11 @@ class CP_Field {
 				return $this->get_post_link($value, $field_id, $field_name, $field['arguments'], $field['attributes']);
 				break;
 
+			// post links
+			case 'post_links':
+				return $this->get_post_links($value, $field_id, $field_name, $field['arguments'], $field['attributes']);
+				break;
+
 			// user roles
 			case 'user_role':
 			case 'user_roles':
@@ -345,6 +350,68 @@ class CP_Field {
 		$post_link.= '</select>';
 
 		return $post_link;
+	}
+
+	public function get_post_links($values, $field_id, $field_name, $arguments, $attributes = array()) {
+		if ($values) {
+			$values = maybe_unserialize($values);
+		} else {
+			$values = array();
+		}
+
+		$default_arguments = array(
+			'posts_per_page' => -1,
+			'post_type' => 'page'
+		);
+
+		$arguments = array_merge($default_arguments, $arguments);
+
+		
+
+		$post_link = '<select id="' . $field_id . '" name="' . $field_name .'"';
+		$post_link.= $this->get_field_attributes($attributes);
+		$post_link.= '>';
+		$post_link.= '<option value="0"> -- select -- </option>';
+
+		$loop_links = new WP_Query( $arguments );
+
+		$all_links = array();
+
+		$posts = $loop_links->posts;
+
+		if ($posts) {
+			foreach ($posts as $post) {
+				//if ($value == $post->ID)
+				//	$post->selected = 1;
+				//$all_links[$post->post_parent][$post->ID] = $post;
+			}
+
+			//$post_link.= $this->get_links($all_links);
+		}
+
+		$post_link.= '</select>';
+
+		$checkbox = '';
+
+		if ($posts) {
+			$checkbox.= '<ul>';
+			foreach ($posts AS $field_key => $field_value) {
+				$checkbox.= '<li>';
+				$checkbox.= '<input type="checkbox" name="' . $field_name . '[]" id="' . $field_id . '_' . $field_key . '" value="' . $field_value->ID . '" ';
+				if (in_array($field_value->ID, $values)) {
+					$checkbox.= 'checked="checked" ';
+				}
+				
+				$checkbox.= $this->get_field_attributes($attributes);
+				$checkbox.= ' /> ';
+				$checkbox.= '<label for="' . $field_id . '_' . $field_key . '">' . $field_value->post_title . '</label>';
+				$checkbox.= '</li>';
+			}
+			
+			$checkbox.= '</ul>';
+		}
+
+		return $checkbox;
 	}
 
 	public function get_user_roles($values, $field_id, $field_name, $exclude = array(), $attributes = array()) {

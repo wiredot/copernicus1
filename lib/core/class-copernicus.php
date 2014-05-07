@@ -256,7 +256,7 @@ class CP {
 	private static function load_config_directory($directory) {
 		global $cp_config;
 		// get all files from config folder
-		if ($handle = opendir($directory)) {
+		if (file_exists($directory) && $handle = opendir($directory)) {
 
 			// for each file with .config.php extension
 			while (false !== ($filename = readdir($handle))) {
