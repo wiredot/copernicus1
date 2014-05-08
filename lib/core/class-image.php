@@ -49,14 +49,13 @@ class CP_Image {
 	}
 	
 	public function image($params) {
-		if (!isset ($params['id']) || $params['id'] < 1)
+		if (!isset ($params['id']) || $params['id'] < 1) {
 			return null;
+		}
 		
 		$img_attributes = '';
 		$img = array();
-		
 		$attachment = wp_get_attachment_metadata( $params['id'] );
-		
 		foreach ($params as $key => $value){
 			if ($key=="alt" || $key=="title" || $key=="class" || $key=="style") {
 				$img_attributes.=' '.$key.'="'.$value.'"';
@@ -82,8 +81,10 @@ class CP_Image {
 		$meta_data = $this->get_attachment_thumbnails($params['id']);
 		
 		$upload_dir = wp_upload_dir();
-		
-		if ($this_img = $this->thumbnail_exist($img, $meta_data)){
+		$this_img = $this->thumbnail_exist($img, $meta_data);
+
+		if ($this_img){
+
 			$file_url = $upload_dir['baseurl'].'/'.$this_img['file'];
 		}
 		else {

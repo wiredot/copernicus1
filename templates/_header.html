@@ -2,16 +2,16 @@
 <html lang="{bloginfo show=language}" dir="{bloginfo show=text_direction}">
 <head>
 	<title>{$page.title}</title>
-	<meta charset="{bloginfo show=charset}" />
-	<meta name="viewport" content="width=device-width" />
-	<meta name="description" content="{$page.content|strip_tags|truncate:200}" />
-	<meta property="og:locale" content="{$page.language}"/>
-	<meta property="og:title" content="{$page.title}"/>
-	<meta property="og:description" content="{$page.content|strip_tags|truncate:200}"/>
-	<meta property="og:url" content="{permalink}"/>
-	<meta property="og:site_name" content="{bloginfo show=name}"/>
-	<meta property="og:type" content="website"/>
-	{if $page.image}<meta property="og:image" content="{$page.image}" />
+	<meta charset="{bloginfo show=charset}">
+	<meta name="viewport" content="width=device-width">
+	<meta name="description" content="{$page.content|strip_tags|truncate:200}">
+	<meta property="og:locale" content="{$page.language}">
+	<meta property="og:title" content="{$page.title}">
+	<meta property="og:description" content="{$page.content|strip_tags|truncate:200}">
+	<meta property="og:url" content="{get_permalink}">
+	<meta property="og:site_name" content="{bloginfo show=name}">
+	<meta property="og:type" content="website">
+	{if $page.image}<meta property="og:image" content="{$page.image}">
 {/if}
 {$header}
 </head>

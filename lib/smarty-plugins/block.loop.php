@@ -1,19 +1,14 @@
 <?php
-/**
- * Smarty plugin
- * @package Smarty
- * @subpackage PluginsFunction
- */
 
-/**
- * WP bloginfo function
- *
- * Type:     function<br>
- * Name:     bloginfo<br>
- * Purpose:  print out a bloginfo information
- *
- */
-function smarty_function_loop($params, $template) {
+
+global $CP_Smarty;
+// register the prefilter
+
+
+
+function smarty_block_loop($params, $content, $template, &$repeat) {
+	if(!$repeat){
+
 	global $CP_Loop, $CP_Smarty, $post, $pages;
 	$main_post = $post;
 	$main_pages = $pages;
@@ -34,7 +29,6 @@ function smarty_function_loop($params, $template) {
 
 			global $CP_Loop;
 			$loop['args'] = $CP_Loop->merge_attributes($params['args'], $loop['args']);
-
 		}
 
 		if ($loop) {
@@ -53,7 +47,7 @@ function smarty_function_loop($params, $template) {
 
 			while ( $WP_loop->have_posts() ) : $WP_loop->the_post();
 				$CP_Smarty->smarty->assign('key', $key);
-				$return.= $CP_Smarty->smarty->fetch($loop['template']);;
+				$return.= $CP_Smarty->smarty->fetch('string:'.$content);
 				$key++;
 			endwhile;
 
@@ -69,14 +63,14 @@ function smarty_function_loop($params, $template) {
 		while ( have_posts() ) : the_post();
 			$CP_Smarty->smarty->assign('key', $key);
 			$CP_Smarty->smarty->assign('post', $post);
-			$return.= $CP_Smarty->smarty->fetch($params['template']);
+			$return.= $CP_Smarty->smarty->fetch('string:'.$content);
 			$key++;
 		endwhile;
 
 		global $wp_query;
 
 		if ($wp_query->max_num_pages > 1) {
-			$return.= show_pagination($wp_query->max_num_pages);
+			$return.= show_paginationw($wp_query->max_num_pages);
 		}
 	}
 	
@@ -84,8 +78,9 @@ function smarty_function_loop($params, $template) {
 	$pages = $main_pages;
 	return $return;
 }
+}
 
-function show_pagination($pages = 0) {
+function show_paginationw($pages = 0) {
 	$pagination = '';
 
 	$page_url = $_SERVER['REQUEST_URI'];
@@ -121,5 +116,3 @@ function show_pagination($pages = 0) {
 
 	return $pagination;
 }
-
-?>
