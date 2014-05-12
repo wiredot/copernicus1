@@ -246,7 +246,7 @@ class CP_Alv {
 		$post_type = $wp_query->query['post_type'];
 
 		// if there are alvs
-		if (is_array($this->alv)) {
+		if (is_array($this->alv) && ! isset($_GET['orderby'])) {
 
 			// for each alv
 			foreach ($this->alv AS $alv) {

@@ -17,11 +17,6 @@ class CP_Search {
 	 */
 	private function _init() {
 		if (isset($_GET['s']) && !is_admin()) {
-			if (preg_match('/\?s=/', $_SERVER['REQUEST_URI'])) {
-				$search = str_replace(' ', '+', $_GET['s']);
-				wp_redirect( '/search/'.$search.'/');
-				exit;
-			}
 
 			//add_filter('post_limits', array($this,'custom_search_limits'));
 			add_filter('posts_where', array($this,'custom_search_where'));

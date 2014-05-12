@@ -34,13 +34,12 @@ class CP_Smarty {
 		$this->smarty->setCacheDir(WP_CONTENT_DIR . '/smarty/cache/');
 		$this->smarty->registerFilter('pre', array($this, 'block_loop_literal'));
 		$this->smarty->registerDefaultPluginHandler(array($this, 'default_plugin_handler'));
-		if (WP_DEBUG) {
-			$this->smarty->force_compile = true;
-		}
+		$this->smarty->force_compile = true;
 	}
 
 	function block_loop_literal($tpl_source, $template) {
     	$tpl_source = preg_replace("/({loop .*})/", '$1{literal}', $tpl_source);
+    	$tpl_source = preg_replace("/({loop})/", '$1{literal}', $tpl_source);
     	$tpl_source = preg_replace("/({\/loop})/", '{/literal}$1', $tpl_source);
     	return $tpl_source;
 	}

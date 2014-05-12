@@ -2,7 +2,7 @@
 
 function smarty_modifier_hextorgb($string, $opacity) {
 	$default = 'rgb(0,0,0)';
-$color = $string;
+    $color = $string;
 	//Return default if no color provided
 	if(empty($color))
           return $default; 

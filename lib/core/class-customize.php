@@ -80,7 +80,11 @@ class CP_Customize {
 				foreach ($settings['css'] as $css) {
 					$value = get_theme_mod($key);
 					if ($value) {
-						echo sprintf($css, $value)."\n";
+						if (preg_match('/rgba/', $css)) {
+							echo sprintf($css, $this->hex2rgb($value))."\n";
+						} else {
+							echo sprintf($css, $value)."\n";
+						}
 					}
 				}
 			}
@@ -119,7 +123,7 @@ class CP_Customize {
 			$return.= "
 				wp.customize( '".$key."', function( value ) {
 					value.bind( function( newval ) {
-				  		
+						
 				";
 			foreach ($settings['css'] as $css) {
 				$parts = explode('{', $css);
@@ -183,6 +187,24 @@ class CP_Customize {
   } );
   
 } )( jQuery );";
+   }
+
+   function hex2rgb($hex) {
+		$color = str_replace('#', '', $hex);
+
+		//Check if color has 6 or 3 characters and get values
+		if (strlen($color) == 6) {
+			$hex = array( $color[0] . $color[1], $color[2] . $color[3], $color[4] . $color[5] );
+		} elseif ( strlen( $color ) == 3 ) {
+			$hex = array( $color[0] . $color[0], $color[1] . $color[1], $color[2] . $color[2] );
+		} else {
+			return null;
+		}
+
+		//Convert hexadec to rgb
+		$rgb = array_map('hexdec', $hex);
+
+		return implode(",",$rgb);
    }
 
 // class end
