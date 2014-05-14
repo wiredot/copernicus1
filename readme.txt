@@ -67,9 +67,11 @@ To see what Copernicus can do, try one of the demo themes:
 
 == Changelog ==
 
+= 0.9.3 =
+* [new] dynamic_sidebar smarty plugin
+
 = 0.9.2 =
 * Maintenance release.
-
 
 = 0.9.1 =
 * Maintenance release.
