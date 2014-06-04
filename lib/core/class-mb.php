@@ -18,7 +18,7 @@
 class CP_Mb {
 
 	// all meta boxes
-	private $mb = array();
+	public $mb = array();
 
 	/**
 	 * Class constructor
@@ -297,7 +297,6 @@ class CP_Mb {
 
 		// if a group of fields is to be displayed
 		if ($field['type'] == 'group') {
-
 			$return = '';
 
 			if (!isset($values[$field['id']])) {
@@ -306,6 +305,9 @@ class CP_Mb {
 			$group_key = 0;
 			if (isset($values[$field['id']])) {
 				$group_values = ( maybe_unserialize($values[$field['id']]));
+				//new dBug($group_values);
+
+				$return.= '<div class="cp-mb-group-wrapper">';
 
 				$values = array();
 				foreach ($group_values AS $group_key => $group_value) { 
@@ -331,10 +333,12 @@ class CP_Mb {
 					$return.= '</fieldset>';
 				}
 				$group_key++;
+
+				$return.= '</div>';
 			}
 
 			
-			$return.= '<a href="#'.$group_key.'" class="cp-mb-add-group" id="group-'.$field['id'].'">add</a>';
+			$return.= '<a href="#'.$group_key.'" class="cp-mb-add-group button" id="group-'.$field['id'].'">add</a>';
 
 			return $return;
 		}
@@ -522,7 +526,7 @@ class CP_Mb {
 	 * @author Piotr Soluch
 	 */
 	public function save_meta_boxes($post_id, $post) {
-
+		
 		// if custom post type has fields
 		if (is_array($this->mb)) {
 
@@ -600,21 +604,27 @@ class CP_Mb {
 		
 		// Get the posted data
 		$new_meta_value = ( isset($_POST[$meta_key]) ? $_POST[$meta_key] : '' );
+			//$new_meta_value['2'] = 'asd';
+
 
 		// Get the meta value of the custom field key.
 		$meta_value = get_post_meta($post_id, $meta_key, true);
-		
+
 		// If a new meta value was added and there was no previous value, add it.
-		if ($new_meta_value && $meta_value == '')
+		if ($new_meta_value && $meta_value == '') {
 			add_post_meta($post_id, $meta_key, $new_meta_value, true);
+		}
 
 		// If the new meta value does not match the old value, update it.
-		else if ($new_meta_value && $new_meta_value != $meta_value)
+		else if ($new_meta_value && $new_meta_value !== $meta_value) {
 			update_post_meta($post_id, $meta_key, $new_meta_value);
+		}
 
 		// If there is no new meta value but an old value exists, delete it.
-		elseif (!$new_meta_value && $meta_value)
+		elseif (!$new_meta_value && $meta_value) {
+			//new dBug($new_meta_value);
 			delete_post_meta($post_id, $meta_key, $meta_value);
+		}
 	}
 	
 // -------------------- OTHER --------------------

@@ -301,10 +301,9 @@ class CP_Translation {
 		}
 
 		$texts = array();
-
-		$textsa = $this->get_static_texts_folder( CP_PATH . '/' );
-		$textsb = $this->get_static_texts_folder( CP_PATH . '/lib/core/' );
-		$textsc = $this->get_static_texts_folder( CP_PATH . '/templates/' );
+		$textsa = $this->get_static_texts_folder( get_template_directory()  );
+		$textsb = $this->get_static_texts_folder( get_template_directory() . '/lib/' );
+		$textsc = $this->get_static_texts_folder( get_template_directory() . '/templates/' );
 		$texts_all = array_merge_recursive( $textsa, $textsb, $textsc );
 		$texts_child = array();
 
@@ -331,7 +330,7 @@ class CP_Translation {
 	public function get_static_texts_folder( $folder ) {
 		$texts = array();
 
-		if ( $handle = opendir( $folder ) ) {
+		if ( file_exists($folder) && $handle = opendir( $folder ) ) {
 
 			/* This is the correct way to loop over the directory. */
 			while ( false !== ( $entry = readdir( $handle ) ) ) {

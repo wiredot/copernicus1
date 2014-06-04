@@ -16,9 +16,14 @@
  */
 function smarty_function_post_meta($params, $template) {
 
+	$default_id = null;
+	if (@get_the_ID()) {
+		$default_id = get_the_ID();
+	}
+
 	// default params
 	$default_params = array(
-		'id' => get_the_ID(),
+		'id' => $default_id,
 		'key' => '',
 		'html' => false,
 		'shortcode' => false,

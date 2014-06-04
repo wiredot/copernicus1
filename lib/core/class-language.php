@@ -42,7 +42,7 @@ class CP_Language {
 	public function _init() {
 
 		if ( isset( $_GET['lang'] ) ) {
-			$this->change_language( $_GET['lang'] );
+			add_action('init', array($this, 'switch_language'));
 		}
 
 		add_action('get_pages', array($this, 'pages_translate'));
@@ -136,13 +136,19 @@ class CP_Language {
 		return count($this->get_languages());
 	}
 
+	public function switch_language() {
+		$language = $_GET['lang'];
+
+		$this->change_language($language);
+	}
+
 	/**
 	 * change language and redirecto to a previous page
 	 *
 	 * @param string  $language language code
 	 * @return none
 	 */
-	private function change_language( $language ) {
+	public function change_language( $language ) {
 		$this->set_current_language( $language );
 
 		if (isset($_SERVER['HTTP_REFERER'])) {

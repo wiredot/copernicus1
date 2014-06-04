@@ -81,6 +81,7 @@ class CP {
 		if (@get_the_ID()) {
 			$post_id = get_the_ID();
 		}
+		
 		if ($post_id) {
 			$template_id = get_post_meta( $post_id, '_cp_template', true );
 			if ($template_id) {

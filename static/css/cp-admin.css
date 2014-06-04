@@ -69,7 +69,7 @@
     margin: 0 5px 0 0;
     font-style: italic;
     color: #777; }
-  .cp_meta_box label {
+  .cp_meta_box label, .cp_meta_box .label {
     width: 20%;
     display: inline-block;
     vertical-align: top;
@@ -119,7 +119,8 @@ th#menu_order {
 .cp-mb-group {
   border: 1px solid #ccc;
   padding: 10px;
-  margin: 10px 0; }
+  margin: 10px 0;
+  background: #fff; }
   .cp-mb-group.new {
     visibility: hidden;
     display: none; }

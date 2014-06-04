@@ -618,6 +618,7 @@ class CP_Field {
 						if ($attribute)
 							$return.= ' ' . $key . '="' . $key . '"';
 						break;
+					case 'class':
 					case 'size':
 					case 'maxlength':
 					case 'rows':

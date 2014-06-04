@@ -80,7 +80,7 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 }
 }
 
-function show_paginationw($pages = 0) {
+function show_pagination($pages = 0) {
 	$pagination = '';
 
 	$page_url = $_SERVER['REQUEST_URI'];
@@ -100,10 +100,18 @@ function show_paginationw($pages = 0) {
 
 		for ($i=0; $i < $pages; $i++) {
 			if ($i == 0) {
-				$pagination.= '<li><a href="'.$page_url.'">1</a></li>';
+				$pagination.= '<li><a href="'.$page_url.'"';
+				if ($current_page == 1) {
+					$pagination.= ' class="active"';
+				}
+				$pagination.= '>1</a></li>';
 			}
 			else {
-				$pagination.= '<li><a href="'.$page_url.'page/'.($i+1).'/">'.($i+1).'</a></li>';
+				$pagination.= '<li><a href="'.$page_url.'page/'.($i+1).'/"';
+				if ($current_page == ($i+1)) {
+					$pagination.= ' class="active"';
+				}
+				$pagination.= '>'.($i+1).'</a></li>';
 			}
 		}
 

@@ -5,6 +5,7 @@ jQuery(document).ready(function($){
 	//publish_validation($);
    cp_metaboxes_init($);
    cp_templates_metaboxes($);
+   cp_sortable($);
 });
 
 function language_tabs($) {
@@ -276,4 +277,8 @@ function cp_templates_metaboxes_show($) {
             $('._cp_template_'+template).parents(".postbox").show();
         }
     }
+}
+
+function cp_sortable($) {
+    $('.cp-mb-group-wrapper').sortable();
 }

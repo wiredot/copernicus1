@@ -29,7 +29,7 @@ class CP_Css {
 					}
 
 					if (!$css['url'])
-						$css['url'] = get_bloginfo ('stylesheet_directory');
+						$css['url'] = get_bloginfo('stylesheet_directory');
 
 					wp_register_style($css['name'], $css['url'] . '/' . $css['filename'], $css['dependencies'], $css['version'], $css['media']);
 					if ($css['condition'])
