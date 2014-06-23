@@ -67,6 +67,9 @@ To see what Copernicus can do, try one of the demo themes:
 
 == Changelog ==
 
+= 0.9.4 =
+* [fix] a lot of minor issues
+
 = 0.9.3 =
 * [new] dynamic_sidebar smarty plugin
 

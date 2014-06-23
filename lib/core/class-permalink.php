@@ -41,6 +41,11 @@ class CP_Permalink {
 	 * @author Piotr Soluch
 	 */
 	public function _init() {
+//remove_filter('template_redirect', 'redirect_canonical');
+
+		add_action('init', array($this, 'generate_rewrite_rules'));
+
+		add_filter('home_url', array($this, 'home_url'));
 
 		if (isset(CP::$config['rewrite_tag'])) {
 			$this->rewrite_tag = CP::$config['rewrite_tag'];
@@ -52,6 +57,58 @@ class CP_Permalink {
 			$this->rewrite_rule = CP::$config['rewrite_rule'];
 
 			add_action('init', array($this, 'add_rewrite_rules'));
+		}
+	}
+
+	public function home_url($url) {
+		global $CP_Language;
+
+		$language = $CP_Language->get_current_language();
+		
+		if (isset($language['prefix']) && $language['prefix']) {
+			$wpurl = get_bloginfo( 'wpurl' );
+			$url = preg_replace('/'.str_replace('/', '\/', $wpurl).'/', $wpurl.'/'.$language['prefix'], $url);
+		}
+		//new dBug($url);
+
+		return $url;
+	}
+
+	function generate_rewrite_rules() {
+		global $CP_Language, $wpdb, $wp_query, $wp_rewrite;
+
+		$rules = $wp_rewrite->wp_rewrite_rules();
+		if (is_admin()) {
+			//new dBug($rules);
+		}
+
+		//$wp_rewrite->flush_rules( );
+
+		$pages = $wpdb->get_results("
+			SELECT ID FROM ".$wpdb->posts." WHERE post_status = 'publish'
+		", ARRAY_A);
+
+		$languages = $CP_Language->get_languages();
+		
+		$wpurl = get_bloginfo( 'wpurl' );
+
+		add_rewrite_tag('%langid%','(.*)', 'langid=');
+
+		foreach ($pages as $key => $value) {
+			$url = str_replace($wpurl , '', get_permalink( $value['ID'] ));
+			if(substr($url, -1) == '/') {
+			    $url = substr($url, 0, -1);
+			}
+			foreach ($languages as $language) {
+				if (isset($language['prefix']) && $language['prefix']) {
+					$post_type = get_post_type( $value['ID'] );
+					if ($post_type == 'page') {
+						add_rewrite_rule('^'.$language['prefix'].$url.'/?$','index.php?page_id='.$value['ID'].'&langid='.$language['prefix'],'top');
+					} else {
+						add_rewrite_rule('^'.$language['prefix'].$url.'/?$','index.php?p='.$value['ID'].'&post_type='.$post_type.'&langid='.$language['prefix'],'top');
+					}
+				}
+			}
 		}
 	}
 
@@ -76,7 +133,6 @@ class CP_Permalink {
 	}
 
 	function add_rewrite_rules() {
-		
 		// if there are rewrite_rules
 		if (is_array($this->rewrite_rule)) {
 

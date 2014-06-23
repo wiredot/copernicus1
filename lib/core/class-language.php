@@ -40,6 +40,7 @@ class CP_Language {
 	 * @author Piotr Soluch
 	 */
 	public function _init() {
+		$this->get_languagess();
 
 		if ( isset( $_GET['lang'] ) ) {
 			add_action('init', array($this, 'switch_language'));
@@ -53,7 +54,17 @@ class CP_Language {
 		$this->define_current_language( $current_language );
 	}
 
-	function pages_translate($output) {
+	public function get_languagess() {
+		$uri = $_SERVER['REQUEST_URI'];
+		if (preg_match('/^\/[a-z]{2}\//', $uri, $matches)) {
+			$this->set_current_language( str_replace('/', '', substr($uri, 0, 4) ) );
+		} else {
+			$default_language = $this->get_default_language();
+			$this->set_current_language( $default_language['code'] );
+		}
+	}
+
+	public function pages_translate($output) {
 		foreach ($output as $key => $value) {
 			if (LANGUAGE_SUFFIX != '') {
 				$post_meta = get_post_meta($value->ID, 'post_title'.LANGUAGE_SUFFIX, true);

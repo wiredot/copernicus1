@@ -70,7 +70,7 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 		global $wp_query;
 
 		if ($wp_query->max_num_pages > 1) {
-			$return.= show_paginationw($wp_query->max_num_pages);
+			$return.= show_pagination($wp_query->max_num_pages);
 		}
 	}
 	

@@ -11,7 +11,9 @@ class CP_Header {
 	}
 
 	public function show_header() {
-		global $CP_Smarty;
+		global $CP_Smarty, $CP_Language;
+
+		$current_language = $CP_Language->get_current_language();
 
 		ob_start();
 		wp_head();
@@ -25,6 +27,7 @@ class CP_Header {
 		$page['language'] = str_replace('-', '_', get_bloginfo('language'));
 		$page['title'] = $this->get_page_title();
 		$page['slug'] = $this->get_page_slug();
+		$page['language'] = $current_language['iso'];
 		
 		if ($post) {
 			$page['content'] = str_replace(array("\n","&nbsp;"), '', $post->post_content);
