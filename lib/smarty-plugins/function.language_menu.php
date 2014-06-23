@@ -34,7 +34,7 @@ function smarty_function_language_menu($params, $template) {
 		if (isset($current_language['prefix'])) {
 
 			if (isset($language['prefix']) && $language['prefix']) {
-				$new_url = $wpurl.'/'.$language['prefix'];
+				$new_url = $wpurl.'/'.$language['prefix'].'/';
 			} else {
 				$new_url = $wpurl;
 			}
