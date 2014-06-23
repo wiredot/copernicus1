@@ -67,6 +67,9 @@ To see what Copernicus can do, try one of the demo themes:
 
 == Changelog ==
 
+= 0.9.6 =
+* [fix] language bug in language menu smarty plugin
+
 = 0.9.5 =
 * [new] prefix for languages in urls
 

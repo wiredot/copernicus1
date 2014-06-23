@@ -17,6 +17,10 @@ function smarty_function_language_menu($params, $template) {
     global $CP_Language, $CP_Permalink;
 	
 	$languages = $CP_Language->get_languages();
+
+	$current_language = $CP_Language->get_current_language();
+
+	$wpurl = get_bloginfo( 'wpurl' );
 	
 	$menu = '';
 
@@ -24,7 +28,21 @@ function smarty_function_language_menu($params, $template) {
 
 	foreach ($languages as $key => $language) {
 		$menu.= '<li>';
-		$menu.= '<a href="'.$CP_Permalink->get_permalink( $id, $language['prefix'] ).'"';
+
+		$permalink = get_permalink($id);
+
+		if (isset($current_language['prefix'])) {
+
+			if (isset($language['prefix']) && $language['prefix']) {
+				$new_url = $wpurl.'/'.$language['prefix'];
+			} else {
+				$new_url = $wpurl;
+			}
+
+			$permalink = str_replace($wpurl.'/'.$current_language['prefix'], $new_url, $permalink);
+		}
+
+		$menu.= '<a href="'.$permalink.'"';
 		if ($language['code'] == LANGUAGE) {
 			$menu.= ' class="active"';
 		}
