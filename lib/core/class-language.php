@@ -80,7 +80,9 @@ class CP_Language {
 		$this->current_language = $current_language;
 		define( 'LANGUAGE', $current_language['code'] );
 		define( 'LANGUAGE_SUFFIX', $current_language['postmeta_suffix'] );
-		setlocale(LC_ALL, $current_language['iso'].'.UTF8', $current_language['iso']);
+		setlocale(LC_COLLATE, $current_language['iso'].'.UTF8', $current_language['iso']);
+		setlocale(LC_TIME, $current_language['iso'].'.UTF8', $current_language['iso']);
+		setlocale(LC_MESSAGES, $current_language['iso'].'.UTF8', $current_language['iso']);
 	}
 
 	public function get_languages( $status = 1 ) {

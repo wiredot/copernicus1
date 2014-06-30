@@ -99,13 +99,16 @@ class CP_Permalink {
 			if(substr($url, -1) == '/') {
 			    $url = substr($url, 0, -1);
 			}
-			foreach ($languages as $language) {
-				if (isset($language['prefix']) && $language['prefix']) {
-					$post_type = get_post_type( $value['ID'] );
-					if ($post_type == 'page') {
-						add_rewrite_rule('^'.$language['prefix'].$url.'/?$','index.php?page_id='.$value['ID'].'&langid='.$language['prefix'],'top');
-					} else {
-						add_rewrite_rule('^'.$language['prefix'].$url.'/?$','index.php?p='.$value['ID'].'&post_type='.$post_type.'&langid='.$language['prefix'],'top');
+
+			if (is_array($languages)) {
+				foreach ($languages as $language) {
+					if (isset($language['prefix']) && $language['prefix']) {
+						$post_type = get_post_type( $value['ID'] );
+						if ($post_type == 'page') {
+							add_rewrite_rule('^'.$language['prefix'].$url.'/?$','index.php?page_id='.$value['ID'].'&langid='.$language['prefix'],'top');
+						} else {
+							add_rewrite_rule('^'.$language['prefix'].$url.'/?$','index.php?p='.$value['ID'].'&post_type='.$post_type.'&langid='.$language['prefix'],'top');
+						}
 					}
 				}
 			}
