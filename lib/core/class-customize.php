@@ -96,8 +96,17 @@ class CP_Customize {
 		global $CP_Customize;
 		$script = $CP_Customize->get_js();
 
+		if ( ! file_exists(WP_CONTENT_DIR.'/cache/')) {
+			mkdir(WP_CONTENT_DIR.'/cache/');
+		}
+
+		if ( ! file_exists(WP_CONTENT_DIR.'/cache/js/')) {
+			mkdir(WP_CONTENT_DIR.'/cache/js/');
+		}
+
 		$script_md5 = md5($script);
 		$script_file = WP_CONTENT_DIR.'/cache/js/'.$script_md5.'.js';
+
 		$script_url = WP_CONTENT_URL.'/cache/js/'.$script_md5.'.js';
 
 		if (!file_exists($script_file)) {

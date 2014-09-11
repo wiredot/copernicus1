@@ -13,13 +13,14 @@
  * Purpose:  print out a bloginfo information
  *
  */
-function smarty_function_redirect($params, $template) {
+function smarty_function_wp_redirect($params, $template) {
 	if (isset($params['id']) && $params['id']) {
 		global $post;
 		if ($post->ID != $params['id']) {
 			$link = get_permalink($params['id']);
-			wp_redirect($link);
+			return '<script>window.location.href = "'.$link.'";</script>';
 		}
 	}
+	return null;
 	exit;
 }

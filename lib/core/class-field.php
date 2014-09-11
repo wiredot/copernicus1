@@ -79,7 +79,7 @@ class CP_Field {
 				
 			// users
 			case 'users':
-				return $this->get_users($value, $field_id, $field_name, $field['exclude'], $field['attributes']);
+				return $this->get_users($value, $field_id, $field_name, $field['exclude'], $field['arguments'], $field['attributes']);
 				break;
 			// taxonomy
 			case 'taxonomy':
@@ -454,13 +454,13 @@ class CP_Field {
 		return $user_roles;
 	}
 
-	public function get_users($values, $field_id, $field_name, $exclude = array(), $attributes = array()) {
+	public function get_users($values, $field_id, $field_name, $exclude = array(), $arguments = array(), $attributes = array()) {
 		if ($values)
 			$values = maybe_unserialize($values);
 		else
 			$values = array();
 
-		$users = get_users();
+		$users = get_users($arguments);
 
 		$users_output = '<ul>';
 		if (is_array($users)) {
