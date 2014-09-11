@@ -2,7 +2,7 @@
 Contributors: psoluch
 Tags: framework, template, smarty
 Requires at least: 3.9
-Tested up to: 3.9
+Tested up to: 4.0
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -66,6 +66,10 @@ To see what Copernicus can do, try one of the demo themes:
 
 
 == Changelog ==
+
+= 0.9.7 =
+* [changed] unique links for each language
+* [fix] several bugs
 
 = 0.9.6 =
 * [fix] language bug in language menu smarty plugin
