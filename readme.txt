@@ -67,6 +67,9 @@ To see what Copernicus can do, try one of the demo themes:
 
 == Changelog ==
 
+= 0.9.8 =
+* [fix] bug in loop block
+
 = 0.9.7 =
 * [changed] unique links for each language
 * [fix] several bugs
