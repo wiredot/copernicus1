@@ -60,7 +60,6 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 		else {
 			rewind_posts();
 			while ( have_posts() ) : the_post();
-				new dBug($wp_query);
 				$CP_Smarty->smarty->assign('key', $key);
 				$CP_Smarty->smarty->assign('post', $post);
 				$return.= $CP_Smarty->smarty->fetch('string:'.$content);
