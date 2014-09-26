@@ -15,8 +15,9 @@
  */
 function smarty_function_user($params, $template) {
 	if (!isset($params['id'])) {
-		return null;
+		$params['id'] = get_current_user_id();
 	}
+
 	
 	$user = get_userdata($params['id']);
 	

@@ -123,16 +123,18 @@ class CP_Field {
 		}
 
 		foreach ($languages as $language) {
-			$return.= '<span id="_'.$field_id.'_'.$language['code'].'" class="option';
+			$safe_field_id = str_replace(array('[', ']'), '_', $field_id);
+			$return.= '<span id="_'.$safe_field_id.'_'.$language['code'].'" class="option';
 			if ($active == $language['code'])
 				$return.= ' active';
 			$return.= '">'.$language['name'].'</span>';
 		}
-
+		//new dBug($values);
+		//new dBug($field);
 		$return.= '<div class="langs_list">';
 		foreach ($languages as $language) {
-				
-			$return.= '<div id="div_'.$field_id.'_'.$language['code'].'"';
+			$safe_field_id = str_replace(array('[', ']'), '_', $field_id);
+			$return.= '<div id="div_'.$safe_field_id.'_'.$language['code'].'"';
 			if ($active == $language['code'])
 				$return.= ' class="active"';
 			$return.= '>';
@@ -142,9 +144,16 @@ class CP_Field {
 				$suffix = $language['postmeta_suffix'];
 			}
 			$value = '';
+
 			if (isset($values[$value_key.$suffix])) {
 				$value = $values[$value_key.$suffix];
 			}
+
+			if ( isset($field['group_name']) && isset($values[$field['group_name']][$field['group_field'].$suffix]) ) {
+				$value = $values[$field['group_name']][$field['group_field'].$suffix];
+			}
+
+
 			if (substr($field_name, -1) == "]") {
 				$new_field_name = rtrim($field_name, "]").$suffix."]";
 			} else {

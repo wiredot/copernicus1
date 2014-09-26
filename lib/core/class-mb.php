@@ -291,7 +291,8 @@ class CP_Mb {
 	 */
 	private function meta_box_field($field, $values) {
 		global $CP_Language, $CP_Field;
-
+//new dBug($values);
+//new dBug($field);
 		// hook used to modify some elements of fileds
 		$field = apply_filters('cp_mb_meta_box_field_before', $field);
 
@@ -319,12 +320,19 @@ class CP_Mb {
 								$group_value[$group_field['id']] = '';
 							}
 
-							$value_key = $field['id'].'['.$group_key.']['.$group_field['id'].']';
-							$values[$value_key] = $group_value[$group_field['id']];
+							if (isset($group_field['translation']) && $group_field['translation']) {
+								$value_key = $field['id'].'['.$group_key.']['.$group_field['id'].']';
+								$values[$field['id']] = $group_value;
+							} else {
+								$value_key = $field['id'].'['.$group_key.']['.$group_field['id'].']';
+								$values[$value_key] = $group_value[$group_field['id']];
+							}
+
 
 							$group_field['group_name'] = $field['id'];
 							$group_field['group_item'] = $group_key;
-
+							$group_field['group_field'] = $group_field['id'];
+							
 							$return.= $this->meta_box_field($group_field, $values);
 						}
 					}

@@ -119,7 +119,9 @@ class CP_Umb {
 						
 						foreach ($umb['fields'] as $field) {
 
-							update_user_meta( $user_id, $field['id'], $_POST['cp_user_meta_'.$field['id']] );
+							if (isset($_POST['cp_user_meta_'.$field['id']])) {
+								update_user_meta( $user_id, $field['id'], $_POST['cp_user_meta_'.$field['id']] );
+							}
 						}
 					}
 				}
