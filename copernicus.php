@@ -4,7 +4,7 @@
   Plugin URI:  http://copernicus.wiredot.com/
   Description: WordPress Framework
   Author: wiredot
-  Version: 0.9.8
+  Version: 0.9.9
   Author URI: http://wiredot.com/
   License: GPLv2 or later
  */
