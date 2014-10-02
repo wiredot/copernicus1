@@ -199,9 +199,13 @@ class CP_Alv {
 			case (preg_match('/taxonomy:(.*)/', $column, $matches) ? true : false) :
 				$terms = get_the_terms( $post_id, $matches[1] );
 				if (!isset($terms->errors) && $terms) {
+
+					$keys = array_keys($terms);
+					$last_key = end($keys);
+
 					foreach ($terms as $key => $term) {
 						echo $term->name;
-						if ($key != end(array_keys($terms))) {
+						if ($key != $last_key) {
 							echo ', ';
 						}
 					}
