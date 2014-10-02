@@ -2,6 +2,8 @@
   display: inline-block;
   width: 79%;
   margin-bottom: 10px; }
+  .cp-langs input, .cp-langs textarea {
+    max-width: 400px; }
   .cp-langs.full {
     width: 100%; }
   .cp-langs > span.option {

@@ -54,7 +54,7 @@ class CP_Smarty {
 
 					if ( ! class_exists('cp_autoload_'.$name)) {
 
-						eval("class cp_autoload_".$name."{ function function_autoloader(\$show){ return autoload_plugins(\$show, __CLASS__); } };");
+						eval("class cp_autoload_".$name."{ static function function_autoloader(\$show){ return autoload_plugins(\$show, __CLASS__); } };");
 					}
 
 					$callback = array('cp_autoload_'.$name, 'function_autoloader');

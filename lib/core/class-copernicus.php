@@ -322,7 +322,7 @@ class CP {
 		CP::load_class(CP_PATH.'/lib/core/class-translation.php', 'CP_Translation');
 	}
 
-	public function ajax_response($response) {
+	public static function ajax_response($response) {
 		// encode and return response
 		$response_json = json_encode( $response );
 		header( "Content-Type: application/json" );

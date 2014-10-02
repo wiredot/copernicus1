@@ -3,6 +3,10 @@
 	width: 79%;
 	margin-bottom: 10px;
 
+	input, textarea {
+		max-width: 400px;
+	}
+
 	&.full {
 		width: 100%;
 	}

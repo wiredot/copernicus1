@@ -235,7 +235,7 @@ function cp_metaboxes_init($) {
 
         $.ajax({
             type: "POST",
-            url: '/wp-admin/admin-ajax.php',
+            url: ajaxurl + '?action=cp_mb_add_group',
             data: 'action=cp_mb_add_group&group='+groupId+'&key='+key,
 
             success: function(response) {

@@ -291,8 +291,6 @@ class CP_Mb {
 	 */
 	private function meta_box_field($field, $values) {
 		global $CP_Language, $CP_Field;
-//new dBug($values);
-//new dBug($field);
 		// hook used to modify some elements of fileds
 		$field = apply_filters('cp_mb_meta_box_field_before', $field);
 
