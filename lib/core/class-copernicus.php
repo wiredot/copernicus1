@@ -21,10 +21,16 @@ class CP {
 	public static function init() {
 		session_start();
 
+		// init folders
+		self::init_directories();
+
 		self::load_translations();
 		
 		// load config file
 		self::load_config();
+
+		// load composer components
+		require CP_PATH . '/lib/composer/vendor/autoload.php';
 		
 		// autoload copernicus classes
 		self::autoload_classes(CP_PATH.'/lib/core');
@@ -34,6 +40,19 @@ class CP {
 
 		// init plugins
 		self::init_plugins();
+	}
+
+	private static function init_directories() {
+		self::init_directory(WP_CONTENT_DIR.'/cache');
+		self::init_directory(WP_CONTENT_DIR.'/cache/js');
+		self::init_directory(WP_CONTENT_DIR.'/cache/css');
+		self::init_directory(WP_CONTENT_DIR.'/cache/smarty');
+	}
+
+	private static function init_directory($dir) {
+		if ( ! file_exists($dir)) {
+			mkdir($dir, 0755);
+		}
 	}
 
 /* -------------- views -------------- */	
