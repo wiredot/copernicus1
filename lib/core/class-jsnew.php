@@ -30,7 +30,6 @@ class CP_Jsnew {
 		}
 
 		$this->add_js($name, $script, $js['dependencies'], '', $js['footer']);
-
 	}
 
 	public function combine_js_files($name, $scripts) {
@@ -83,40 +82,6 @@ class CP_Jsnew {
 		wp_deregister_script($name);
 		wp_register_script($name, $file, $dependencies, $version, $footer);
 		wp_enqueue_script($name);
-	}
-
-	public function add_jsaa() {
-
-		$theme = $ct = wp_get_theme();
-		$themeVersion = $theme->get('Version');
-
-		$update_js_details = 0;
-		$js_details = $this->get_js_details();
-		$js_new_details = array();
-		
-		if (isset(CP::$config['js']) && CP::$config['js']) {
-			
-			foreach (CP::$config['js'] as $js) {
-				
-				if ( (is_admin() && $js['admin']) || (!is_admin() && $js['front']) ) {
-					
-					if (!$js['url']) {
-						$js['url'] = get_bloginfo ('stylesheet_directory');
-					}
-
-					if (!isset($js['dependencies'])) {
-						$js['dependencies'] = '';
-					} 
-						
-					wp_deregister_script($js['name']);
-					wp_register_script($js['name'], $js['url'] . '/' . $js['filename'], $js['dependencies'], $js['version'], $js['footer']);
-					wp_enqueue_script($js['name']);
-				}
-			}
-		}
-		if ($update_js_details) {
-			$this->update_js_details($js_new_details);
-		}
 	}
 
 	public function get_js_details($name) {
