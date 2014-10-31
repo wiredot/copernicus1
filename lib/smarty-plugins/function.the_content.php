@@ -30,7 +30,7 @@ function smarty_function_the_content( $params, $template ) {
     // merge default params with the provided ones
 	$params = array_merge($default_params, $params);
 
-	$content = '';
+	$content = null;
 
 	if ($params['excerpt']) {
 		$more = 0;
@@ -41,22 +41,21 @@ function smarty_function_the_content( $params, $template ) {
 	}
 
 	if (LANGUAGE_SUFFIX != '') {
-		if (!$params['id']) {
+		if ( ! $params['id']) {
 			$params['id'] = get_the_ID();
 		}
 		$content = get_post_meta($params['id'], 'content' . LANGUAGE_SUFFIX, true);
-	}
-	else {
+	} else {
 		if ($params['id']) {
 			$current_page = get_post($params['id'], ARRAY_A);
 
-			if ($current_page) {
+			if (isset($current_page['ID']) && $current_page['ID']) {
 				$content = $current_page['post_content'];
 			}
 		}
 	}
 
-	if (!$content) {
+	if (is_null($content)) {
 		$content = get_the_content($params['more_link_text'], $params['stripteaser']);
 	}
 
