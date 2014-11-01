@@ -10,12 +10,6 @@ class CP_Header {
 
 		$current_language = $CP_Language->get_current_language();
 
-		ob_start();
-		wp_head();
-		
-		$header = ob_get_clean();
-		$header = str_replace("\n", "\n\t", $header);
-
 		$page['image'] = null;
 		$page['title'] = $this->get_page_title();
 		$page['description'] = $this->get_page_description();
@@ -25,16 +19,26 @@ class CP_Header {
 		
 		global $post;
 		if ($post) {
-			$page['content'] = str_replace(array("\n","&nbsp;"), '', $post->post_content);
 			
 			if (has_post_thumbnail( $post->ID ) ) {
 				$image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'single-post-thumbnail' );
 				$page['image'] = $image[0];
 			}
 		}
-		else {
-			$page['content'] = '';
+
+		ob_start();
+		wp_head();
+		
+		$header = ob_get_clean();
+		$header = str_replace("\n", "\n\t", $header);
+		
+		if (isset(CP::$config['header']) && is_array(CP::$config['header'])) {
+			foreach (CP::$config['header'] as $config_header) {
+				$header.= $config_header;
+			}
 		}
+
+
 
 		$header = preg_replace('/ \/>/', '>', $header);
 		
