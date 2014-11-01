@@ -74,22 +74,24 @@ class CP_Customize {
 	}
 
    	public function header_output() {
-		echo '<style type="text/css">';
-		foreach ($this->settings as $key => $settings) {
-			if (isset($settings['css'])) {
-				foreach ($settings['css'] as $css) {
-					$value = get_theme_mod($key);
-					if ($value) {
-						if (preg_match('/rgba/', $css)) {
-							echo sprintf($css, $this->hex2rgb($value))."\n";
-						} else {
-							echo sprintf($css, $value)."\n";
+		if (count($this->settings)) {
+			echo '<style type="text/css">';
+			foreach ($this->settings as $key => $settings) {
+				if (isset($settings['css'])) {
+					foreach ($settings['css'] as $css) {
+						$value = get_theme_mod($key);
+						if ($value) {
+							if (preg_match('/rgba/', $css)) {
+								echo sprintf($css, $this->hex2rgb($value))."\n";
+							} else {
+								echo sprintf($css, $value)."\n";
+							}
 						}
 					}
 				}
 			}
+			echo '</style>';
 		}
-		echo '</style>';
    	}
 
 	public static function live_preview() {

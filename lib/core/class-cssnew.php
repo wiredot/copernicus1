@@ -59,11 +59,18 @@ class CP_Cssnew {
 		$combined_css = content_url().'/cache/css/'.$new_css_file;
 
 		if ($update_css_details || ! file_exists(WP_CONTENT_DIR.'/cache/css/'.$new_css_file)) {
-			$css = new AssetCollection(
-				$css_assets,
-			array(
-			    new CssMinFilter(),
-			));
+			if (WP_DEBUG) {
+				$css = new AssetCollection(
+					$css_assets
+				);
+			} else {
+				$css = new AssetCollection(
+					$css_assets,
+				array(
+				    new CssMinFilter(),
+				));
+			}
+			
 			$css->setTargetPath($new_css_file);
 
 			$am = new AssetManager();

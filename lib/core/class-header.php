@@ -3,11 +3,6 @@
 class CP_Header {
 	
 	function __construct() {
-		$this->_init();
-	}
-
-	private function _init() {
-
 	}
 
 	public function show_header() {
@@ -20,15 +15,15 @@ class CP_Header {
 		
 		$header = ob_get_clean();
 		$header = str_replace("\n", "\n\t", $header);
-		
-		global $post;
 
 		$page['image'] = null;
-		$page['language'] = str_replace('-', '_', get_bloginfo('language'));
 		$page['title'] = $this->get_page_title();
+		$page['description'] = $this->get_page_description();
 		$page['slug'] = $this->get_page_slug();
-		$page['language'] = $current_language['iso'];
+		$page['language'] = str_replace('_', '-', $current_language['iso']);
+		$page['locale'] = $current_language['iso'];
 		
+		global $post;
 		if ($post) {
 			$page['content'] = str_replace(array("\n","&nbsp;"), '', $post->post_content);
 			
@@ -40,6 +35,8 @@ class CP_Header {
 		else {
 			$page['content'] = '';
 		}
+
+		$header = preg_replace('/ \/>/', '>', $header);
 		
 		$CP_Smarty->smarty->assign('header', $header);
 		$CP_Smarty->smarty->assign('page', $page);
@@ -52,23 +49,61 @@ class CP_Header {
 		global $page, $paged;
 
 		$title = '';
+
+		$seo_title = get_post_meta( get_the_id(), 'meta_title', true );
 		
-		$title.= wp_title( '|', false, 'right' );
+		if ($seo_title) {
+			$title = $seo_title;
+		} else {
+			$title.= wp_title( '|', false, 'right' );
+			// Add the blog name.
+			$title.= get_bloginfo( 'name' );
 
-		// Add the blog name.
-		$title.= get_bloginfo( 'name' );
-
-		// Add the blog description for the home/front page.
-		$site_description = get_bloginfo( 'description', 'display' );
-		if ( $site_description && ( is_home() || is_front_page() ) )
-			$title.= " | $site_description";
+			// Add the blog description for the home/front page.
+			$site_description = get_bloginfo( 'description', 'display' );
+			if ( $site_description && ( is_home() || is_front_page() ) ) {
+				$title.= " | $site_description";
+			}
+		}
 
 		// Add a page number if necessary:
-		if ( $paged >= 2 || $page >= 2 )
+		if ( $paged >= 2 || $page >= 2 ) {
 			$title.= ' | ' . sprintf( __( 'Page %s', 'twentyeleven' ), max( $paged, $page ) );
+		}
 		
 		return $title;
 	}
+
+	private static function get_page_description() {
+
+		$description = '';
+
+		$seo_description = get_post_meta( get_the_id(), 'meta_description', true );
+		
+		if ($seo_description) {
+			$description = $seo_description;
+		} else {
+			global $post;
+			if ($post) {
+				$content = $post->post_content;
+				$content = str_replace("<!--more-->", ' ', $content);
+				$content = str_replace("\n", ' ', $content);
+				$content = str_replace("  ", ' ', $content);
+				$content = strip_tags($content);
+				$description = self::truncate($content);
+			}
+		}
+
+		return $description;
+	}
+
+	private static function truncate($text, $chars = 155) {
+		$text = $text." ";
+		$text = substr($text,0,$chars);
+		$text = substr($text,0,strrpos($text,' '));
+		$text = $text."…";
+		return $text;
+}
 
 	private function get_page_slug() {
 

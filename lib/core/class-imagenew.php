@@ -3,19 +3,48 @@
 class CP_Imagenew {
 
 	private $attachment_id;
+	private $attributes;
 	private $attachment_metadata;
 	private $image_config;
 	private $upload_dir;
 
-	public function __construct($attachment_id = null) {
+	public function __construct($attachment_id = null, $attributes = array()) {
+		add_filter('the_content', array($this, 'inline_images'));
+
 		if ( ! $attachment_id ) {
 			return null;
 		}
 
 		$this->_set_attachment_id($attachment_id);
+		$this->_set_attributes($attributes);
 		$this->_set_attachment_metadata($attachment_id);
 		$this->_set_image_config();
 		$this->_set_upload_dir();
+	}
+
+	public function inline_images($content) {
+		$content = preg_replace_callback('/<img(.*)>/', array($this, 'replace_inline_images') , $content);
+		return $content;
+	}
+
+	private function replace_inline_images($image) {
+		$theimage = $image[0];
+		$sizes = $this->_get_image_sizes();
+
+		preg_match('/wp-image-([0-9]+)/', $theimage, $attachment);
+		$attachment_id = $attachment[1];
+
+		preg_match('/class="([0-9a-z A-Z\-]+)"/', $theimage, $classes);
+		$classes_array = explode(' ', $classes[1]);
+
+		$size = $this->_find_matching_size($classes_array, $sizes);
+
+		if ( ! $size ) {
+			return $theimage;
+		}
+
+		$new_image = new CP_Imagenew($attachment_id, array('class'=>$classes_array));
+		return $new_image->get_image_tag('inline');
 	}
 
 	public function get_image_tag($config_id) {
@@ -38,6 +67,7 @@ class CP_Imagenew {
 			}
 			$img.= $this->_get_image_srcset_attribute($srcsets);
 		}
+		$img.= $this->_get_image_attributes();
 		$img.= '>';
 
 		return $img;
@@ -80,9 +110,9 @@ class CP_Imagenew {
 		$phpThumb->resetObject();
 		$phpThumb->setSourceFilename($this->upload_dir['dir'] . '/' . $attachment_file);
 
-		$image_attributes = $this->_get_image_attributes($size, $srcset);
+		$image_parameters = $this->_get_image_parameters($size, $srcset);
 
-		foreach ($image_attributes as $key => $attr) {
+		foreach ($image_parameters as $key => $attr) {
 			$phpThumb->setParameter($key, $attr);
 		}
 
@@ -125,6 +155,27 @@ class CP_Imagenew {
 		return $srcset_tag;
 	}
 
+	private function _get_image_attributes() {
+		$attributes = '';
+
+		if ($this->attributes) {
+			foreach ($this->attributes as $tag => $attributes_array) {
+				$attributes.= ' '.$tag.'="';
+				end($attributes_array);
+				$last_key = key($attributes_array);
+				foreach ($attributes_array as $key => $attribute) {
+					$attributes.= $attribute;
+					if ($key != $last_key) {
+						$attributes.= ' ';
+					}
+				}
+				$attributes.= '"';
+			}
+		}
+
+		return $attributes;
+	}
+
 	private function _get_image_config_by_id($config_id) {
 		if (isset($this->image_config[$config_id])) {
 			return $this->image_config[$config_id];
@@ -133,23 +184,49 @@ class CP_Imagenew {
 		return null;
 	}
 
-	private function _get_image_attributes($size, $srcset) {
-		$image_attributes = array();
+	private function _get_image_parameters($size, $srcset) {
+		$image_parameters = array();
 
 		if ($srcset) {
 			if (isset($this->image_config[$size]['srcset'][$srcset])) {
-				$image_attributes = $this->image_config[$size]['srcset'][$srcset];
+				$image_parameters = $this->image_config[$size]['srcset'][$srcset];
 			}
 		} else {
-			$image_attributes = $this->image_config[$size];
-			unset($image_attributes['srcset']);
+			$image_parameters = $this->image_config[$size];
+			unset($image_parameters['srcset']);
 		}
 
-		return $image_attributes;
+		return $image_parameters;
+	}
+
+	private function _get_image_sizes() {
+		$sizes = array();
+		if (isset (CP::$config['image'])) {
+			foreach (CP::$config['image'] as $key => $image) {
+				$sizes[] = $key;
+			}
+		}
+		return $sizes;
+	}
+
+	private function _find_matching_size($classes, $sizes) {
+		foreach ($sizes as $size) {
+			foreach ($classes as $class) {
+				if ($class == $size) {
+					return $size;
+				}
+			}
+		}
+
+		return null;
 	}
 
 	private function _set_attachment_id($attachment_id) {
 		$this->attachment_id = $attachment_id;
+	}
+
+	private function _set_attributes($attributes) {
+		$this->attributes = $attributes;
 	}
 
 	private function _set_attachment_metadata($attachment_id) {

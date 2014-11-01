@@ -64,8 +64,9 @@ class CP_Mb {
 	public function add_main_box() {
 		global $post, $CP_Language, $CP_Cpt;
 
-		if ($CP_Language->get_language_count() < 2) 
+		if ($CP_Language->get_language_count() < 2) {
 			return;
+		}
 	
 		$post_type = $post->post_type;
 		$post_type_object = get_post_type_object($post_type);
@@ -220,9 +221,10 @@ class CP_Mb {
 			foreach ($this->mb AS $mb) {
 
 				// if meta box is active
-				if ($mb['settings']['active'])
+				if ($mb['settings']['active']) {
 					// create meta box groups
 					$this->add_meta_box_group($mb);
+				}
 			}
 		}
 	}
@@ -236,16 +238,31 @@ class CP_Mb {
 	 */
 	public function add_meta_box_group($mb) {
 
-		// add meta group
-		add_meta_box(
-			$mb['settings']['id'], 
-			$mb['settings']['name'], 
-			array($this, 'add_meta_box'), 
-			$mb['settings']['post_type'], 
-			$mb['settings']['context'],
-			$mb['settings']['priority'], 
-			$mb
-		);
+		if (is_array($mb['settings']['post_type'])) {
+			foreach ($mb['settings']['post_type'] as $post_type) {
+				// add meta group
+				add_meta_box(
+					$mb['settings']['id'], 
+					$mb['settings']['name'], 
+					array($this, 'add_meta_box'), 
+					$post_type, 
+					$mb['settings']['context'],
+					$mb['settings']['priority'], 
+					$mb
+				);
+			}
+		} else {
+			// add meta group
+			add_meta_box(
+				$mb['settings']['id'], 
+				$mb['settings']['name'], 
+				array($this, 'add_meta_box'), 
+				$mb['settings']['post_type'], 
+				$mb['settings']['context'],
+				$mb['settings']['priority'], 
+				$mb
+			);
+		}
 	}
 
 	/**
@@ -540,11 +557,22 @@ class CP_Mb {
 			// for each field
 			foreach ($this->mb as $meta_box) {
 
-				// for the post type beeing saved
-				if ($post['post_type'] == $meta_box['settings']['post_type']) {
+				if (is_array($meta_box['settings']['post_type'])) {
+					foreach ($meta_box['settings']['post_type'] as $post_type) {
+						// for the post type beeing saved
+						if ($post['post_type'] == $post_type) {
 
-					// Save all fields in meta box group
-					$this->save_meta_box_fields($meta_box['fields']);
+							// Save all fields in meta box group
+							$this->save_meta_box_fields($meta_box['fields']);
+						}
+					}
+				} else {
+					// for the post type beeing saved
+					if ($post['post_type'] == $meta_box['settings']['post_type']) {
+
+						// Save all fields in meta box group
+						$this->save_meta_box_fields($meta_box['fields']);
+					}
 				}
 			}
 		}
