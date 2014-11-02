@@ -159,17 +159,23 @@ class CP_Imagenew {
 		$attributes = '';
 
 		if ($this->attributes) {
-			foreach ($this->attributes as $tag => $attributes_array) {
-				$attributes.= ' '.$tag.'="';
-				end($attributes_array);
-				$last_key = key($attributes_array);
-				foreach ($attributes_array as $key => $attribute) {
-					$attributes.= $attribute;
-					if ($key != $last_key) {
-						$attributes.= ' ';
+			foreach ($this->attributes as $tag => $attrs) {
+				if ($attrs) {
+					$attributes.= ' '.$tag.'="';
+					if (is_array($attrs)) {
+						end($attrs);
+						$last_key = key($attrs);
+						foreach ($attrs as $key => $attribute) {
+							$attributes.= $attribute;
+							if ($key != $last_key) {
+								$attributes.= ' ';
+							}
+						}
+					} else {
+						$attributes.= $attrs;
 					}
+					$attributes.= '"';
 				}
-				$attributes.= '"';
 			}
 		}
 

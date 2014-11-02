@@ -37,6 +37,19 @@ function smarty_function_img($params, $template) {
 		return null;
 	}
 
-	$image = new CP_Imagenew($params['image_id']);
+	if ( ! isset($params['alt']) ) {
+		$params['alt'] = get_post_meta( $params['image_id'], '_wp_attachment_image_alt', true );
+	}
+
+	if ( ! isset($params['title']) ) {
+		$params['title'] = get_the_title( $params['image_id'] );
+	}
+
+	$attributes = array(
+		'alt' => $params['alt'],
+		'title' => $params['title']
+	);
+
+	$image = new CP_Imagenew($params['image_id'], $attributes);
 	return $image->get_image_tag($params['id']);
 }

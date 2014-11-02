@@ -59,11 +59,18 @@ class CP_Jsnew {
 		$combined_js = content_url().'/cache/js/'.$new_js_file;
 
 		if ($update_js_details || ! file_exists(WP_CONTENT_DIR.'/cache/js/'.$new_js_file)) {
-			$js = new AssetCollection(
-				$js_assets,
-			array(
-			    new JSMinFilter(),
-			));
+			if (WP_DEBUG) {
+				$js = new AssetCollection(
+					$js_assets
+				);
+			} else {
+				$js = new AssetCollection(
+					$js_assets,
+				array(
+				    new JSMinFilter(),
+				));
+			}
+			
 			$js->setTargetPath($new_js_file);
 
 			$am = new AssetManager();

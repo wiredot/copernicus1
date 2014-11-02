@@ -8,6 +8,8 @@ class CP_Header {
 	public function show_header() {
 		global $CP_Smarty, $CP_Language;
 
+		do_action( 'cp_header' );
+
 		$current_language = $CP_Language->get_current_language();
 
 		$page['image'] = null;
@@ -37,8 +39,6 @@ class CP_Header {
 				$header.= $config_header;
 			}
 		}
-
-
 
 		$header = preg_replace('/ \/>/', '>', $header);
 		
