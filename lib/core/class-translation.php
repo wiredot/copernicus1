@@ -350,7 +350,7 @@ class CP_Translation {
 		if ( file_exists( $filename ) && preg_match( '/.php/', $filename ) ) {
 
 			$text = file_get_contents( $filename );
-			preg_match_all( "/__?cpe?\(['".'"'."]([^\(\))]+)['".'"'."], \'([a-zA-Z0-9_]+)\'\)/", $text, $matches );
+			preg_match_all( "/__?cpe?\([ ]?['".'"'."]([^\(\))]+)['".'"'."],[ ]?\'([a-zA-Z0-9_]+)\'[ ]?\)/", $text, $matches );
 			
 			if ( $matches[1] ) {
 				foreach ($matches[2] as $key => $match) {
@@ -365,6 +365,11 @@ class CP_Translation {
 
 			foreach ($matches[2] as $key => $match) {
 				$results[$match][$matches[1][$key]] = '';
+			}
+
+			preg_match_all( "/{['\"]([^\{\}\|)]+)['\"]\|translate}/", $text, $matches );
+			foreach ($matches[1] as $key => $match) {
+				$results['default'][$match] = '';
 			}
 			return $results;
 		}

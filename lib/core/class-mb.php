@@ -29,25 +29,16 @@ class CP_Mb {
 	 */
 	public function __construct() {
 
+		// dynamic group adding
 		add_action('wp_ajax_cp_mb_add_group', array($this,'add_group'));
-		
-		// initialize the meta boxes
-		$this->_init();
-	}
 
-	/**
-	 * Initiate the meta boxes
-	 *
-	 * @access type public
-	 * @return type mixed returns possible errors
-	 * @author Piotr Soluch
-	 */
-	public function _init() {
-		global $MS_Language;
-
+		// adding language translation for titles
 		add_action('edit_form_after_title', array($this, 'add_main_box'));
+
+		// saving the main meta box
 		add_action('pre_post_update', array($this, 'save_main_box'), 10, 2);
 		
+		// if any meta boxes are configured
 		if (isset (CP::$config['mb'])) {
 			
 			// get meta box configuration
@@ -60,6 +51,8 @@ class CP_Mb {
 			add_action('pre_post_update', array($this, 'save_meta_boxes'), 10, 2);
 		}
 	}
+
+// -------------------- MAIN BOX --------------------	
 
 	public function add_main_box() {
 		global $post, $CP_Language, $CP_Cpt;
@@ -205,6 +198,8 @@ class CP_Mb {
 		echo $return;
 	}
 
+// -------------------- META BOXES --------------------	
+
 	/**
 	 * Start adding meta boxes
 	 *
@@ -223,7 +218,7 @@ class CP_Mb {
 				// if meta box is active
 				if ($mb['settings']['active']) {
 					// create meta box groups
-					$this->add_meta_box_group($mb);
+					$this->add_meta_box($mb);
 				}
 			}
 		}
@@ -236,7 +231,7 @@ class CP_Mb {
 	 * @return type mixed returns possible errors
 	 * @author Piotr Soluch
 	 */
-	public function add_meta_box_group($mb) {
+	public function add_meta_box($mb) {
 
 		if (is_array($mb['settings']['post_type'])) {
 			foreach ($mb['settings']['post_type'] as $post_type) {
@@ -244,7 +239,7 @@ class CP_Mb {
 				add_meta_box(
 					$mb['settings']['id'], 
 					$mb['settings']['name'], 
-					array($this, 'add_meta_box'), 
+					array($this, 'add_meta_box_content'), 
 					$post_type, 
 					$mb['settings']['context'],
 					$mb['settings']['priority'], 
@@ -256,7 +251,7 @@ class CP_Mb {
 			add_meta_box(
 				$mb['settings']['id'], 
 				$mb['settings']['name'], 
-				array($this, 'add_meta_box'), 
+				array($this, 'add_meta_box_content'), 
 				$mb['settings']['post_type'], 
 				$mb['settings']['context'],
 				$mb['settings']['priority'], 
@@ -272,10 +267,10 @@ class CP_Mb {
 	 * @return type null no return
 	 * @author Piotr Soluch
 	 */
-	public function add_meta_box($post, $meta_box) {
+	public function add_meta_box_content($post, $meta_box) {
 		$styles = '';
-		
 		$template = '';
+
 		if (isset($meta_box['args']['settings']['template'])) {
 			$template = $meta_box['args']['settings']['template'];
 			echo '<input type="hidden" class="_cp_template_ _cp_template_'.$meta_box['args']['settings']['template'].'">';
@@ -295,7 +290,11 @@ class CP_Mb {
 
 		// for each field in a box
 		foreach ($fields as $field) {
-			echo $this->meta_box_field($field, $values);
+			if ($field['type'] == 'group') {
+				echo $this->meta_box_group($field, $values);
+			} else {
+				echo $this->meta_box_field($field, $values);
+			}
 		}
 	}
 
@@ -307,66 +306,29 @@ class CP_Mb {
 	 * @author Piotr Soluch
 	 */
 	private function meta_box_field($field, $values) {
-		global $CP_Language, $CP_Field;
-
+		global $CP_Language, $CP_Field, $CP_Smarty;
+		
 		// hook used to modify some elements of fileds
 		$field = apply_filters('cp_mb_meta_box_field_before', $field);
 
-		// if a group of fields is to be displayed
-		if ($field['type'] == 'group') {
-			$return = '';
-
-			if (!isset($values[$field['id']])) {
-				$values[$field['id']] = array();
-			}
-			$group_key = 0;
+		if (isset($field['translation']) && $field['translation']) {
+			$field['field'] = $CP_Field->show_multilanguage_field($field, $field['id'], $field['id'], $values, $field['id']);
+		} else {
+			$value = '';
 			if (isset($values[$field['id']])) {
-				$group_values = ( maybe_unserialize($values[$field['id']]));
-				//new dBug($group_values);
-
-				$return.= '<div class="cp-mb-group-wrapper">';
-
-				$values = array();
-				foreach ($group_values AS $group_key => $group_value) { 
-					$return.= '<fieldset class="cp-mb-group" id="'.$field['id'].'_'.$group_key.'">';
-
-					if (isset($field['fields'])) {
-						foreach ($field['fields'] as $key => $group_field) {
-							if (!isset($group_value[$group_field['id']])) {
-								$group_value[$group_field['id']] = '';
-							}
-
-							if (isset($group_field['translation']) && $group_field['translation']) {
-								$value_key = $field['id'].'['.$group_key.']['.$group_field['id'].']';
-								$values[$field['id']] = $group_value;
-							} else {
-								$value_key = $field['id'].'['.$group_key.']['.$group_field['id'].']';
-								$values[$value_key] = $group_value[$group_field['id']];
-							}
-
-
-							$group_field['group_name'] = $field['id'];
-							$group_field['group_item'] = $group_key;
-							$group_field['group_field'] = $group_field['id'];
-							
-							$return.= $this->meta_box_field($group_field, $values);
-						}
-					}
-
-					$return.= '<a href="#'.$field['id'].'_'.$group_key.'" class="cp-mb-remove-group">remove</a>';
-					$return.= '</fieldset>';
-				}
-				$group_key++;
-
-				$return.= '</div>';
+				$value = $values[$field['id']];
 			}
-
 			
-			$return.= '<a href="#'.$group_key.'" class="cp-mb-add-group button" id="group-'.$field['id'].'">add</a>';
-
-			return $return;
+			$field['field'] = $CP_Field->show_field($field, $field['id'], $field['id'], $value);
 		}
-		
+
+		$CP_Smarty->smarty->assign('field', $field);
+		return $CP_Smarty->smarty->fetch('mb/row.html');
+
+
+
+
+
 		$return = '';
 		$return.= '<div class="cp_meta_box field_' . $field['type'] . '">';
 		$return.= '<label for="'.$field['id'] .'">' . $field['name'];
@@ -402,59 +364,6 @@ class CP_Mb {
 		return $return;
 	}
 
-	function add_group() {
-		
-		//$group = $this->_add_group();		
-		$key = $_POST['key'];
-		$groupId = $_POST['group'];
-
-		$group_field = $this->get_group($groupId);
-
-		$group = $this->_add_group($key, $group_field);
-
-		$response = array(
-			'type' => 'success',
-			'group' => $group
-		);
-
-		CP::ajax_response($response);
-	}
-
-	function _add_group($group_key, $field) {
-		$return = '';
-		$values = array();
-
-		$return.= '<fieldset class="cp-mb-group" id="'.$field['id'].'_'.$group_key.'">';
-
-		if (isset($field['fields'])) {
-			foreach ($field['fields'] as $key => $group_field) {
-
-				$group_field['group_name'] = $field['id'];
-				$group_field['group_item'] = $group_key;
-
-				$return.= $this->meta_box_field($group_field, $values);
-			}
-		}
-
-		$return.= '<a href="#'.$field['id'].'_'.$group_key.'" class="cp-mb-remove-group">remove</a>';
-		$return.= '</fieldset>';
-
-		return $return;
-	}
-
-	function get_group($groupId) {
-		foreach (CP::$config['mb'] as $key => $mb) {
-			
-			foreach ($mb['fields'] as $fkey => $field) {
-				if ($field['type'] == 'group' && $field['id'] == $groupId) {
-					return $field;
-				}
-			}
-		}
-
-		return null;
-	}
-	
 	/**
 	 * 
 	 *
@@ -479,30 +388,137 @@ class CP_Mb {
 		return $return;
 	}
 
-	public function add_language_title() {
-		$title_mb = array(
-			'settings' => array(
-				'active' => true,
-				'id' => 'post_title',
-				'name' => 'post_title',
-				'post_type' => 'member',
-				'context' => 'normal', // normal | advanced | side
-				'priority' => 'low' // high | core | default | low
-			),
-			'fields' => array(
-				1 => array(
-					'id' => 'former_member',
-					'name' => 'Former member',
-					'type' => 'checkbox',
-					'description' => '',
-					'values' => array(
-						1 => '',
-					)
-				)
-			)
+// -------------------- GROUPS --------------------	
+
+	private function meta_box_group($field, $values) {
+		global $CP_Language, $CP_Field, $CP_Smarty;
+
+		$return = '';
+		$group_key = 0;
+
+		if (!isset($values[$field['id']])) {
+			$values[$field['id']] = array();
+		}
+		
+		$group_values = ( maybe_unserialize($values[$field['id']]));
+
+		$groups = '';
+		foreach ($group_values AS $group_key => $group_value) {
+
+			if (isset($field['fields'])) {
+				
+				$fields = '';
+				foreach ($field['fields'] as $key => $group_field) {
+
+					$group_field['group_name'] = $field['id'];
+					$group_field['group_item'] = $group_key;
+					$group_field['group_field'] = $group_field['id'];
+					
+					$fields.= $this->meta_box_field($group_field, $group_values[$group_key]);
+				}
+			}
+			$CP_Smarty->smarty->assign('group_key', $group_key);
+			$CP_Smarty->smarty->assign('fields', $fields);
+			$groups.= $CP_Smarty->smarty->fetch('mb/group.html');
+		}
+
+		$CP_Smarty->smarty->assign('groups', $groups);
+		$return = $CP_Smarty->smarty->fetch('mb/groups.html');
+		$return.= '<a href="#add" class="cp-mb-add-group button" id="group-'.$field['id'].'">add</a>';
+		
+		return $return;
+
+
+
+
+		if (isset($values[$field['id']])) {
+			$group_values = ( maybe_unserialize($values[$field['id']]));
+
+			$return.= '<div class="cp-mb-group-wrapper">';
+
+			$values = array();
+			foreach ($group_values AS $group_key => $group_value) { 
+				$return.= '<fieldset class="cp-mb-group" id="'.$field['id'].'_'.$group_key.'">';
+
+				if (isset($field['fields'])) {
+
+					foreach ($field['fields'] as $key => $group_field) {
+						if (!isset($group_value[$group_field['id']])) {
+							$group_value[$group_field['id']] = '';
+						}
+
+						if (isset($group_field['translation']) && $group_field['translation']) {
+							$value_key = $field['id'].'['.$group_key.']['.$group_field['id'].']';
+							$values[$field['id']] = $group_value;
+						} else {
+							$value_key = $field['id'].'['.$group_key.']['.$group_field['id'].']';
+							$values[$value_key] = $group_value[$group_field['id']];
+						}
+
+						$group_field['group_name'] = $field['id'];
+						$group_field['group_item'] = $group_key;
+						$group_field['group_field'] = $group_field['id'];
+						
+						$return.= $this->meta_box_field($group_field, $values);
+					}
+				}
+
+				$return.= '<a href="#'.$field['id'].'_'.$group_key.'" class="cp-mb-remove-group">remove</a>';
+				$return.= '</fieldset>';
+			}
+			$group_key++;
+
+			$return.= '</div>';
+		}
+		
+		$return.= '<a href="#'.$group_key.'" class="cp-mb-add-group button" id="group-'.$field['id'].'">add</a>';
+
+		return $return;
+	}
+
+	public function add_group() {
+		global $CP_Smarty;
+		
+		$key = $_POST['key'];
+		$group_id = $_POST['group'];
+
+		$group_field = $this->get_group($group_id);
+
+		$return = '';
+
+		if (isset($group_field['fields'])) {
+			foreach ($group_field['fields'] as $group_field) {
+
+				$group_field['group_name'] = $group_id;
+				$group_field['group_item'] = $key;
+
+				$return.= $this->meta_box_field( $group_field, array() );
+			}
+		}
+
+		$CP_Smarty->smarty->assign('fields', $return);
+		$CP_Smarty->smarty->assign('group_key', $key);
+		$group = $CP_Smarty->smarty->fetch('mb/group.html');
+
+		$response = array(
+			'type' => 'success',
+			'group' => $group
 		);
 
-		$this->add_meta_box_group($title_mb);
+		CP::ajax_response($response);
+	}
+
+	public function get_group($group_id) {
+		foreach (CP::$config['mb'] as $key => $mb) {
+			
+			foreach ($mb['fields'] as $fkey => $field) {
+				if ($field['type'] == 'group' && $field['id'] == $group_id) {
+					return $field;
+				}
+			}
+		}
+
+		return null;
 	}
 
 // -------------------- SAVING --------------------	
@@ -663,14 +679,7 @@ class CP_Mb {
 	}
 	
 // -------------------- OTHER --------------------
-	
-	/**
-	 * 
-	 *
-	 * @access type public
-	 * @return type 
-	 * @author Piotr Soluch
-	 */
+
 	public function get_value($field, $value) {
 		
 		switch($field['type']) {
@@ -685,7 +694,6 @@ class CP_Mb {
 				return $value;
 				break;
 		}
-		
 	}
 	
 	public function get_meta_box_fields() {

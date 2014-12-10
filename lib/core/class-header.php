@@ -14,6 +14,7 @@ class CP_Header {
 
 		$page['image'] = null;
 		$page['title'] = $this->get_page_title();
+		$page['content'] = $this->get_page_description();
 		$page['description'] = $this->get_page_description();
 		$page['slug'] = $this->get_page_slug();
 		$page['language'] = str_replace('_', '-', $current_language['iso']);

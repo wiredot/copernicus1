@@ -6,6 +6,7 @@ class CP_Field {
 	}
 
 	function show_field( $field, $field_id, $field_name, $value ) {
+		global $CP_Smarty;
 
 		$fields = array('attributes', 'options', 'values', 'labels', 'filetype', 'multiple', 'exclude', 'arguments');
 		foreach ($fields as $f) {
@@ -13,6 +14,18 @@ class CP_Field {
 				$field[$f] = array();
 			}
 		}
+
+		$field['value'] = $value;
+		if (isset($field['group_name'])) {
+			$field['field_id'] = $field['group_name'].'_'.$field['group_item'].'_'.$field_id.'';
+			$field['field_name'] = $field['group_name'].'['.$field['group_item'].']['.$field_name.']';
+
+		} else {
+			$field['field_id'] = $field_id;
+			$field['field_name'] = $field_name;		
+		}
+
+		$CP_Smarty->smarty->assign('field', $field);
 
 		switch ($field['type']) {
 			
@@ -24,7 +37,7 @@ class CP_Field {
 			case 'range':
 			case 'color':
 			case 'url':
-				return $this->get_input($field['type'], $value, $field_id, $field_name, $field['attributes']);
+				return $CP_Smarty->smarty->fetch('fields/input.html');
 				break;
 
 			// date field
@@ -103,9 +116,26 @@ class CP_Field {
 	}
 
 	function show_multilanguage_field( $field, $field_id, $field_name, $values, $value_key ) {
-		global $CP_Language;
+		global $CP_Language, $CP_Smarty;
 
 		$languages = $CP_Language->get_languages();
+
+		$fields = array();
+
+		foreach ($languages as $lang) {
+			$value = '';
+			if (isset($values[$field_name.$lang['postmeta_suffix']])) {
+				$value = $values[$field_name.$lang['postmeta_suffix']];
+			}
+			$fields[$lang['short_name']]['field'] = $this->show_field($field, $field_id.$lang['postmeta_suffix'], $field_name.$lang['postmeta_suffix'], $value);
+		}
+
+		$CP_Smarty->smarty->assign('languages', $languages);
+		$CP_Smarty->smarty->assign('fields', $fields);
+		$CP_Smarty->smarty->assign('field', $field);
+
+		return $CP_Smarty->smarty->fetch('fields/multilanguage.html');
+
 
 		if (count($languages) < 2) {
 			$value = $values[$value_key];
@@ -129,8 +159,7 @@ class CP_Field {
 				$return.= ' active';
 			$return.= '">'.$language['name'].'</span>';
 		}
-		//new dBug($values);
-		//new dBug($field);
+
 		$return.= '<div class="langs_list">';
 		foreach ($languages as $language) {
 			$safe_field_id = str_replace(array('[', ']'), '_', $field_id);
@@ -165,18 +194,6 @@ class CP_Field {
 		$return.= '</div>';
 		$return.= '</div>';
 		return $return;
-	}
-
-	public function get_input($type, $value, $field_id, $field_name, $attributes = array()) {
-
-		$default_attributes = array(
-			'size' => 30
-		);
-
-		$text_field = '<input type="'.$type.'" name="'.$field_name.'" id="'.$field_id.'" value="'.$value.'"';
-		$text_field.= $this->get_field_attributes($attributes, $default_attributes);
-		$text_field.= '>';
-		return $text_field;
 	}
 
 	public function get_date($value, $field_id, $field_name, $options = array(), $attributes = array()) {

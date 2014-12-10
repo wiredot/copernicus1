@@ -50,5 +50,9 @@ function smarty_function_nav_menu( $params, $template ) {
 
 	$params['echo'] = false;
 
-	return wp_nav_menu( $params );
+	$menu = wp_nav_menu( $params );
+
+	$menu = str_replace("\n", '', $menu);
+
+	return $menu;
 }

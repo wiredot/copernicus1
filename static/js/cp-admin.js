@@ -9,6 +9,8 @@ jQuery(document).ready(function($){
 });
 
 function language_tabs($) {
+    $('.cp-langs > span').unbind('click');
+
 	$('.cp-langs > span').click(function(){
 		$(this).parent().children('span').removeClass('active');
 		$(this).parent().find('div').removeClass('active');
@@ -226,22 +228,32 @@ function cp_metaboxes_init($) {
     $('.cp-mb-add-group').click(function(ev){
         ev.preventDefault();
         var href = $(this).attr('href');
-        var key = href.replace('#', '');
+        
+        var key = 0;
+        $(this).prev('.cp-mb-group-wrapper').children('fieldset').each(function(index, el) {    
+            var thisKey = $(el).attr('data-key');
+            if (thisKey > key) {
+                key = thisKey;
+            }
+        });
+        
         var groupId = $(this).attr('id').replace('group-', '');
-
+        console.log(key);
         var newKey = (key*1+1*1);
-        $(this).attr('href', newKey);
+        console.log(newKey);
         var button = $(this);
 
         $.ajax({
             type: "POST",
             url: ajaxurl + '?action=cp_mb_add_group',
-            data: 'action=cp_mb_add_group&group='+groupId+'&key='+key,
+            data: 'action=cp_mb_add_group&group='+groupId+'&key='+newKey,
 
             success: function(response) {
                 if (response.type == 'success') {
-                    button.before(response.group);
+                    button.prev('.cp-mb-group-wrapper').append(response.group);
                     cp_metaboxes_remove($);
+                    language_tabs($);
+                    cp_sortable($);
                 }
             }
         });
