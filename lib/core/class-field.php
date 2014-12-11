@@ -5,7 +5,7 @@ class CP_Field {
 	public function __construct() {
 	}
 
-	function show_field( $field, $field_id, $field_name, $value ) {
+	public function show_field( $field, $field_id, $field_name, $value ) {
 
 		$fields = array('attributes', 'options', 'values', 'labels', 'filetype', 'multiple', 'exclude', 'arguments');
 		foreach ($fields as $f) {
@@ -64,39 +64,28 @@ class CP_Field {
 				return $this->_get_select($field);
 				break;
 
-			// multi select
-			case 'multiselect':
-				return $this->_get_multiselect($field);
-				break;
-
 			// post link
 			case 'post_link':
-				return $this->_get_post_link($value, $field_id, $field_name, $field['arguments'], $field['attributes']);
-				break;
-
-			// post links
-			case 'post_links':
-				return $this->_get_post_links($value, $field_id, $field_name, $field['arguments'], $field['attributes']);
+				return $this->_get_post_link($field);
 				break;
 
 			// user roles
 			case 'user_role':
-			case 'user_roles':
-				return $this->_get_user_roles($value, $field_id, $field_name, $field['exclude'], $field['attributes']);
+				return $this->_get_user_role($field);
 				break;
 				
 			// users
-			case 'users':
-				return $this->_get_users($value, $field_id, $field_name, $field['exclude'], $field['arguments'], $field['attributes']);
+			case 'user':
+				return $this->_get_user($field);
 				break;
 			// taxonomy
 			case 'taxonomy':
-				return $this->_get_taxonomy($value, $field_id, $field_name, $field['options'], $field['arguments'], $field['attributes']);
+				return $this->_get_taxonomy($field);
 				break;
 
 			// file upload
 			case 'upload':
-				return $this->_get_upload($value, $field_id, $field_name, $field['multiple'], $field['filetype'], $field['labels'], $field['attributes']);
+				return $this->_get_upload($field);
 				break;
 		}
 
@@ -138,65 +127,6 @@ class CP_Field {
 		$CP_Smarty->smarty->assign('field', $field);
 
 		return $CP_Smarty->smarty->fetch('fields/multilanguage.html');
-
-
-		if (count($languages) < 2) {
-			$value = $values[$value_key];
-			return $this->show_field( $field, $field_id, $field_name, $value );
-		}
-
-		$return = '';
-		$return.= '<div class="cp-langs" id="langs_'.$field_id.'">';
-
-		if (!isset($_COOKIE['langs_'.$field_id])) {
-			$active = $languages[0]['code'];
-		}
-		else {
-			$active = $_COOKIE['langs_'.$field_id];
-		}
-
-		foreach ($languages as $language) {
-			$safe_field_id = str_replace(array('[', ']'), '_', $field_id);
-			$return.= '<span id="_'.$safe_field_id.'_'.$language['code'].'" class="option';
-			if ($active == $language['code'])
-				$return.= ' active';
-			$return.= '">'.$language['name'].'</span>';
-		}
-
-		$return.= '<div class="langs_list">';
-		foreach ($languages as $language) {
-			$safe_field_id = str_replace(array('[', ']'), '_', $field_id);
-			$return.= '<div id="div_'.$safe_field_id.'_'.$language['code'].'"';
-			if ($active == $language['code'])
-				$return.= ' class="active"';
-			$return.= '>';
-			
-			$suffix = '';
-			if (isset($language['postmeta_suffix'])) {
-				$suffix = $language['postmeta_suffix'];
-			}
-			$value = '';
-
-			if (isset($values[$value_key.$suffix])) {
-				$value = $values[$value_key.$suffix];
-			}
-
-			if ( isset($field['group_name']) && isset($values[$field['group_name']][$field['group_field'].$suffix]) ) {
-				$value = $values[$field['group_name']][$field['group_field'].$suffix];
-			}
-
-
-			if (substr($field_name, -1) == "]") {
-				$new_field_name = rtrim($field_name, "]").$suffix."]";
-			} else {
-				$new_field_name = $field_name.$suffix;
-			}
-			$return.= $this->show_field($field, $field_id.$suffix, $new_field_name, $value);
-			$return.= '</div>';
-		}
-		$return.= '</div>';
-		$return.= '</div>';
-		return $return;
 	}
 
 // -------------------- FIELDS --------------------	
@@ -223,63 +153,20 @@ class CP_Field {
 
 	private function _get_select($field) {
 		global $CP_Smarty;
-		$CP_Smarty->smarty->assign('field', $field);
-
-		return $CP_Smarty->smarty->fetch('fields/select.html');
-	}
-
-	private function _get_multiselect($field) {
-		global $CP_Smarty;
 
 		if ($field['value']) {
 			$field['value'] = maybe_unserialize($field['value']);
 		}
 
-		if ( ! is_array($field['value'])) {
-			$field['value'] = array();
+		if (isset($field['multiple']) && $field['multiple']) {
+			if ( ! is_array($field['value'])) {
+				$field['value'] = array();
+			}
 		}
 
-		$options = array();
-		foreach ($field['options'] AS $field_key => $field_value) {
-			$options[] = array(
-				'id' => $field_key,
-				'name' => $field_value,
-			);
-		}
-		$field['options'] = $options;
-		
 		$CP_Smarty->smarty->assign('field', $field);
 
 		return $CP_Smarty->smarty->fetch('fields/select.html');
-
-		$default_attributes = array(
-			'size' => 1,
-			'style' => 'height: auto !important;'
-		);
-
-		if ($values)
-			$values = maybe_unserialize($values);
-		else
-			$values = array();
-
-		$select = '<select id="' . $field_id . '" name="' . $field_name . '[]"';
-		$select.= $this->get_field_attributes($attributes, $default_attributes);
-		$select.= ' multiple="multiple">';
-
-		if (is_array($options)) {
-			foreach ($options AS $field_key => $field_option) {
-				$select.= '<option value="' . $field_key . '" ';
-
-				if (in_array($field_key, $values))
-					$select.= 'selected="selected" ';
-				$select.= '> ';
-				$select.= $field_option;
-				$select.= '</option>';
-			}
-		}
-		$select.= '</select>';
-
-		return $select;
 	}
 
 	private function _get_checkbox($field) {
@@ -289,14 +176,11 @@ class CP_Field {
 			$field['value'] = maybe_unserialize($field['value']);
 		}
 
-		$options = array();
-		foreach ($field['options'] AS $field_key => $field_value) {
-			$options[] = array(
-				'id' => $field_key,
-				'name' => $field_value,
-			);
+		if (count($field['options'])) {
+			if ( ! is_array($field['value'])) {
+				$field['value'] = array();
+			}
 		}
-		$field['options'] = $options;
 
 		$CP_Smarty->smarty->assign('field', $field);
 
@@ -306,238 +190,120 @@ class CP_Field {
 	private function _get_radio($field) {
 		global $CP_Smarty;
 
-		$options = array();
-		foreach ($field['options'] AS $field_key => $field_value) {
-			$options[] = array(
-				'id' => $field_key,
-				'name' => $field_value,
-			);
-		}
-		$field['options'] = $options;
-
 		$CP_Smarty->smarty->assign('field', $field);
 
 		return $CP_Smarty->smarty->fetch('fields/radio.html');
 	}
 
-	private function _get_post_link($value, $field_id, $field_name, $arguments, $attributes = array()) {
+	private function _get_post_link($field) {
 		$default_arguments = array(
 			'posts_per_page' => -1,
 			'post_type' => 'page'
 		);
 
-		$arguments = array_merge($default_arguments, $arguments);
-
-
-		$post_link = '<select id="' . $field_id . '" name="' . $field_name .'"';
-		$post_link.= $this->get_field_attributes($attributes);
-		$post_link.= '>';
-		$post_link.= '<option value="0"> -- select -- </option>';
+		$arguments = array_merge($default_arguments, $field['arguments']);
 
 		$loop_links = new WP_Query( $arguments );
 
-		$all_links = array();
+		$options = array();
 
 		$posts = $loop_links->posts;
-
 		if ($posts) {
 			foreach ($posts as $post) {
-				if ($value == $post->ID)
-					$post->selected = 1;
-				$all_links[$post->post_parent][$post->ID] = $post;
+				$options[$post->ID] = $post->post_title;
 			}
-
-			$post_link.= $this->get_links($all_links);
 		}
 
-		$post_link.= '</select>';
+		$field['options'] = $options;
 
-		return $post_link;
+		return $this->_get_select($field);
 	}
 
-	private function _get_post_links($values, $field_id, $field_name, $arguments, $attributes = array()) {
-		if ($values) {
-			$values = maybe_unserialize($values);
-		} else {
-			$values = array();
-		}
-
-		$default_arguments = array(
-			'posts_per_page' => -1,
-			'post_type' => 'page'
-		);
-
-		$arguments = array_merge($default_arguments, $arguments);
-
-		
-
-		$post_link = '<select id="' . $field_id . '" name="' . $field_name .'"';
-		$post_link.= $this->get_field_attributes($attributes);
-		$post_link.= '>';
-		$post_link.= '<option value="0"> -- select -- </option>';
-
-		$loop_links = new WP_Query( $arguments );
-
-		$all_links = array();
-
-		$posts = $loop_links->posts;
-
-		if ($posts) {
-			foreach ($posts as $post) {
-				//if ($value == $post->ID)
-				//	$post->selected = 1;
-				//$all_links[$post->post_parent][$post->ID] = $post;
-			}
-
-			//$post_link.= $this->get_links($all_links);
-		}
-
-		$post_link.= '</select>';
-
-		$checkbox = '';
-
-		if ($posts) {
-			$checkbox.= '<ul>';
-			foreach ($posts AS $field_key => $field_value) {
-				$checkbox.= '<li>';
-				$checkbox.= '<input type="checkbox" name="' . $field_name . '[]" id="' . $field_id . '_' . $field_key . '" value="' . $field_value->ID . '" ';
-				if (in_array($field_value->ID, $values)) {
-					$checkbox.= 'checked="checked" ';
-				}
-				
-				$checkbox.= $this->get_field_attributes($attributes);
-				$checkbox.= ' /> ';
-				$checkbox.= '<label for="' . $field_id . '_' . $field_key . '">' . $field_value->post_title . '</label>';
-				$checkbox.= '</li>';
-			}
-			
-			$checkbox.= '</ul>';
-		}
-
-		return $checkbox;
-	}
-
-	private function _get_user_roles($values, $field_id, $field_name, $exclude = array(), $attributes = array()) {
-		if ($values)
-			$values = maybe_unserialize($values);
-		else
-			$values = array();
-
+	private function _get_user_role($field) {
 		$roles = new WP_Roles();
 
 		$role_names = $roles->role_names;
-		
-		if (is_array($exclude)) {
-			$excludes = $exclude;
-		} else {
-			$excludes = explode(',', str_replace(' ', '', $exclude));	
-		}
 
-		$user_roles = '<ul>';
+		$options = array();
 		if (is_array($role_names)) {
 			foreach ($role_names AS $field_key => $field_value) {
-				if (!in_array($field_key, $excludes)) {
-					$user_roles.= '<li>';
-					$user_roles.= '<input type="checkbox" name="' . $field_name . '[]" id="' . $field_id . '_' . $field_key . '" value="' . $field_key . '" ';
-					if (in_array($field_key, $values))
-						$user_roles.= 'checked="checked" ';
-
-					if (!isset($attributes))
-						$attributes = array();
-					
-					$user_roles.= $this->get_field_attributes($attributes);
-					$user_roles.= ' /> ';
-					$user_roles.= '<label for="' . $field_id . '_' . $field_key . '">' . $field_value . '</label>';
-					$user_roles.= '</li>';
-				}
+				$options[$field_key] = $field_value;
 			}
 		}
-		$user_roles.= '</ul>';
 
-		return $user_roles;
+		$field['options'] = $options;
+
+		if (isset($field['multiple']) && $field['multiple']) {
+			return $this->_get_checkbox($field);
+		} else {
+			return $this->_get_radio($field);
+		}
 	}
 
-	private function _get_users($values, $field_id, $field_name, $exclude = array(), $arguments = array(), $attributes = array()) {
-		if ($values)
-			$values = maybe_unserialize($values);
-		else
-			$values = array();
+	private function _get_user($field) {
+		$users = get_users($field['arguments']);
 
-		$users = get_users($arguments);
-
-		$users_output = '<ul>';
+		$options = array();
 		if (is_array($users)) {
-			foreach ($users AS $field_key => $field_value) {
-					$users_output.= '<li>';
-					$users_output.= '<input type="checkbox" name="' . $field_name . '[]" id="' . $field_id . '_' . $field_value->data->ID . '" value="' . $field_value->data->ID . '" ';
-					if (in_array($field_value->data->ID, $values))
-						$users_output.= 'checked="checked" ';
-
-					if (!isset($attributes))
-						$attributes = array();
-					
-					$users_output.= $this->get_field_attributes($attributes);
-					$users_output.= ' /> ';
-					$users_output.= '<label for="' . $field_id . '_' . $field_value->data->ID . '">' . $field_value->data->display_name . '</label>';
-					$users_output.= '</li>';
+			foreach ($users AS $user) {
+				$options[$user->ID] = get_user_meta( $user->ID, 'first_name', true ).' '.get_user_meta( $user->ID, 'last_name', true ).' ('.$user->data->user_login.')';
 			}
 		}
-		$users_output.= '</ul>';
 
-		return $users_output;
+		$field['options'] = $options;
+
+		if (isset($field['multiple']) && $field['multiple']) {
+			return $this->_get_checkbox($field);
+		} else {
+			return $this->_get_radio($field);
+		}
 	}
 
-	private function _get_taxonomy($value, $field_id, $field_name, $options = array(), $arguments = array(), $attributes = array()) {
-		$terms = get_terms($options['taxonomy'], $arguments);
+	private function _get_taxonomy($field) {
+		$terms = get_terms($field['taxonomy'], $field['arguments']);
 
-		$select = '<select id="' . $field_id . '" name="' . $field_name . '"';
-		$select.= $this->get_field_attributes($attributes);
-		$select.= '>';
-		$select.= '<option value="0"> -- select -- </option>';
-
+		$options = array();
 		if (is_array($terms)) {
-			foreach ($terms AS $field_key => $field_option) {
-				$select.= '<option value="' . $field_option->term_id . '" ';
-
-				if ($value == $field_option->term_id)
-					$select.= 'selected="selected" ';
-				$select.= '> ';
-				$select.= $field_option->name;
-				$select.= '</option>';
+			foreach ($terms AS $term) {
+				$options[$term->term_taxonomy_id] = $term->name;
 			}
 		}
-		$select.= '</select>';
 
-		return $select;
+		$field['options'] = $options;
+
+		if (isset($field['multiple']) && $field['multiple']) {
+			return $this->_get_checkbox($field);
+		} else {
+			return $this->_get_radio($field);
+		}
 	}
 
-	private function _get_upload($values, $field_id, $field_name, $multiple = false, $filetype = 'image', $labels = array(), $attributes = array()) {
-		global $CP_Image;
+	private function _get_upload($field) {
+		global $CP_Image, $CP_Smarty;;
 
-		if ($multiple) {
-			$go_function = 'media_upload_multiple';
+		if ($field['multiple']) {
+			$field['go_function'] = 'media_upload_multiple';
 		}
 		else {
-			$go_function = 'media_upload_single';
+			$field['go_function'] = 'media_upload_single';
 		}
 		
-		if ($values) {
-			$values = maybe_unserialize($values);
+		if ($field['value']) {
+			$field['value'] = maybe_unserialize($field['value']);
 		}
 		else {
-			$values = array();
+			$field['value'] = array();
 		}
+
+		$field['disabled'] = '';
 		
-		$disabled = '';
-		
-		if (!$multiple && count($values) == 1) {
-			$disabled = ' disabled="disabled"';
+		if (!$field['multiple'] && count($field['value']) == 1) {
+			$field['disabled'] = ' disabled="disabled"';
 		}
-		
-		$upload = '<div id="container_'.$field_id.'" class="cp-files">';
-		$upload.= '<a href="javascript:'.$go_function.'(\''.$filetype.'\',\''.$field_id.'\',\''.$field_name.'\',\''.$labels['title_window'].'\', \''.$labels['button_window'].'\');" '.$disabled.' class="cp-open-media button button-primary" id="button_'.$field_id.'" title="' . esc_attr__( 'Add Images', 'tgm-nmp' ) . '">' . __( $labels['button'], 'tgm-nmp' ) . '</a>';
-		
-		foreach ($values as $attachment) {
+
+		$field['files'] = array();
+
+		foreach ($field['value'] as $attachment) {
 			
 			$attachment_data = get_post($attachment);
 		
@@ -551,98 +317,29 @@ class CP_Field {
 		
 			$im = wp_get_attachment_metadata($attachment, 1);
 			
-			$upload.= '<div id="file-'.$attachment.'">';
+			$upload = '<div id="file-'.$attachment.'">';
 			
-			if ($filetype == 'image') {
-				$upload.= $image;
+			if ($field['filetype'] == 'image') {
+				$file = $image;
 			}
 			else {
 				$image = wp_get_attachment_image_src( $attachment, 100, true);
 				if ($image[1] > 100) {
 					$image[1] = 100;
 				}
-				$upload.= '<img src="'.$image[0].'" width="'.$image[1].'" >';
-				$upload.= '<span>'.basename($attachment_data->guid).'</span>';
+				$file = '<img src="'.$image[0].'" width="'.$image[1].'" >';
+				$file.= '<span>'.basename($attachment_data->guid).'</span>';
 			}
-			
-			$upload.= '<input type="hidden" name="'.$field_name.'[]" value="'.$attachment.'">';
-			$upload.= '<a href="javascript:remove_image(\''.$attachment.'\');" class="cp-remove button">Remove</a>';
-			$upload.= '</div>';
+
+			$field['files'][] = array(
+				'attachment' => $attachment,
+				'file' => $file,
+			);
 		}
-		
-		$upload.= '</div>';
 
-		return $upload;
-	}
+		$CP_Smarty->smarty->assign('field', $field);
 
-	private function get_links($links, $parent_id = 0, $indent = 0) {
-		$return = '';
-
-		if (isset($links[$parent_id])) {
-			foreach ($links[$parent_id] as $link) {
-				$return.= '<option value="' . $link->ID . '"';
-				if (isset($link->selected))
-					$return.= ' selected="selected" ';
-				$return.= '>';
-				for ($i=0; $i<$indent; $i++) {
-					$return.= '---';
-				}
-				if ($indent)
-					$return.= ' ';
-				$return.= $link->post_title;
-				$return.= '</option>';
-				$return.= $this->get_links($links, $link->ID, $indent+1);
-			}
-		}
-		return $return;
-	}
-
-	private function get_field_attributes($attributes = array(), $default_attributes = array()) {
-
-		$attributes = array_merge($default_attributes, $attributes);
-
-		$styles = '';
-		$return = '';
-		
-		if (is_array($attributes)) {
-			foreach ($attributes AS $key => $attribute) {
-				switch($key) {
-					case 'width':
-					case 'height':
-						$styles.= $key . ': ' . $attribute . '; ';
-						break;
-					case 'style':
-						$styles.= $attribute;
-						break;
-					case 'disabled':
-					case 'readonly':
-					case 'required':
-					case 'autofocus':
-						if ($attribute)
-							$return.= ' ' . $key . '="' . $key . '"';
-						break;
-					case 'class':
-					case 'size':
-					case 'maxlength':
-					case 'rows':
-					case 'cols':
-					case 'pattern':
-					case 'placeholder':
-					case 'min':
-					case 'max':
-					case 'step':
-					case 'autocomplete':
-						if ($attribute !== false && $attribute !='')
-						$return.= ' ' . $key . '="' . $attribute . '"';
-						break;
-				}
-			}
-		}
-		
-		if ($styles)
-			$return.= ' style="'.$styles.'"';
-		
-		return $return;
+		return $CP_Smarty->smarty->fetch('fields/upload.html');
 	}
 
 // -------------------- PUBLIC FIELDS --------------------	

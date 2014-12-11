@@ -1,0 +1,10 @@
+<div id="container_{$field.field_id}" class="cp-files">
+	<a href="javascript:{$field.go_function}('{$field.filetype}','{$field.field_id}','{$field.field_name}','{$field.labels.title_window}', '{$field.labels.button_window}');" {$field.disabled} class="cp-open-media button button-primary" id="button_$field['field_id']" title="{$field.labels.button}">{$field.labels.button}</a>
+	{foreach from=$field.files item=file}
+	<div id="file-{$file.attachment}">
+		{$file.file}
+		<input type="hidden" name="{$field.field_name}[]" value="{$file.attachment}">
+		<a href="javascript:remove_image('{$file.attachment}');" class="cp-remove button">Remove</a>
+	</div>
+	{/foreach}
+</div>

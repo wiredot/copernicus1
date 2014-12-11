@@ -1,3 +1,7 @@
+/*
+This file has been generated with SiteFlow (http://siteflow.witiz.com).
+To remove this comment, please support us and upgrade to SiteFlow Pro.
+*/
 .cp-langs {
   display: inline-block;
   width: 79%;
@@ -82,11 +86,11 @@
     display: inline-block;
     width: 100%;
     min-width: 484px; }
-  .cp_meta_box.field_checkbox span.clm, .cp_meta_box.field_radio span.clm {
+  .cp_meta_box.field_checkbox span.clm, .cp_meta_box.field_radio span.clm, .cp_meta_box.field_user_role span.clm, .cp_meta_box.field_user span.clm, .cp_meta_box.field_taxonomy span.clm {
     width: 20%;
     display: inline-block;
     vertical-align: top; }
-  .cp_meta_box.field_checkbox ul, .cp_meta_box.field_radio ul {
+  .cp_meta_box.field_checkbox ul, .cp_meta_box.field_radio ul, .cp_meta_box.field_user_role ul, .cp_meta_box.field_user ul, .cp_meta_box.field_taxonomy ul {
     display: inline-block;
     width: 70%;
     margin: 0; }
