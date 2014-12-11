@@ -33,7 +33,6 @@ class CP_Translation {
 		add_action( 'admin_menu', array(&$this, 'admin_menu') );
 		add_action( 'admin_init', array($this, 'register_settings') );
 
-		// initialize the meta boxes
 		$this->_init();
 	}
 
@@ -46,16 +45,16 @@ class CP_Translation {
 	 */
 	public function _init() {
 
-		$translations_folder = get_stylesheet_directory() . '/languages/';
-		// get all files from config folder
-		if (file_exists($translations_folder) && $handle = opendir($translations_folder)) {
+		$translations_dir = get_stylesheet_directory() . '/languages/';
+		// get all files from config dir
+		if (file_exists($translations_dir) && $handle = opendir($translations_dir)) {
 
 			// for each file with .config.php extension
 			while (false !== ($filename = readdir($handle))) {
 				
 				if (preg_match('/.csv$/', $filename)) {
 				
-					$this->get_adapter_csv($translations_folder.$filename);
+					$this->get_adapter_csv($translations_dir.$filename);
 				}
 			}
 			closedir($handle);
@@ -136,7 +135,7 @@ class CP_Translation {
 		return $text;
 	}
 
-	function translate_group($text, $group) {
+	public function translate_group($text, $group) {
 		$translations = get_option( 'cp_translation_'.$group );
 		if (defined('LANGUAGE_SUFFIX') && LANGUAGE_SUFFIX) {
 			if (isset($translations[$text.LANGUAGE_SUFFIX]) && !empty($translations[$text.LANGUAGE_SUFFIX])) {
@@ -148,31 +147,6 @@ class CP_Translation {
 		}
 
 		return null;
-	}
-	/**
-	 * 
-	 * @param type $text
-	 * @param string $language
-	 * @return type
-	 */
-	public function translate2($text, $language = '') {
-		$phrase = $this->get_phrase($text);
-
-		if (!$phrase) {
-			return $text;
-		}
-
-		if (!$language) {
-			$language = LANGUAGE;
-		}
-		
-		$translation = $this->get_translation($language, $phrase);
-
-		if ($translation) {
-			return $translation;
-		}
-
-		return $text;
 	}
 	
 	/**
@@ -302,17 +276,17 @@ class CP_Translation {
 		}
 
 		$texts = array();
-		$textsa = $this->get_static_texts_folder( get_template_directory()  );
-		$textsb = $this->get_static_texts_folder( get_template_directory() . '/lib/' );
-		$textsc = $this->get_static_texts_folder( get_template_directory() . '/templates/' );
+		$textsa = $this->get_static_texts_dir( get_template_directory()  );
+		$textsb = $this->get_static_texts_dir( get_template_directory() . '/lib/' );
+		$textsc = $this->get_static_texts_dir( get_template_directory() . '/templates/' );
 		$texts_all = array_merge_recursive( $textsa, $textsb, $textsc );
 		$texts_child = array();
 
 		if (is_child_theme()) {
-			$textsa = $this->get_static_texts_folder( get_stylesheet_directory() . '/' );
-			$textsb = $this->get_static_texts_folder( get_stylesheet_directory() . '/templates/' );
-			$textsc = $this->get_static_texts_folder( get_stylesheet_directory() . '/lib/' );
-			$textsd = $this->get_static_texts_folder( get_stylesheet_directory() . '/config/' );
+			$textsa = $this->get_static_texts_dir( get_stylesheet_directory() . '/' );
+			$textsb = $this->get_static_texts_dir( get_stylesheet_directory() . '/templates/' );
+			$textsc = $this->get_static_texts_dir( get_stylesheet_directory() . '/lib/' );
+			$textsd = $this->get_static_texts_dir( get_stylesheet_directory() . '/config/' );
 			$texts_child = array_merge_recursive( $textsa, $textsb, $textsc, $textsd );
 		}
 		
@@ -328,14 +302,14 @@ class CP_Translation {
 		return $texts;
 	}
 
-	public function get_static_texts_folder( $folder ) {
+	public function get_static_texts_dir( $dir ) {
 		$texts = array();
 
-		if ( file_exists($folder) && $handle = opendir( $folder ) ) {
+		if ( file_exists($dir) && $handle = opendir( $dir ) ) {
 
 			/* This is the correct way to loop over the directory. */
 			while ( false !== ( $entry = readdir( $handle ) ) ) {
-				$new_array = $this->get_static_texts_file( $folder . $entry );
+				$new_array = $this->get_static_texts_file( $dir . $entry );
 				if ( is_array( $new_array ) ) {
 					$texts = array_merge_recursive( $texts, $new_array );
 				}

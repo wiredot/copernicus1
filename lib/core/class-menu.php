@@ -29,19 +29,6 @@ class CP_Menu {
 	 */
 	public function __construct() {
 		
-		// initialize the meta boxes
-		$this->_init();
-	}
-
-	/**
-	 * Initiate the meta boxes
-	 *
-	 * @access type public
-	 * @return type mixed returns possible errors
-	 * @author Piotr Soluch
-	 */
-	public function _init() {
-		
 		// setup custom fields for nav menu
 		add_filter('wp_setup_nav_menu_item', array($this, 'add_custom_nav_fields'));
 		
@@ -160,14 +147,19 @@ class CP_Menu {
 	}
 
 	public function nav_menu_translate($output) {
-		//print_r($output);
 		foreach ($output as $key => $value) {
 			if (LANGUAGE_SUFFIX != '') {
 				$title_field = 'title'.LANGUAGE_SUFFIX;
 				$attr_title_field = 'attr_title'.LANGUAGE_SUFFIX;
 				if (isset($output[$key]->$title_field) && !empty($output[$key]->$title_field)) {
 					$output[$key]->title = $output[$key]->$title_field;
+				} else {
+					$title = get_post_meta( $value->object_id, 'post_title'.LANGUAGE_SUFFIX, true );
+					if ($title) {
+						$output[$key]->title = $title;
+					}
 				}
+
 				if (isset($output[$key]->$attr_title_field) && !empty($output[$key]->$attr_title_field)) {
 					$output[$key]->attr_title = $output[$key]->$attr_title_field;
 				}
