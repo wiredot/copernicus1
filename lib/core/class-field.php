@@ -22,7 +22,7 @@ class CP_Field {
 
 		} else {
 			$field['field_id'] = $field_id;
-			$field['field_name'] = $field_name;		
+			$field['field_name'] = $field_name;
 		}
 
 		$CP_Smarty->smarty->assign('field', $field);
@@ -37,16 +37,12 @@ class CP_Field {
 			case 'range':
 			case 'color':
 			case 'url':
+			case 'date':
 				return $CP_Smarty->smarty->fetch('fields/input.html');
 				break;
 
-			// date field
-			case 'date':
-				return $this->get_date($value, $field_id, $field_name, $field['options'], $field['attributes']);
-				break;
-			
 			case 'textarea':
-				return $this->get_textarea($value, $field_id, $field_name, $field['attributes']);
+				return $CP_Smarty->smarty->fetch('fields/textarea.html');
 				break;
 
 			// wysiwyg editor field
@@ -66,7 +62,8 @@ class CP_Field {
 
 			// selectbox
 			case 'select':
-				return $this->get_select($value, $field_id, $field_name, $field['values'], $field['attributes']);
+				return $CP_Smarty->smarty->fetch('fields/select.html');
+				//return $this->get_select($value, $field_id, $field_name, $field['values'], $field['attributes']);
 				break;
 
 			// multi select
@@ -128,6 +125,13 @@ class CP_Field {
 				$value = $values[$field_name.$lang['postmeta_suffix']];
 			}
 			$fields[$lang['short_name']]['field'] = $this->show_field($field, $field_id.$lang['postmeta_suffix'], $field_name.$lang['postmeta_suffix'], $value);
+		}
+
+		if (isset($field['group_name'])) {
+			$field['field_id'] = $field['group_name'].'_'.$field['group_item'].'_'.$field['id'].'';
+
+		} else {
+			$field['field_id'] = $field['id'];
 		}
 
 		$CP_Smarty->smarty->assign('languages', $languages);
@@ -196,56 +200,10 @@ class CP_Field {
 		return $return;
 	}
 
-	public function get_date($value, $field_id, $field_name, $options = array(), $attributes = array()) {
-		$date =  '<input type="date" name="' . $field_name . '" id="' . $field_id . '" value="' . $value . '"';
-		if (isset($attributes))
-			$date.= $this->get_field_attributes($attributes);
-
-		$date.= '/>';
-
-		return $date;
-	}
-
-	public function get_textarea($value, $field_id, $field_name, $attributes = array()) {
-
-		$default_attributes = array(
-			'rows' => 6,
-			'cols' => 60
-		);
-
-		$textarea = '<textarea name="'.$field_name.'" id="'.$field_id.'"';
-		$textarea.= $this->get_field_attributes($attributes, $default_attributes);
-		$textarea.= '>';
-		$textarea.= $value;
-		$textarea.= '</textarea>';
-		return $textarea;
-	}
-
 	public function get_editor($value, $field_id, $attributes = array()) {
 		ob_start();
 		wp_editor($value, $field_id, $attributes);
 		return ob_get_clean();
-	}
-
-	public function get_select($value, $field_id, $field_name, $options, $attributes = array()) {
-		$select = '<select id="' . $field_id . '" name="' . $field_name . '"';
-		$select.= $this->get_field_attributes($attributes);
-		$select.= '>';
-
-		if (is_array($options)) {
-			foreach ($options AS $field_key => $field_option) {
-				$select.= '<option value="' . $field_key . '" ';
-
-				if ($value == $field_key)
-					$select.= 'selected="selected" ';
-				$select.= '> ';
-				$select.= $field_option;
-				$select.= '</option>';
-			}
-		}
-		$select.= '</select>';
-
-		return $select;
 	}
 
 	public function get_multiselect($values, $field_id, $field_name, $options, $attributes = array()) {

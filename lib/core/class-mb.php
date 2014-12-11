@@ -322,6 +322,13 @@ class CP_Mb {
 			$field['field'] = $CP_Field->show_field($field, $field['id'], $field['id'], $value);
 		}
 
+		if (isset($field['group_name'])) {
+			$field['field_id'] = $field['group_name'].'_'.$field['group_item'].'_'.$field['id'].'';
+
+		} else {
+			$field['field_id'] = $field['id'];
+		}
+
 		$CP_Smarty->smarty->assign('field', $field);
 		return $CP_Smarty->smarty->fetch('mb/row.html');
 

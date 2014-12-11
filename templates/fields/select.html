@@ -1,0 +1,6 @@
+<select name="{$field.field_name}" id="{$field.field_id}">
+	<option value="">-- select --</option>
+	{foreach from=$field.options item=option key=k}
+	<option value="{$k}"{if $k == $field.value} selected="selected"{/if}>{$option}</option>
+	{/foreach}
+</select>

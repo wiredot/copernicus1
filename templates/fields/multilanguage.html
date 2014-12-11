@@ -1,10 +1,10 @@
 <div class="cp-langs">
 	{foreach from=$languages item=lang key=k}
-	<span id="{$field.id}{$lang.short_name}" class="option{if $k == 0} active{/if}">{$lang.name}</span>
+	<span id="{$field.field_id}{$lang.short_name}" class="option{if $k == 0} active{/if}">{$lang.name}</span>
 	{/foreach}
 	<div class="langs_list">
 		{foreach from=$languages item=lang key=k}
-		<div id="div{$field.id}{$lang.short_name}"{if $k == 0} class="active"{/if}>
+		<div id="div{$field.field_id}{$lang.short_name}"{if $k == 0} class="active"{/if}>
 			{$fields[$lang.short_name].field}
 		</div>
 		{/foreach}
