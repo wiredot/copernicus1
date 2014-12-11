@@ -55,7 +55,7 @@ class CP_Language {
 		}
 		$uri = $_SERVER['REQUEST_URI'];
 		if (preg_match('/^\/[a-z]{2}\//', $uri, $matches)) {
-			$language = $this->get_language($this->set_current_language( str_replace('/', '', substr($uri, 0, 4) ) ) );
+			$language = $this->get_language( str_replace('/', '', substr($uri, 0, 4) ) );
 			if ($language) {
 				return $language;
 			}
