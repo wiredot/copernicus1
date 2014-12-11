@@ -40,28 +40,54 @@ class CP_Language {
 	 * @author Piotr Soluch
 	 */
 	public function _init() {
-		$this->get_languagess();
-
-		if ( isset( $_GET['lang'] ) ) {
-			add_action('init', array($this, 'switch_language'));
-		}
-
+		add_action('init', array($this, 'define_current_language'));
 		add_action('get_pages', array($this, 'pages_translate'));
-		
-		// get current language
-		$current_language = $this->get_current_language();
-
-		$this->define_current_language( $current_language );
 	}
 
-	public function get_languagess() {
+	public function get_current_language() {
+		$user_id =  get_current_user_id();
+		$user_language = get_user_meta( $user_id, 'language', true );
+		if ($user_language) {
+			$language = $this->get_language( $user_language );
+			if ($language) {
+				return $language;
+			}
+		}
 		$uri = $_SERVER['REQUEST_URI'];
 		if (preg_match('/^\/[a-z]{2}\//', $uri, $matches)) {
-			$this->set_current_language( str_replace('/', '', substr($uri, 0, 4) ) );
-		} else {
-			$default_language = $this->get_default_language();
-			$this->set_current_language( $default_language['code'] );
+			$language = $this->get_language($this->set_current_language( str_replace('/', '', substr($uri, 0, 4) ) ) );
+			if ($language) {
+				return $language;
+			}
 		}
+		
+		return $this->get_default_language();
+	}
+
+	public function define_current_language() {
+		$current_language = $this->get_current_language();
+		$this->current_language = $current_language;
+		define( 'LANGUAGE', $current_language['code'] );
+		define( 'LANGUAGE_SUFFIX', $current_language['postmeta_suffix'] );
+		setlocale(LC_COLLATE, $current_language['iso'].'.UTF8', $current_language['iso']);
+		setlocale(LC_TIME, $current_language['iso'].'.UTF8', $current_language['iso']);
+		setlocale(LC_MESSAGES, $current_language['iso'].'.UTF8', $current_language['iso']);
+	}
+
+	public function get_default_language() {
+		if ( $this->current_language )
+			return $this->current_language;
+
+		if (!isset(CP::$config['language']))
+			return null;
+
+		foreach ( CP::$config['language'] as $language ) {
+			if ( $language['default'] ) {
+				return $language;
+			}
+		}
+
+		return null;
 	}
 
 	public function pages_translate($output) {
@@ -74,15 +100,6 @@ class CP_Language {
 			}
 		}
 		return $output;
-	}
-
-	private function define_current_language( $current_language ) {
-		$this->current_language = $current_language;
-		define( 'LANGUAGE', $current_language['code'] );
-		define( 'LANGUAGE_SUFFIX', $current_language['postmeta_suffix'] );
-		setlocale(LC_COLLATE, $current_language['iso'].'.UTF8', $current_language['iso']);
-		setlocale(LC_TIME, $current_language['iso'].'.UTF8', $current_language['iso']);
-		setlocale(LC_MESSAGES, $current_language['iso'].'.UTF8', $current_language['iso']);
 	}
 
 	public function get_languages( $status = 1 ) {
@@ -117,73 +134,9 @@ class CP_Language {
 		return null;
 	}
 
-	public function get_current_language() {
-		if ( isset( $_SESSION['language'] ) ) {
-			return $this->get_language( $_SESSION['language'] );
-		}
-
-		if ( isset ( $_COOKIE['language'] ) ) {
-			return $this->get_language( $_COOKIE['language'] );
-		}
-
-		return $this->get_default_language();
-	}
-
-	public function get_default_language() {
-		if ( $this->current_language )
-			return $this->current_language;
-
-		if (!isset(CP::$config['language']))
-			return null;
-
-		foreach ( CP::$config['language'] as $language ) {
-			if ( $language['default'] ) {
-				return $language;
-			}
-		}
-
-		return null;
-	}
-
 	public function get_language_count() {
 		return count($this->get_languages());
 	}
 
-	public function switch_language() {
-		$language = $_GET['lang'];
-
-		$this->change_language($language);
-	}
-
-	/**
-	 * change language and redirecto to a previous page
-	 *
-	 * @param string  $language language code
-	 * @return none
-	 */
-	public function change_language( $language ) {
-		$this->set_current_language( $language );
-
-		if (isset($_SERVER['HTTP_REFERER'])) {
-			$reload = $_SERVER['HTTP_REFERER'];
-		}
-		else {
-			$reload = esc_url ( home_url('/') );
-		}
-
-		wp_redirect( $reload );
-		exit;
-	}
-
-	private function set_current_language( $current_language, $remember = true ) {
-		// set session for current language
-		$_SESSION['language'] = $current_language;
-
-		if ( $remember ) {
-			$expire = 60 * 60 * 24 * 31; // a month
-
-			// set cookie for current language
-			setcookie( 'language', $current_language, time() + $expire );
-		}
-	}
+// class end
 }

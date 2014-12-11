@@ -282,7 +282,8 @@ class CP_Translation {
 				echo '<tr valign="top">';
 				echo '<th scope="row"><label for="cp_translation_'.$text.'">'.$text.'</labe></th>';
 				echo '<td>';
-				echo $CP_Field->show_multilanguage_field($field, sanitize_title($field['id']), 'cp_translation_'.$current_tab.'['.$text.']', $values, $text);
+				$field['group_name'] = 'cp_translation_'.$current_tab;
+				echo $CP_Field->show_multilanguage_field($field, sanitize_title_with_dashes($field['id']), $text, $values, $text);
 				echo '</td>';
 				echo '</tr>';
 			}

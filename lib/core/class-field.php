@@ -15,10 +15,12 @@ class CP_Field {
 		}
 
 		$field['value'] = $value;
-		if (isset($field['group_name'])) {
+		if (isset($field['group_name']) && isset($field['group_item']) ) {
 			$field['field_id'] = $field['group_name'].'_'.$field['group_item'].'_'.$field_id.'';
 			$field['field_name'] = $field['group_name'].'['.$field['group_item'].']['.$field_name.']';
-
+		} else if (isset($field['group_name'])) {
+			$field['field_id'] = $field['group_name'].'_'.$field_id.'';
+			$field['field_name'] = $field['group_name'].'['.$field_name.']';
 		} else {
 			$field['field_id'] = $field_id;
 			$field['field_name'] = $field_name;
@@ -35,66 +37,66 @@ class CP_Field {
 			case 'color':
 			case 'url':
 			case 'date':
-				return $this->get_input($field);
+				return $this->_get_input($field);
 				break;
 
 			case 'textarea':
-				return $this->get_textarea($field);
+				return $this->_get_textarea($field);
 				break;
 
 			// wysiwyg editor field
 			case 'editor':
-				return $this->get_editor($field);
+				return $this->_get_editor($field);
 				break;
 
 			// checkboxes
 			case 'checkbox':
-				return $this->get_checkbox($field);
+				return $this->_get_checkbox($field);
 				break;
 
 			// radio 
 			case 'radio':
-				return $this->get_radio($field);
+				return $this->_get_radio($field);
 				break;
 
 			// selectbox
 			case 'select':
-				return $this->get_select($field);
+				return $this->_get_select($field);
 				break;
 
 			// multi select
 			case 'multiselect':
-				return $this->get_multiselect($field);
+				return $this->_get_multiselect($field);
 				break;
 
 			// post link
 			case 'post_link':
-				return $this->get_post_link($value, $field_id, $field_name, $field['arguments'], $field['attributes']);
+				return $this->_get_post_link($value, $field_id, $field_name, $field['arguments'], $field['attributes']);
 				break;
 
 			// post links
 			case 'post_links':
-				return $this->get_post_links($value, $field_id, $field_name, $field['arguments'], $field['attributes']);
+				return $this->_get_post_links($value, $field_id, $field_name, $field['arguments'], $field['attributes']);
 				break;
 
 			// user roles
 			case 'user_role':
 			case 'user_roles':
-				return $this->get_user_roles($value, $field_id, $field_name, $field['exclude'], $field['attributes']);
+				return $this->_get_user_roles($value, $field_id, $field_name, $field['exclude'], $field['attributes']);
 				break;
 				
 			// users
 			case 'users':
-				return $this->get_users($value, $field_id, $field_name, $field['exclude'], $field['arguments'], $field['attributes']);
+				return $this->_get_users($value, $field_id, $field_name, $field['exclude'], $field['arguments'], $field['attributes']);
 				break;
 			// taxonomy
 			case 'taxonomy':
-				return $this->get_taxonomy($value, $field_id, $field_name, $field['options'], $field['arguments'], $field['attributes']);
+				return $this->_get_taxonomy($value, $field_id, $field_name, $field['options'], $field['arguments'], $field['attributes']);
 				break;
 
 			// file upload
 			case 'upload':
-				return $this->get_upload($value, $field_id, $field_name, $field['multiple'], $field['filetype'], $field['labels'], $field['attributes']);
+				return $this->_get_upload($value, $field_id, $field_name, $field['multiple'], $field['filetype'], $field['labels'], $field['attributes']);
 				break;
 		}
 
@@ -123,11 +125,12 @@ class CP_Field {
 			$fields[$lang['short_name']]['field'] = $this->show_field($field, $field_id.$lang['postmeta_suffix'], $field_name.$lang['postmeta_suffix'], $value);
 		}
 
-		if (isset($field['group_name'])) {
-			$field['field_id'] = $field['group_name'].'_'.$field['group_item'].'_'.$field['id'].'';
-
+		if (isset($field['group_name']) && isset($field['group_item']) ) {
+			$field['field_id'] = $field['group_name'].'_'.$field['group_item'].'_'.$field_id.'';
+		} else if ( isset($field['group_name']) ) {
+			$field['field_id'] = $field['group_name'].'_'.$field_id.'';
 		} else {
-			$field['field_id'] = $field['id'];
+			$field['field_id'] = $field_id;
 		}
 
 		$CP_Smarty->smarty->assign('languages', $languages);
@@ -198,34 +201,34 @@ class CP_Field {
 
 // -------------------- FIELDS --------------------	
 
-	public function get_input($field) {
+	private function _get_input($field) {
 		global $CP_Smarty;
 		$CP_Smarty->smarty->assign('field', $field);
 
 		return $CP_Smarty->smarty->fetch('fields/input.html');
 	}
 
-	public function get_textarea($field) {
+	private function _get_textarea($field) {
 		global $CP_Smarty;
 		$CP_Smarty->smarty->assign('field', $field);
 
 		return $CP_Smarty->smarty->fetch('fields/textarea.html');
 	}
 
-	public function get_editor($field) {
+	private function _get_editor($field) {
 		ob_start();
 		wp_editor($field['value'], $field['field_id'], $field['attributes']);
 		return ob_get_clean();
 	}
 
-	public function get_select($field) {
+	private function _get_select($field) {
 		global $CP_Smarty;
 		$CP_Smarty->smarty->assign('field', $field);
 
 		return $CP_Smarty->smarty->fetch('fields/select.html');
 	}
 
-	public function get_multiselect($field) {
+	private function _get_multiselect($field) {
 		global $CP_Smarty;
 
 		if ($field['value']) {
@@ -279,7 +282,7 @@ class CP_Field {
 		return $select;
 	}
 
-	public function get_checkbox($field) {
+	private function _get_checkbox($field) {
 		global $CP_Smarty;
 
 		if ($field['value']) {
@@ -300,7 +303,7 @@ class CP_Field {
 		return $CP_Smarty->smarty->fetch('fields/checkbox.html');
 	}
 
-	public function get_radio($field) {
+	private function _get_radio($field) {
 		global $CP_Smarty;
 
 		$options = array();
@@ -317,7 +320,7 @@ class CP_Field {
 		return $CP_Smarty->smarty->fetch('fields/radio.html');
 	}
 
-	public function get_post_link($value, $field_id, $field_name, $arguments, $attributes = array()) {
+	private function _get_post_link($value, $field_id, $field_name, $arguments, $attributes = array()) {
 		$default_arguments = array(
 			'posts_per_page' => -1,
 			'post_type' => 'page'
@@ -352,7 +355,7 @@ class CP_Field {
 		return $post_link;
 	}
 
-	public function get_post_links($values, $field_id, $field_name, $arguments, $attributes = array()) {
+	private function _get_post_links($values, $field_id, $field_name, $arguments, $attributes = array()) {
 		if ($values) {
 			$values = maybe_unserialize($values);
 		} else {
@@ -414,7 +417,7 @@ class CP_Field {
 		return $checkbox;
 	}
 
-	public function get_user_roles($values, $field_id, $field_name, $exclude = array(), $attributes = array()) {
+	private function _get_user_roles($values, $field_id, $field_name, $exclude = array(), $attributes = array()) {
 		if ($values)
 			$values = maybe_unserialize($values);
 		else
@@ -454,7 +457,7 @@ class CP_Field {
 		return $user_roles;
 	}
 
-	public function get_users($values, $field_id, $field_name, $exclude = array(), $arguments = array(), $attributes = array()) {
+	private function _get_users($values, $field_id, $field_name, $exclude = array(), $arguments = array(), $attributes = array()) {
 		if ($values)
 			$values = maybe_unserialize($values);
 		else
@@ -484,7 +487,7 @@ class CP_Field {
 		return $users_output;
 	}
 
-	public function get_taxonomy($value, $field_id, $field_name, $options = array(), $arguments = array(), $attributes = array()) {
+	private function _get_taxonomy($value, $field_id, $field_name, $options = array(), $arguments = array(), $attributes = array()) {
 		$terms = get_terms($options['taxonomy'], $arguments);
 
 		$select = '<select id="' . $field_id . '" name="' . $field_name . '"';
@@ -508,7 +511,7 @@ class CP_Field {
 		return $select;
 	}
 
-	public function get_upload($values, $field_id, $field_name, $multiple = false, $filetype = 'image', $labels = array(), $attributes = array()) {
+	private function _get_upload($values, $field_id, $field_name, $multiple = false, $filetype = 'image', $labels = array(), $attributes = array()) {
 		global $CP_Image;
 
 		if ($multiple) {
@@ -641,4 +644,16 @@ class CP_Field {
 		
 		return $return;
 	}
+
+// -------------------- PUBLIC FIELDS --------------------	
+
+	public function get_select($value, $field_id, $field_name, $options) {
+		$field = array(
+			'type' => 'select',
+			'options' => $options
+		);
+
+		return $this->show_field( $field, $field_id, $field_name, $value );
+	}
+
 }
