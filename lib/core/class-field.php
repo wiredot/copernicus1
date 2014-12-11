@@ -6,7 +6,6 @@ class CP_Field {
 	}
 
 	function show_field( $field, $field_id, $field_name, $value ) {
-		global $CP_Smarty;
 
 		$fields = array('attributes', 'options', 'values', 'labels', 'filetype', 'multiple', 'exclude', 'arguments');
 		foreach ($fields as $f) {
@@ -25,8 +24,6 @@ class CP_Field {
 			$field['field_name'] = $field_name;
 		}
 
-		$CP_Smarty->smarty->assign('field', $field);
-
 		switch ($field['type']) {
 			
 			// text field
@@ -38,37 +35,36 @@ class CP_Field {
 			case 'color':
 			case 'url':
 			case 'date':
-				return $CP_Smarty->smarty->fetch('fields/input.html');
+				return $this->get_input($field);
 				break;
 
 			case 'textarea':
-				return $CP_Smarty->smarty->fetch('fields/textarea.html');
+				return $this->get_textarea($field);
 				break;
 
 			// wysiwyg editor field
 			case 'editor':
-				return $this->get_editor($value, $field_id);
+				return $this->get_editor($field);
 				break;
 
 			// checkboxes
 			case 'checkbox':
-				return $this->get_checkbox($value, $field_id, $field_name, $field['values'], $field['attributes']);
+				return $this->get_checkbox($field);
 				break;
 
 			// radio 
 			case 'radio':
-				return $this->get_radio($value, $field_id, $field_name, $field['values'], $field['attributes']);
+				return $this->get_radio($field);
 				break;
 
 			// selectbox
 			case 'select':
-				return $CP_Smarty->smarty->fetch('fields/select.html');
-				//return $this->get_select($value, $field_id, $field_name, $field['values'], $field['attributes']);
+				return $this->get_select($field);
 				break;
 
 			// multi select
 			case 'multiselect':
-				return $this->get_multiselect($value, $field_id, $field_name, $field['values'], $field['attributes']);
+				return $this->get_multiselect($field);
 				break;
 
 			// post link
@@ -112,7 +108,7 @@ class CP_Field {
 		return null;
 	}
 
-	function show_multilanguage_field( $field, $field_id, $field_name, $values, $value_key ) {
+	public function show_multilanguage_field( $field, $field_id, $field_name, $values, $value_key ) {
 		global $CP_Language, $CP_Smarty;
 
 		$languages = $CP_Language->get_languages();
@@ -200,13 +196,59 @@ class CP_Field {
 		return $return;
 	}
 
-	public function get_editor($value, $field_id, $attributes = array()) {
+// -------------------- FIELDS --------------------	
+
+	public function get_input($field) {
+		global $CP_Smarty;
+		$CP_Smarty->smarty->assign('field', $field);
+
+		return $CP_Smarty->smarty->fetch('fields/input.html');
+	}
+
+	public function get_textarea($field) {
+		global $CP_Smarty;
+		$CP_Smarty->smarty->assign('field', $field);
+
+		return $CP_Smarty->smarty->fetch('fields/textarea.html');
+	}
+
+	public function get_editor($field) {
 		ob_start();
-		wp_editor($value, $field_id, $attributes);
+		wp_editor($field['value'], $field['field_id'], $field['attributes']);
 		return ob_get_clean();
 	}
 
-	public function get_multiselect($values, $field_id, $field_name, $options, $attributes = array()) {
+	public function get_select($field) {
+		global $CP_Smarty;
+		$CP_Smarty->smarty->assign('field', $field);
+
+		return $CP_Smarty->smarty->fetch('fields/select.html');
+	}
+
+	public function get_multiselect($field) {
+		global $CP_Smarty;
+
+		if ($field['value']) {
+			$field['value'] = maybe_unserialize($field['value']);
+		}
+
+		if ( ! is_array($field['value'])) {
+			$field['value'] = array();
+		}
+
+		$options = array();
+		foreach ($field['options'] AS $field_key => $field_value) {
+			$options[] = array(
+				'id' => $field_key,
+				'name' => $field_value,
+			);
+		}
+		$field['options'] = $options;
+		
+		$CP_Smarty->smarty->assign('field', $field);
+
+		return $CP_Smarty->smarty->fetch('fields/select.html');
+
 		$default_attributes = array(
 			'size' => 1,
 			'style' => 'height: auto !important;'
@@ -237,68 +279,42 @@ class CP_Field {
 		return $select;
 	}
 
-	public function get_checkbox($values, $field_id, $field_name, $options, $attributes = array()) {
-		if ($values) {
-			$values = maybe_unserialize($values);
-		} else {
-			$values = array();
+	public function get_checkbox($field) {
+		global $CP_Smarty;
+
+		if ($field['value']) {
+			$field['value'] = maybe_unserialize($field['value']);
 		}
 
-		$checkbox = '<ul>';
-		if (is_array($options) && count($options)) {
-			foreach ($options AS $field_key => $field_value) {
-				$checkbox.= '<li>';
-				$checkbox.= '<input type="checkbox" name="' . $field_name . '[]" id="' . $field_id . '_' . $field_key . '" value="' . $field_key . '" ';
-				if (in_array($field_key, $values)) {
-					$checkbox.= 'checked="checked" ';
-				}
-				
-				$checkbox.= $this->get_field_attributes($attributes);
-				$checkbox.= ' /> ';
-				$checkbox.= '<label for="' . $field_id . '_' . $field_key . '">' . $field_value . '</label>';
-				$checkbox.= '</li>';
-			}
+		$options = array();
+		foreach ($field['options'] AS $field_key => $field_value) {
+			$options[] = array(
+				'id' => $field_key,
+				'name' => $field_value,
+			);
 		}
-		else {
-			$checkbox.= '<li>';
-			$checkbox.= '<input type="checkbox" name="' . $field_name . '" id="' . $field_id . '" value="1" ';
-			if ($values)
-				$checkbox.= 'checked="checked" ';
+		$field['options'] = $options;
 
-			if (!isset($attributes))
-				$attributes = array();
-			
-			$checkbox.= $this->get_field_attributes($attributes);
-			$checkbox.= ' /> ';
-			$checkbox.= '</li>';
-		}
-		$checkbox.= '</ul>';
+		$CP_Smarty->smarty->assign('field', $field);
 
-		return $checkbox;
+		return $CP_Smarty->smarty->fetch('fields/checkbox.html');
 	}
 
-	public function get_radio($value, $field_id, $field_name, $options, $attributes = array()) {
+	public function get_radio($field) {
+		global $CP_Smarty;
 
-		$checkbox = '<ul>';
-		if (is_array($options)) {
-			foreach ($options AS $field_key => $field_value) {
-				$checkbox.= '<li>';
-				$checkbox.= '<input type="radio" name="' . $field_name . '" id="' . $field_id . '_' . $field_key . '" value="' . $field_key . '" ';
-				if ($field_key == $value)
-					$checkbox.= 'checked="checked" ';
-
-				if (!isset($attributes))
-					$attributes = array();
-				
-				$checkbox.= $this->get_field_attributes($attributes);
-				$checkbox.= ' /> ';
-				$checkbox.= '<label for="' . $field_id . '_' . $field_key . '">' . $field_value . '</label>';
-				$checkbox.= '</li>';
-			}
+		$options = array();
+		foreach ($field['options'] AS $field_key => $field_value) {
+			$options[] = array(
+				'id' => $field_key,
+				'name' => $field_value,
+			);
 		}
-		$checkbox.= '</ul>';
+		$field['options'] = $options;
 
-		return $checkbox;
+		$CP_Smarty->smarty->assign('field', $field);
+
+		return $CP_Smarty->smarty->fetch('fields/radio.html');
 	}
 
 	public function get_post_link($value, $field_id, $field_name, $arguments, $attributes = array()) {

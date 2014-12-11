@@ -1,0 +1,12 @@
+{if count($field.options)}
+<ul>
+	{foreach from=$field.options item=option}
+	<li>
+		<input type="checkbox" name="{$field.field_name}[]" id="{$field.field_id}_{$option.id}" value="{$option.id}"{if in_array($option.id, $field.value)} checked="checked"{/if}>
+		<label for="{$field.field_id}_{$option.id}">{$option.name}</label>
+	</li>
+	{/foreach}
+</ul>
+{else}
+<input type="checkbox" name="{$field.field_name}" id="{$field.field_id}" value="1"{if $field.value == 1} checked="checked"{/if}>
+{/if}

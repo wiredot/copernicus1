@@ -1,6 +1,14 @@
+{if $field.type == multiselect}
+<select name="{$field.field_name}[]" id="{$field.field_id}" multiple="multiple" size="{count($field.options)}">
+	{foreach from=$field.options item=option}
+	<option value="{$option.id}"{if in_array($option.id, $field.value)} selected="selected"{/if}>{$option.name}</option>
+	{/foreach}
+</select>
+{else}
 <select name="{$field.field_name}" id="{$field.field_id}">
 	<option value="">-- select --</option>
 	{foreach from=$field.options item=option key=k}
 	<option value="{$k}"{if $k == $field.value} selected="selected"{/if}>{$option}</option>
 	{/foreach}
 </select>
+{/if}
