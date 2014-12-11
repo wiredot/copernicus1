@@ -209,7 +209,9 @@ class CP_Translation {
 	public function translation_page() {
 		global $CP_Field;
 		
-		$current_tab = 'general';
+		$static_texts = $this->get_static_texts();
+		ksort($static_texts);
+		$current_tab = key($static_texts);
 		if (isset($_GET['tab'])) {
 			$current_tab = $_GET['tab'];
 		}
@@ -224,7 +226,6 @@ class CP_Translation {
 
 		echo '</h2>';
 
-		$static_texts = $this->get_static_texts();
 
 		echo '<ul class="subsubsub">';
 		foreach ($static_texts as $key => $static_text) {
