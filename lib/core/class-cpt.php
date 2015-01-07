@@ -29,19 +29,6 @@ class CP_Cpt {
 	 */
 	public function __construct() {
 
-		// initialize the custom post types
-		$this->_init();
-	}
-
-	/**
-	 * Initiate the theme
-	 *
-	 * @access type public
-	 * @return type mixed returns possible errors
-	 * @author Piotr Soluch
-	 */
-	public function _init() {
-
 		if (isset(CP::$config['cpt'])) {
 			$this->cpt = CP::$config['cpt'];
 
@@ -113,6 +100,11 @@ class CP_Cpt {
 		$settings = $cpt['settings'];
 		$settings['supports'] = $supports;
 		$settings['labels'] = $cpt['labels'];
+		
+		if ( ! count($settings['supports']) ) {
+			unset($settings['supports']);
+			$settings['supports'] = false;
+		}
 
 		// register cpt
 		register_post_type(
