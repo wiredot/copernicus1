@@ -216,7 +216,11 @@ class CP_Field {
 
 		$field['options'] = $options;
 
-		return $this->_get_select($field);
+		if (isset($field['multiple']) && $field['multiple']) {
+			return $this->_get_checkbox($field);
+		} else {
+			return $this->_get_select($field);
+		}
 	}
 
 	private function _get_user_role($field) {
@@ -255,7 +259,7 @@ class CP_Field {
 		if (isset($field['multiple']) && $field['multiple']) {
 			return $this->_get_checkbox($field);
 		} else {
-			return $this->_get_radio($field);
+			return $this->_get_select($field);
 		}
 	}
 
@@ -274,7 +278,7 @@ class CP_Field {
 		if (isset($field['multiple']) && $field['multiple']) {
 			return $this->_get_checkbox($field);
 		} else {
-			return $this->_get_radio($field);
+			return $this->_get_select($field);
 		}
 	}
 

@@ -86,14 +86,16 @@ To remove this comment, please support us and upgrade to SiteFlow Pro.
     display: inline-block;
     width: 100%;
     min-width: 484px; }
-  .cp_meta_box.field_checkbox span.clm, .cp_meta_box.field_radio span.clm, .cp_meta_box.field_user_role span.clm, .cp_meta_box.field_user span.clm, .cp_meta_box.field_taxonomy span.clm {
+  .cp_meta_box.field_checkbox span.clm, .cp_meta_box.field_radio span.clm, .cp_meta_box.field_user_role span.clm, .cp_meta_box.field_user span.clm, .cp_meta_box.field_taxonomy span.clm, .cp_meta_box.field_post_link span.clm {
     width: 20%;
     display: inline-block;
     vertical-align: top; }
-  .cp_meta_box.field_checkbox ul, .cp_meta_box.field_radio ul, .cp_meta_box.field_user_role ul, .cp_meta_box.field_user ul, .cp_meta_box.field_taxonomy ul {
+  .cp_meta_box.field_checkbox ul, .cp_meta_box.field_radio ul, .cp_meta_box.field_user_role ul, .cp_meta_box.field_user ul, .cp_meta_box.field_taxonomy ul, .cp_meta_box.field_post_link ul {
     display: inline-block;
-    width: 70%;
-    margin: 0; }
+    width: 65%;
+    margin: 0 0 0 5%; }
+    .cp_meta_box.field_checkbox ul label, .cp_meta_box.field_radio ul label, .cp_meta_box.field_user_role ul label, .cp_meta_box.field_user ul label, .cp_meta_box.field_taxonomy ul label, .cp_meta_box.field_post_link ul label {
+      width: auto; }
 
 .cp-files {
   border: 1px solid #ccc;
