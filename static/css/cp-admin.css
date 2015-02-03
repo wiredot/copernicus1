@@ -98,7 +98,10 @@ To remove this comment, please support us and upgrade to SiteFlow Pro.
 .cp-files {
   border: 1px solid #ccc;
   padding: 10px;
-  border-radius: 3px; }
+  border-radius: 3px;
+  display: inline-block;
+  width: 70%;
+  margin: 0; }
   .cp-files div {
     border: 1px solid #ddd;
     padding: 10px;
