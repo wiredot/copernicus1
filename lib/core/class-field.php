@@ -147,6 +147,7 @@ class CP_Field {
 
 	private function _get_editor($field) {
 		ob_start();
+		$field['attributes']['textarea_name'] = $field['field_name'];
 		wp_editor($field['value'], $field['field_id'], $field['attributes']);
 		return ob_get_clean();
 	}

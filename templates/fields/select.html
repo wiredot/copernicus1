@@ -1,11 +1,11 @@
 {if isset($field.multiple) && $field.multiple}
-<select name="{$field.field_name}[]" id="{$field.field_id}" multiple="multiple" size="{count($field.options)}">
+<select name="{$field.field_name}[]" id="{$field.field_id}" multiple="multiple" size="{count($field.options)}"{if isset($field.attributes.class) && $field.attributes.class} class="{$field.attributes.class}"{/if}>
 	{foreach from=$field.options item=option key=k}
 	<option value="{$k}"{if in_array($k, $field.value)} selected="selected"{/if}>{$option}</option>
 	{/foreach}
 </select>
 {else}
-<select name="{$field.field_name}" id="{$field.field_id}">
+<select name="{$field.field_name}" id="{$field.field_id}"{if isset($field.attributes.class) && $field.attributes.class} class="{$field.attributes.class}"{/if}>
 	<option value="">-- select --</option>
 	{foreach from=$field.options item=option key=k}
 	<option value="{$k}"{if $k == $field.value} selected="selected"{/if}>{$option}</option>

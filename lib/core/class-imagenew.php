@@ -32,28 +32,31 @@ class CP_Imagenew {
 		$sizes = $this->_get_image_sizes();
 
 		preg_match('/wp-image-([0-9]+)/', $theimage, $attachment);
-		$attachment_id = $attachment[1];
+		if (isset($attachment[1])) {
+			$attachment_id = $attachment[1];
+			$classes_array = array();
+			preg_match('/class="([0-9a-z A-Z\-]+)"/', $theimage, $classes);
+			if (isset($classes[1])) {
+				$classes_array = explode(' ', $classes[1]);
+			}
 
-		$classes_array = array();
-		preg_match('/class="([0-9a-z A-Z\-]+)"/', $theimage, $classes);
-		if (isset($classes[1])) {
-			$classes_array = explode(' ', $classes[1]);
+			$alt = '';
+			preg_match('/alt="([0-9a-z A-Z\-]+)"/', $theimage, $alt);
+			if (isset($alt[1])) {
+				$alt = $alt[1];
+			}
+
+			$size = $this->_find_matching_size($classes_array, $sizes);
+
+			if ( ! $size ) {
+				return $theimage;
+			}
+
+			$new_image = new CP_Imagenew($attachment_id, array('class'=>$classes_array, 'alt'=>$alt));
+			return $new_image->get_image_tag('inline');
 		}
 
-		$alt = '';
-		preg_match('/alt="([0-9a-z A-Z\-]+)"/', $theimage, $alt);
-		if (isset($alt[1])) {
-			$alt = $alt[1];
-		}
-
-		$size = $this->_find_matching_size($classes_array, $sizes);
-
-		if ( ! $size ) {
-			return $theimage;
-		}
-
-		$new_image = new CP_Imagenew($attachment_id, array('class'=>$classes_array, 'alt'=>$alt));
-		return $new_image->get_image_tag('inline');
+		return $image;
 	}
 
 	public function get_image_tag($config_id) {

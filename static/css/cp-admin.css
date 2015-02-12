@@ -39,6 +39,8 @@ To remove this comment, please support us and upgrade to SiteFlow Pro.
     padding: 10px;
     -webkit-border-radius: 3px;
     border-radius: 3px; }
+    .cp-langs > .langs_list .wp-editor-wrap {
+      width: 100%; }
     .cp-langs > .langs_list > div {
       display: none; }
       .cp-langs > .langs_list > div.active {
@@ -84,7 +86,7 @@ To remove this comment, please support us and upgrade to SiteFlow Pro.
     margin-top: 26px; }
   .cp_meta_box .wp-editor-wrap {
     display: inline-block;
-    width: 100%;
+    width: 75%;
     min-width: 484px; }
   .cp_meta_box.field_checkbox span.clm, .cp_meta_box.field_radio span.clm, .cp_meta_box.field_user_role span.clm, .cp_meta_box.field_user span.clm, .cp_meta_box.field_taxonomy span.clm, .cp_meta_box.field_post_link span.clm {
     width: 20%;

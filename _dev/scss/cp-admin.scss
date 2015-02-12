@@ -48,6 +48,10 @@
 		padding: 10px;
 		-webkit-border-radius: 3px;
 		border-radius: 3px;
+
+		.wp-editor-wrap {
+			width: 100%;
+		}
 		
 		> div {
 			display: none;
@@ -124,10 +128,9 @@
 		margin-top: 26px;
 	}
 	
-
 	.wp-editor-wrap {
 		display: inline-block;
-		width: 100%;
+		width: 75%;
 		min-width: 484px;
 	}
 	
