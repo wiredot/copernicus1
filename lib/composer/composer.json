@@ -1,0 +1,7 @@
+{
+    "require": {
+        "kriswallsmith/assetic": "dev-master",
+		"lmammino/jsmin4assetic": "dev-master",
+		"natxet/CssMin": "dev-master"
+    }
+}
