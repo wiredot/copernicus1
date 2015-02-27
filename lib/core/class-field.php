@@ -270,7 +270,7 @@ class CP_Field {
 		$options = array();
 		if (is_array($terms)) {
 			foreach ($terms AS $term) {
-				$options[$term->term_taxonomy_id] = $term->name;
+				$options[$term->term_id] = $term->name;
 			}
 		}
 
