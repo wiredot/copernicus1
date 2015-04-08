@@ -19,7 +19,9 @@ class CP {
 /* -------------- methods -------------- */	
 	
 	public static function init() {
-		session_start();
+		if(session_id() == '') {
+     		session_start(); 
+		}
 
 		// init folders
 		self::init_directories();

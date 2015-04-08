@@ -11,7 +11,7 @@
 
 // define path to the plugin
 define( 'CP_PATH', dirname( __FILE__ ) );
-define( 'CP_URL', WP_CONTENT_URL.'/plugins/copernicus' );
+define( 'CP_URL', plugin_dir_url( __FILE__ ) );
 
 // main class file path
 $core_class_filename = CP_PATH . '/lib/core/class-copernicus.php';

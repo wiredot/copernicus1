@@ -113,12 +113,12 @@ class CP_Admin {
 	public function load_js() {
 		
 		// load main admin js file
-		wp_register_script('cp_admin', CP_URL . '/static/js/cp-admin.js', array('jquery','jquery-ui-core', 'jquery-ui-sortable'), $this->theme['version'], 1);
+		wp_register_script('cp_admin', CP_URL . 'static/js/cp-admin.js', array('jquery','jquery-ui-core', 'jquery-ui-sortable'), $this->theme['version'], 1);
 		wp_enqueue_script('cp_admin');
 	}
 	
 	public function load_css() {
-		wp_register_style('cp_admin', CP_URL . '/static/css/cp-admin.css', '', $this->theme['version'], 'all');
+		wp_register_style('cp_admin', CP_URL . 'static/css/cp-admin.css', '', $this->theme['version'], 'all');
 		wp_enqueue_style('cp_admin');
 	}
 	
