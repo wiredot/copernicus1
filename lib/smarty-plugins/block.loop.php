@@ -81,7 +81,7 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 
 function show_pagination($pages = 0) {
 	$pagination = '';
-
+	$keyword=$_GET['s'];
 	$page_url = $_SERVER['REQUEST_URI'];
 	$page_url = preg_replace('/\/page\/[0-9]+\//', '/', $page_url);
 
@@ -94,7 +94,7 @@ function show_pagination($pages = 0) {
 		$pagination.= '<ul class="pagination">';
 
 		if ($current_page > 1) {
-			$pagination.= '<li><a href="'.$page_url.'"><<</a></li>';
+			$pagination.= '<li><a href="/page/'.($current_page-1).'/?s='.$keyword.'"><<</a></li>';
 		}
 
 		for ($i=0; $i < $pages; $i++) {
@@ -106,7 +106,7 @@ function show_pagination($pages = 0) {
 				$pagination.= '>1</a></li>';
 			}
 			else {
-				$pagination.= '<li><a href="'.$page_url.'page/'.($i+1).'/"';
+				$pagination.= '<li><a href="/page/'.($i+1).'/?s='.$keyword.'"';
 				if ($current_page == ($i+1)) {
 					$pagination.= ' class="active"';
 				}
@@ -115,7 +115,7 @@ function show_pagination($pages = 0) {
 		}
 
 		if ($current_page < $pages) {
-			$pagination.= '<li><a href="'.$page_url.'page/'.($current_page+1).'/">>></a></li>';
+			$pagination.= '<li><a href="/page/'.($current_page+1).'/?s='.$keyword.'">>></a></li>';
 		}
 
 		$pagination.= '</ul>';

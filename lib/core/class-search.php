@@ -39,11 +39,11 @@ class CP_Search {
 			return $where;
 		}
 		
-		$where = "AND wp_posts.post_status = 'publish'";
+		$where = "AND post_status = 'publish'";
 		// post types
 		$post_types = $CP_Cpt->get_post_types();
 
-		$where.= " AND wp_posts.post_type IN('post', 'page'";
+		$where.= " AND post_type IN('post', 'page'";
 		foreach ($post_types as $type) {
 			$where.= ", '".$type."'";
 		}
@@ -52,23 +52,28 @@ class CP_Search {
 		// meta fields
 		$fields = $CP_Mb->get_meta_box_fields();
 		$where.= " AND (";
+		$fieldsItems = count($fields);
+		$j = 0;
 		foreach ($fields as $key => $type) {
-			
+			$typeItems = count($type);
+			$i = 0;
 			foreach ($type as $tkey => $type_field) {
-				$where.= " (SELECT count(*) FROM ".$wpdb->postmeta." WHERE post_id = wp_posts.ID AND meta_key = '".$type_field."' AND meta_value LIKE '%".$term."%') > 0 ";
-				if ($tkey != end(array_keys($type))) {
+				
+				$where.= " (SELECT count(*) FROM ".$wpdb->postmeta." WHERE post_id = ID AND meta_key = '".$type_field."' AND meta_value LIKE '%".$term."%') > 0 ";
+				
+				if(++$i != $typeItems) {
 					$where.= ' OR ';
 					$where.= "\n";
 				}
 			}
 			
-			if ($key != end(array_keys($fields))) {
+			if(++$j != $fieldsItems) {
 				$where.= ' OR ';
 				$where.= "\n\n";
 			}
 		}
 
-		$where.= " OR wp_posts.post_title LIKE '%".$term."%'";
+		$where.= " OR post_title LIKE '%".$term."%'";
 
 		$where.= ")";
 
