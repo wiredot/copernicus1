@@ -239,6 +239,8 @@ class CP_Imagenew {
 		return null;
 	}
 
+	// ------------------------------------------------------------ SETTERS
+
 	private function _set_attachment_id($attachment_id) {
 		$this->attachment_id = $attachment_id;
 	}
