@@ -87,7 +87,7 @@ class CP_Image {
 
 			$file_url = $upload_dir['baseurl'].'/'.$this_img['file'];
 		}
-		else {
+		else if(isset($attachment['file'])) {
 			$file_url = '';
 			$newfilename = wp_unique_filename( $upload_dir['basedir'].'/'.dirname($attachment['file']), basename($attachment['file']) );
 
@@ -119,12 +119,16 @@ class CP_Image {
 				// do something with debug/error messages
 				//echo 'Failed:<pre>'.$this->phpThumb->fatalerror."\n\n".implode("\n\n", $this->phpThumb->debugmessages).'</pre>';
 			}
+		} else {
+			return null;
 		}
 		
-		if (isset($params['link']) && $params['link']) 
+		if (isset($params['link']) && $params['link']) {
 			return $file_url;
-		else 
+		}
+		else {
 			return '<img src="'.$file_url.'"'.$img_attributes.' />';
+		}
 	}
 	
 	private function get_attachment_thumbnails($attachment_id) {

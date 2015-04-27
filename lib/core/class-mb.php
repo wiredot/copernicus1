@@ -410,23 +410,25 @@ class CP_Mb {
 		$group_values = ( maybe_unserialize($values[$field['id']]));
 
 		$groups = '';
-		foreach ($group_values AS $group_key => $group_value) {
+		if (isset($group_values)) {
+			foreach ($group_values AS $group_key => $group_value) {
 
-			if (isset($field['fields'])) {
-				
-				$fields = '';
-				foreach ($field['fields'] as $key => $group_field) {
-
-					$group_field['group_name'] = $field['id'];
-					$group_field['group_item'] = $group_key;
-					$group_field['group_field'] = $group_field['id'];
+				if (isset($field['fields'])) {
 					
-					$fields.= $this->meta_box_field($group_field, $group_values[$group_key]);
+					$fields = '';
+					foreach ($field['fields'] as $key => $group_field) {
+
+						$group_field['group_name'] = $field['id'];
+						$group_field['group_item'] = $group_key;
+						$group_field['group_field'] = $group_field['id'];
+						
+						$fields.= $this->meta_box_field($group_field, $group_values[$group_key]);
+					}
 				}
+				$CP_Smarty->smarty->assign('group_key', $group_key);
+				$CP_Smarty->smarty->assign('fields', $fields);
+				$groups.= $CP_Smarty->smarty->fetch('mb/group.html');
 			}
-			$CP_Smarty->smarty->assign('group_key', $group_key);
-			$CP_Smarty->smarty->assign('fields', $fields);
-			$groups.= $CP_Smarty->smarty->fetch('mb/group.html');
 		}
 
 		$CP_Smarty->smarty->assign('groups', $groups);
