@@ -233,15 +233,15 @@ function cp_metaboxes_init($) {
 		var key = 0;
 		$(this).prev('.cp-mb-group-wrapper').children('fieldset').each(function(index, el) {    
 			var thisKey = $(el).attr('data-key');
-			if (thisKey > key) {
+			if (Number(thisKey) > Number(key)) {
 				key = thisKey;
 			}
 		});
 		
 		var groupId = $(this).attr('id').replace('group-', '');
-		console.log(key);
+		//console.log(key);
 		var newKey = (key*1+1*1);
-		console.log(newKey);
+		//console.log(newKey);
 		var button = $(this);
 
 		$.ajax({
