@@ -54,7 +54,7 @@ class CP_Umb {
 			foreach ($this->umb AS $umb) {
 
 				// if meta box is active
-				if ($umb['settings']['active']) {
+				if ( $umb['active'] && isset($umb['fields']) && is_array($umb['fields']) ) {
 					// create meta box groups
 					$this->add_user_meta_box_group($umb, $user->ID);
 				}
@@ -73,16 +73,12 @@ class CP_Umb {
 	public function add_user_meta_box_group($umb, $user_id) {
 		global $CP_Field;
 		
-		if (!isset($umb['fields']) || !is_array($umb['fields'])) {
-			return null;
-		}
-
 		$return = '<table class="form-table"><tbody>';
 
-		foreach ($umb['fields'] as $field) {
+		foreach ($umb['fields'] as $key => $field) {
 			$return.= '<tr><th>';
-			$return.= '<label for="cp_user_meta_'.$field['id'].'">'.$field['name'].'</label></th><td>';
-			$return.= $CP_Field->show_field( $field, 'cp_user_meta_'.$field['id'], 'cp_user_meta_'.$field['id'], get_user_meta( $user_id, $field['id'], true ) );
+			$return.= '<label for="cp_user_meta_'.$key.'">'.$field['name'].'</label></th><td>';
+			$return.= $CP_Field->show_field( $field, 'cp_user_meta_'.$key, 'cp_user_meta_'.$key, get_user_meta( $user_id, $key, true ) );
 			$return.= '</td></tr>';
 		}
 
@@ -102,19 +98,20 @@ class CP_Umb {
 			foreach ($this->umb AS $umb) {
 
 				// if meta box is active
-				if ($umb['settings']['active']) {
+				if ($umb['active'] && isset($umb['fields']) && is_array($umb['fields'])) {
 
-					if (isset($umb['fields']) && is_array($umb['fields'])) {
-						
-						foreach ($umb['fields'] as $field) {
+					foreach ($umb['fields'] as $key => $field) {
 
-							if (isset($_POST['cp_user_meta_'.$field['id']])) {
-								update_user_meta( $user_id, $field['id'], $_POST['cp_user_meta_'.$field['id']] );
-							}
+						if (isset($_POST['cp_user_meta_'.$key])) {
+							update_user_meta( $user_id, $key, $_POST['cp_user_meta_'.$key] );
+						} else {
+							delete_user_meta( $user_id, $key );
 						}
 					}
 				}
 			}
 		}
 	}
+
+// class end
 }

@@ -335,10 +335,6 @@ class CP_Mb {
 		$CP_Smarty->smarty->assign('field', $field);
 		return $CP_Smarty->smarty->fetch('mb/row.html');
 
-
-
-
-
 		$return = '';
 		$return.= '<div class="cp_meta_box field_' . $field['type'] . '">';
 		$return.= '<label for="'.$field['id'] .'">' . $field['name'];
