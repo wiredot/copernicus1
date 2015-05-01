@@ -32,20 +32,7 @@ class CP_Alv {
 	 * @author Piotr Soluch
 	 */
 	public function __construct() {
-		// initialize the custom post types
-		$this->_init();
-	}
-
-	/**
-	 * Initiate the theme
-	 *
-	 * @access type public
-	 * @return type mixed returns possible errors
-	 * @author Piotr Soluch
-	 */
-	public function _init() {
-
-		if (isset(CP::$config['alv'])) {
+		if ( is_admin() && isset(CP::$config['alv']) && is_array(CP::$config['alv'])) {
 			$this->alv = CP::$config['alv'];
 			
 			if (isset (CP::$config['mb'])) {
@@ -53,17 +40,14 @@ class CP_Alv {
 				// get meta box configuration
 				$this->mb = CP::$config['mb'];
 			}
-
-			if (is_admin()) {
 			
-				// Modify the title bars
-				$this->modify_list_views();
-				
-				add_action('manage_posts_custom_column', array($this, 'custom_columns'), 10, 2);
-				add_action('manage_pages_custom_column', array($this, 'custom_columns'), 10, 2);
-				
-				add_filter('pre_get_posts', array($this, 'set_list_views_order'));
-			}
+			// Modify the title bars
+			$this->modify_list_views();
+			
+			add_action('manage_posts_custom_column', array($this, 'custom_columns'), 10, 2);
+			add_action('manage_pages_custom_column', array($this, 'custom_columns'), 10, 2);
+			
+			add_filter('pre_get_posts', array($this, 'set_list_views_order'));
 		}
 	}
 
@@ -76,23 +60,19 @@ class CP_Alv {
 	 */
 	public function modify_list_views() {
 
-		// if there are alvs
-		if (is_array($this->alv)) {
+		// for each alv
+		foreach ($this->alv AS $alv) {
 
-			// for each alv
-			foreach ($this->alv AS $alv) {
-
-				// if alv is active
-				if ($alv['settings']['active']) {
+			// if alv is active
+			if ($alv['settings']['active']) {
+				
+				if (isset($_GET['post_type']) && $_GET['post_type'] == $alv['settings']['post_type']) {
 					
-					if (isset($_GET['post_type']) && $_GET['post_type'] == $alv['settings']['post_type']) {
-						
-						$this->alv_fields = $alv['fields'];
-						$this->get_mb_fields($alv['settings']['post_type']);
+					$this->alv_fields = $alv['fields'];
+					$this->get_mb_fields($alv['settings']['post_type']);
 
-						// create alv
-						add_filter('manage_edit-' . $alv['settings']['post_type'] . '_columns', array($this, 'modify_list_view'));
-					}
+					// create alv
+					add_filter('manage_edit-' . $alv['settings']['post_type'] . '_columns', array($this, 'modify_list_view'));
 				}
 			}
 		}
