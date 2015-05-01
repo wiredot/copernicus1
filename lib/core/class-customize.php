@@ -8,21 +8,28 @@
  */
 
 class CP_Customize {
-  private $sections = array();
-  private $settings = array();
+	private $sections = array();
+	private $settings = array();
 
-	function __construct() {
+	/**
+	 * 
+	 */
+	public function __construct() {
 
 		if (isset(CP::$config['customize_section'])) {
-		  $this->sections = CP::$config['customize_section'];
+			$this->sections = CP::$config['customize_section'];
 		}
+
 		if (isset(CP::$config['customize_settings'])) {
-		  $this->settings = CP::$config['customize_settings'];
+			$this->settings = CP::$config['customize_settings'];
 		}
 
 		$this->_init();
 	}
 	
+	/**
+	 * 
+	 */
 	public function _init() {
 		// Setup the Theme Customizer settings and controls...
 		
@@ -36,6 +43,9 @@ class CP_Customize {
 		add_action( 'customize_preview_init' , array( $this , 'live_preview' ) );
 	}
 
+	/**
+	 * 
+	 */
   	public function register_sections( $wp_customize ) {
 		foreach ($this->sections as $key => $section) {
 			$wp_customize->add_section( $key, 
@@ -73,6 +83,9 @@ class CP_Customize {
 		}
 	}
 
+	/**
+	 * 
+	 */
    	public function header_output() {
 		if (count($this->settings)) {
 			echo '<style type="text/css">';
@@ -94,6 +107,9 @@ class CP_Customize {
 		}
    	}
 
+   	/**
+	 * 
+	 */
 	public static function live_preview() {
 		global $CP_Customize;
 		$script = $CP_Customize->get_js();
@@ -124,9 +140,12 @@ class CP_Customize {
 		   '1.3', // Define a version (optional) 
 		   true // Specify whether to put in footer (leave this true)
 		);
-   }
+	}
 
-	function get_js() {
+	/**
+	 * 
+	 */
+	public function get_js() {
 		$return = "( function( $ ) {";
 		foreach ($this->settings as $key => $settings) {
 			if (isset($settings['css'])) {
@@ -200,7 +219,10 @@ class CP_Customize {
 		";
 	}
 
-   function hex2rgb($hex) {
+	/**
+	 * 
+	 */
+	public function hex2rgb($hex) {
 		$color = str_replace('#', '', $hex);
 
 		//Check if color has 6 or 3 characters and get values
@@ -216,7 +238,7 @@ class CP_Customize {
 		$rgb = array_map('hexdec', $hex);
 
 		return implode(",",$rgb);
-   }
+	}
 
 // class end
 }
