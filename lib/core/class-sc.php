@@ -38,11 +38,12 @@ class CP_Sc {
 	 * @author Piotr Soluch
 	 */
 	public function _init() {
-		
 		add_shortcode( 'loop', array($this,'sh_loop') );
-		
 	}
 	
+	/**
+	 * 
+	 */
 	public function sh_loop($atts, $content = null) {
 		global $CP_Loop;
 		
@@ -60,14 +61,10 @@ class CP_Sc {
 
 			$new_atts = json_decode($content, true);
 			
-		//	new dBug($content);
-		//	new dBug($new_atts);
 			global $CP_Loop;
 			$loop['args'] = $CP_Loop->merge_attributes($new_atts, $loop['args']);
 			
 		}
-	//	new dBug($atts);
-		
 		
 		foreach ($atts as $key => $att) {
 			if (preg_match('/args_[a-z_]+/', $key, $matches)) {
@@ -77,14 +74,16 @@ class CP_Sc {
 			else
 				$loop[$key] = $att;
 		}
-	//	new dBug($loop);
 		
 		return $CP_Loop->show_loop($loop);
 	}
 	
-	function process_content($content){
+	/**
+	 * 
+	 */
+	public function process_content($content){
 		$attr = array();
-		
-		
 	}
+
+// class end
 }
