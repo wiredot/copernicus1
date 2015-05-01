@@ -1,43 +1,126 @@
 <?php
 
+use Assetic\AssetWriter;
+use Assetic\AssetManager;
+use Assetic\Asset\AssetCollection;
+use Assetic\Asset\FileAsset;
+use Assetic\Filter\CssMinFilter as CssMinFilter;
+
 class CP_Css {
 	
-	function __construct() {
-		$this->_init();
+	/**
+	 * 
+	 */
+	public function __construct() {
+		add_filter('wp_enqueue_scripts', array($this,'add_css_files'));
 	}
 
-	private function _init() {
-		// add css files
-		add_filter('wp_enqueue_scripts', array($this,'add_css'));
-	}
+	/**
+	 * 
+	 */
+	public function add_css_files() {
 
-	public static function add_css() {
-		global $wp_styles;
-		
-		$theme = $ct = wp_get_theme();
-		$themeVersion = $theme->get('Version');
+		if ( isset(CP::$config['css']) && CP::$config['css'] ) {
 
-		if (isset(CP::$config['css']) && CP::$config['css']) {
-			
-			foreach (CP::$config['css'] as $css) {
-				
-				if ( (is_admin() && $css['admin']) || (!is_admin() && $css['front']) ) {
-
-					if (!isset($css['version']) || !$css['version']) {
-						$theme = $ct = wp_get_theme();
-						$css['version'] = $themeVersion;
-					}
-
-					if (!$css['url'])
-						$css['url'] = get_bloginfo('stylesheet_directory');
-
-					wp_register_style($css['name'], $css['url'] . '/' . $css['filename'], $css['dependencies'], $css['version'], $css['media']);
-					if ($css['condition'])
-						$GLOBALS['wp_styles']->add_data($css['name'], 'conditional', $css['condition']);
-					wp_enqueue_style($css['name']);
-				}
-
+			foreach ( CP::$config['css'] as $key => $css ) {
+				$this->get_css_file($key, $css);
 			}
 		}
 	}
+
+	/**
+	 * 
+	 */
+	public function get_css_file($name, $css) {
+		if (isset($css['url']) && $css['url']) {
+			$link = $css['url'];
+		} else if(isset($css['links']) && $css['links']) {
+			$link = $this->combine_css_files($name, $css['links']);
+		}
+
+		$this->add_css($name, $link, $css['dependencies'], '', $css['media']);
+	}
+
+	/**
+	 * 
+	 */
+	public function combine_css_files($name, $scripts) {
+		$update_css_details = 0;
+		$css_details = $this->get_css_details($name);
+		$css_details = array();
+		$css_assets = array();
+
+		$all_checksums = '';
+
+		$script_dir = get_template_directory();
+
+		foreach ($scripts as $key => $script) {
+			$script_file = $script_dir.'/'.$script;
+			if (file_exists($script_file)) {
+				$file_checksum = md5_file($script_file);
+				
+				if ( ! isset($css_details[$key]) || $css_details[$key] != $file_checksum ) {
+					$update_css_details = 1;
+				}
+				
+				$css_details[$key] = $file_checksum;
+				$all_checksums.= $file_checksum;
+				$css_assets[] = new FileAsset($script_file);
+			}
+		}
+
+		$new_css_file = $name.'-'.md5($all_checksums).'.css';
+		$combined_css = content_url().'/cache/css/'.$new_css_file;
+
+		if ($update_css_details || ! file_exists(WP_CONTENT_DIR.'/cache/css/'.$new_css_file)) {
+			if (WP_DEBUG) {
+				$css = new AssetCollection(
+					$css_assets
+				);
+			} else {
+				$css = new AssetCollection(
+					$css_assets,
+				array(
+				    new CssMinFilter(),
+				));
+			}
+			
+			$css->setTargetPath($new_css_file);
+
+			$am = new AssetManager();
+			$am->set('css', $css);
+
+			$writer = new AssetWriter(WP_CONTENT_DIR.'/cache/css');
+			$writer->writeManagerAssets($am);
+
+			$this->update_css_details($name, $css_details);
+		}
+
+		return $combined_css;
+	}
+
+	/**
+	 * 
+	 */
+	public function add_css($name, $file, $dependencies, $version, $media) {
+		wp_register_style($name, $file, $dependencies, $version, $media);
+		wp_enqueue_style($name);
+	}
+
+	/**
+	 * 
+	 */
+	public function get_css_details($name) {
+		$css_details = get_option( 'cp_css_'.$name );
+		return $css_details;
+	}
+
+	/**
+	 * 
+	 */
+	public function update_css_details($name, $css_details) {
+		update_option( 'cp_css_'.$name, $css_details );
+	}
+
+// class end
 }

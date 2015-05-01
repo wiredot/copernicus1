@@ -29,7 +29,7 @@ class CP_Cpt {
 	 */
 	public function __construct() {
 
-		if (isset(CP::$config['cpt'])) {
+		if ( isset(CP::$config['cpt']) && is_array(CP::$config['cpt']) ) {
 			$this->cpt = CP::$config['cpt'];
 
 			// create custom post type
@@ -46,16 +46,11 @@ class CP_Cpt {
 	 * @author Piotr Soluch
 	 */
 	public function create_post_types() {
+		// for each cpt
+		foreach ($this->cpt AS $cpt) {
 
-		// if there are cpts
-		if (is_array($this->cpt)) {
-
-			// for each cpt
-			foreach ($this->cpt AS $cpt) {
-
-				// if cpt is active
-				if ($cpt['settings']['active'])
-
+			// if cpt is active
+			if ($cpt['settings']['active']) {
 				// create cpt
 				$this->create_post_type($cpt);
 			}
@@ -130,6 +125,9 @@ class CP_Cpt {
 		return 0;
 	}
 	
+	/**
+	 * 
+	 */
 	public function get_post_types() {
 		$post_types = array();
 		
@@ -142,6 +140,9 @@ class CP_Cpt {
 		return $post_types;
 	}
 
+	/**
+	 * 
+	 */
 	public function add_menu_icons_styles() {
 		echo '<style type="text/css" media="all">';
 		if (is_array($this->cpt)) {
@@ -150,23 +151,28 @@ class CP_Cpt {
 			foreach ($this->cpt AS $cpt) {
 
 				// if cpt is active
-				if (isset($cpt['settings']['menu_icon_id']) && $cpt['settings']['menu_icon_id'])
-
-				echo "#adminmenu .menu-icon-".$cpt['settings']['name']." div.wp-menu-image:before {content: '\\f".$cpt['settings']['menu_icon_id']."';}";
+				if (isset($cpt['settings']['menu_icon_id']) && $cpt['settings']['menu_icon_id']) {
+					echo "#adminmenu .menu-icon-".$cpt['settings']['name']." div.wp-menu-image:before {content: '\\f".$cpt['settings']['menu_icon_id']."';}";
+				}
 			}
 		}
 		echo "</style>";
 	}
 
+	/**
+	 * 
+	 */
 	public function is_supporting($post_type, $feature) {
 
 		foreach (CP::$config['cpt'] as $key => $cpt) {
 			
 			if ($cpt['settings']['name'] == $post_type) {
-				if (isset($cpt['support'][$feature]) && $cpt['support'][$feature])
+				if (isset($cpt['support'][$feature]) && $cpt['support'][$feature]) {
 					return true;
-				else
+				}
+				else {
 					return false;
+				}
 			}
 		}
 
