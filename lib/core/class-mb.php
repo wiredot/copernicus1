@@ -52,8 +52,11 @@ class CP_Mb {
 		}
 	}
 
-// -------------------- MAIN BOX --------------------	
+	// -------------------- MAIN BOX --------------------	
 
+	/**
+	 * 
+	 */
 	public function add_main_box() {
 		global $post, $CP_Language, $CP_Cpt;
 
@@ -198,7 +201,7 @@ class CP_Mb {
 		echo $return;
 	}
 
-// -------------------- META BOXES --------------------	
+	// -------------------- META BOXES --------------------	
 
 	/**
 	 * Start adding meta boxes
@@ -395,8 +398,11 @@ class CP_Mb {
 		return $return;
 	}
 
-// -------------------- GROUPS --------------------	
+	// -------------------- GROUPS --------------------	
 
+	/**
+	 * 
+	 */
 	private function meta_box_group($field, $values) {
 		global $CP_Language, $CP_Field, $CP_Smarty;
 
@@ -485,6 +491,9 @@ class CP_Mb {
 		return $return;
 	}
 
+	/**
+	 * 
+	 */
 	public function add_group() {
 		global $CP_Smarty;
 		
@@ -517,6 +526,9 @@ class CP_Mb {
 		CP::ajax_response($response);
 	}
 
+	/**
+	 * 
+	 */
 	public function get_group($group_id) {
 		foreach (CP::$config['mb'] as $key => $mb) {
 			
@@ -530,8 +542,11 @@ class CP_Mb {
 		return null;
 	}
 
-// -------------------- SAVING --------------------	
+	// -------------------- SAVING --------------------	
 	
+	/**
+	 * 
+	 */
 	public function save_main_box() {
 		global $post, $post_id, $CP_Language;
 		
@@ -687,8 +702,11 @@ class CP_Mb {
 		}
 	}
 	
-// -------------------- OTHER --------------------
+	// -------------------- OTHER --------------------
 
+	/**
+	 * 
+	 */
 	public function get_value($field, $value) {
 		
 		switch($field['type']) {
@@ -705,6 +723,9 @@ class CP_Mb {
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	public function get_meta_box_fields() {
 		$fields = array();
 		
