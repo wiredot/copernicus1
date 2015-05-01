@@ -4,12 +4,11 @@ class CP_Template {
 
 	var $templaes = array();
 
-	function __construct() {
+	/**
+	 * 
+	 */
+	public function __construct() {
 		$this->init_templates();
-		$this->_init();
-	}
-	
-	public function _init() {
 		
 		add_action('pre_post_update', array($this, 'save_meta_boxes'), 10, 2);
 
@@ -17,6 +16,9 @@ class CP_Template {
 		add_action('admin_init', array($this, 'add_meta_boxes'));
 	}
 
+	/**
+	 * 
+	 */
 	public function get_template($template_id) {
 		if (isset(CP::$config['template'][$template_id])) {
 			return CP::$config['template'][$template_id];
@@ -25,6 +27,9 @@ class CP_Template {
 		return null;
 	}
 
+	/**
+	 * 
+	 */
 	private function init_templates() {
 		if (isset(CP::$config['template'])) {
 			foreach (CP::$config['template'] as $key => $template) {
@@ -33,6 +38,9 @@ class CP_Template {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	function add_meta_boxes() {
 		global $CP_Mb;
 
@@ -51,6 +59,9 @@ class CP_Template {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	function add_template_field($post, $meta_box) {
 		global $CP_Field;
 
@@ -66,6 +77,9 @@ class CP_Template {
 		echo $CP_Field->get_select($value, '_cp_template', '_cp_template', $values);
 	}
 
+	/**
+	 * 
+	 */
 	public function save_meta_boxes($post_id, $post) {
 		
 		// get post type from post object
