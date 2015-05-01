@@ -17,13 +17,50 @@ function smarty_function_image($params, $template) {
     
     // default params
 	$default_params = array(
+		'size' => null,
 		'id' => null
 	);
     
     // merge default params with the provided ones
 	$params = array_merge($default_params, $params);
 	
-	global $CP_Image;
-	
-	return $CP_Image->image($params);
+	if ( ! $params['id'] ) {
+		$id = get_the_id();
+		if ( ! $id ) {
+			return null;
+		}
+
+		$params['id'] =  get_post_thumbnail_id( $id );
+	}
+
+
+	if ( ! $params['id'] ) {
+		return null;
+	}
+
+	if ( ! isset($params['alt']) ) {
+		$params['alt'] = get_post_meta( $params['id'], '_wp_attachment_image_alt', true );
+	}
+
+	if ( ! isset($params['title']) ) {
+		$params['title'] = get_the_title( $params['id'] );
+	}
+
+	$attributes = array(
+		'alt' => $params['alt'],
+		'title' => $params['title'],
+		'class' => $params['class']
+	);
+
+	$size = $params['size'];
+	$id = $params['id'];
+
+	unset($params['alt']);
+	unset($params['size']);
+	unset($params['class']);
+	unset($params['title']);
+	unset($params['id']);
+
+	$image = new CP_Image($id, $attributes);
+	return $image->get_image_tag($size, $params);
 }
