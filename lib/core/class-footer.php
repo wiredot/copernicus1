@@ -1,15 +1,16 @@
 <?php
 
 class CP_Footer {
-	
+
+	/**
+	 * 
+	 */
 	function __construct() {
-		$this->_init();
 	}
 
-	private function _init() {
-
-	}
-
+	/**
+	 * 
+	 */
 	public function show_footer() {
 		global $CP_Smarty;
 		
@@ -24,4 +25,6 @@ class CP_Footer {
 		
 		echo $footer."\n";
 	}
+
+// class end
 }
