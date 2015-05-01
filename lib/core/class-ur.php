@@ -29,22 +29,6 @@ class CP_Ur {
 	 * @author Piotr Soluch
 	 */
 	public function __construct() {
-
-		// initialize the custom post types
-		$this->_init();
-
-		
-	}
-
-	/**
-	 * Initiate users
-	 *
-	 * @access type public
-	 * @return type mixed returns possible errors
-	 * @author Piotr Soluch
-	 */
-	public function _init() {
-		
 		if (isset (CP::$config['ur'])) {
 			$this->ur = CP::$config['ur'];
 		}
@@ -85,15 +69,23 @@ class CP_Ur {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public function add_user_role($role) {
 		if (!in_array($role['settings']['id'], $this->wp_ur)) {
 			add_role($role['settings']['id'], $role['labels']['name'], array());
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public function remove_user_role($role) {
 		if (in_array($role['settings']['id'], $this->wp_ur)) {
 			remove_role($role['settings']['id']);
 		}
 	}
+
+// class end
 }
