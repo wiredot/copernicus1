@@ -269,4 +269,6 @@ class CP_Alv {
 			}
 		}
 	}
+
+// class end
 }

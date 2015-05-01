@@ -99,4 +99,6 @@ class CP_Admin {
 		unset($array['gallery']);
 		return $array;
 	}
+
+// class end
 }
