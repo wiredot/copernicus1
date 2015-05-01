@@ -1,8 +1,8 @@
 === Plugin Name ===
 Contributors: psoluch
 Tags: framework, template, smarty
-Requires at least: 3.9
-Tested up to: 4.0
+Requires at least: 4.2
+Tested up to: 4.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -66,6 +66,9 @@ To see what Copernicus can do, try one of the demo themes:
 
 
 == Changelog ==
+
+= 1.0.0 =
+* Multiple changes and fixes
 
 = 0.9.8 =
 * [fix] bug in loop block
