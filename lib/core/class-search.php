@@ -6,16 +6,6 @@ class CP_Search {
 	 * 
 	 */
 	public function __construct() {
-		$this->_init();
-
-		// initialize all plugins
-		//$this->init_plugins();
-	}
-
-	/**
-	 * 
-	 */
-	private function _init() {
 		if (isset($_GET['s']) && !is_admin()) {
 
 			//add_filter('post_limits', array($this,'custom_search_limits'));
@@ -31,7 +21,7 @@ class CP_Search {
 	 * @param type $where
 	 * @return type
 	 */
-	function custom_search_where($where) {
+	public function custom_search_where($where) {
 		global $wpdb, $CP_Cpt, $CP_Mb;
 
 		$term = $_GET['s'];
@@ -40,6 +30,7 @@ class CP_Search {
 		}
 		
 		$where = "AND wp_posts.post_status = 'publish'";
+		
 		// post types
 		$post_types = $CP_Cpt->get_post_types();
 
@@ -49,6 +40,7 @@ class CP_Search {
 		}
 		$where.= ")";
 		$where.= "\n\n";
+		
 		// meta fields
 		$fields = $CP_Mb->get_meta_box_fields();
 		$where.= " AND (";
@@ -72,13 +64,15 @@ class CP_Search {
 
 		$where.= ")";
 
-	//	echo $where;
-
 		return($where);
 	}
 
+	/**
+	 * 
+	 */
 	public function custom_search_limits($limit) {
 		return 'LIMIT 99999';
 	}
 
+// class end
 }
