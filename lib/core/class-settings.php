@@ -4,24 +4,22 @@ class CP_Settings {
 
 	private $settings = array();
 
-	function __construct() {
-
-
-		$this->_init();
-	}
-
-	function _init() {
-
+	/**
+	 * 
+	 */
+	public function __construct() {
 		if (isset(CP::$config['settings'])) {
 			$this->settings = CP::$config['settings'];
 
-			//new dBug($this->settings);
 			add_action( 'admin_init', array($this, 'register_settings') );
 			add_action( 'admin_menu', array(&$this, 'admin_menu') );
 		}
 	}
 
-	function register_settings() {
+	/**
+	 * 
+	 */
+	public function register_settings() {
 		if (isset($this->settings)) {
 
 			foreach ($this->settings as $key => $setting) {
@@ -36,7 +34,10 @@ class CP_Settings {
 		}
 	}
 
-	function admin_menu() {
+	/**
+	 * 
+	 */
+	public function admin_menu() {
 		if (isset($this->settings)) {
 
 			foreach ($this->settings as $key => $setting) {
@@ -47,7 +48,10 @@ class CP_Settings {
 		}
 	}
 
-	function template_options_page() {
+	/**
+	 * 
+	 */
+	public function template_options_page() {
 		global $CP_Field;
 
 		if (!isset($_GET['page'])) {
@@ -115,4 +119,6 @@ class CP_Settings {
 		echo '</form>';
 		echo '</div>';
 	}
+
+// class end
 }
