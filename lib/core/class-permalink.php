@@ -28,21 +28,6 @@ class CP_Permalink {
 	 * @author Piotr Soluch
 	 */
 	public function __construct() {
-
-		// initialize the custom post types
-		$this->_init();
-	}
-
-	/**
-	 * Initiate taxonomies
-	 *
-	 * @access type public
-	 * @return type mixed returns possible errors
-	 * @author Piotr Soluch
-	 */
-	public function _init() {
-//remove_filter('template_redirect', 'redirect_canonical');
-
 		add_action('init', array($this, 'generate_rewrite_rules'));
 
 		add_filter('home_url', array($this, 'home_url'));
@@ -60,6 +45,9 @@ class CP_Permalink {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public function home_url($url) {
 		global $CP_Language;
 
@@ -74,7 +62,10 @@ class CP_Permalink {
 		return $url;
 	}
 
-	function generate_rewrite_rules() {
+	/**
+	 * 
+	 */
+	public function generate_rewrite_rules() {
 		global $CP_Language, $wpdb, $wp_query, $wp_rewrite;
 
 		$rules = $wp_rewrite->wp_rewrite_rules();
@@ -115,12 +106,15 @@ class CP_Permalink {
 		}
 	}
 
-	function add_rewrite_tags() {
+	/**
+	 * 
+	 */
+	public function add_rewrite_tags() {
 		global $wp_rewrite;
 	
-	// add rewrite tokens
-	$keytag_token = '%tagggg%';
-	$wp_rewrite->add_rewrite_tag( $keytag_token, '(.+)', 'tagggg=' );
+		// add rewrite tokens
+		$keytag_token = '%tagggg%';
+		$wp_rewrite->add_rewrite_tag( $keytag_token, '(.+)', 'tagggg=' );
 		// if there are rewrite_rules
 		if (is_array($this->rewrite_tag)) {
 
@@ -135,7 +129,10 @@ class CP_Permalink {
 		}
 	}
 
-	function add_rewrite_rules() {
+	/**
+	 * 
+	 */
+	public function add_rewrite_rules() {
 		// if there are rewrite_rules
 		if (is_array($this->rewrite_rule)) {
 
@@ -149,4 +146,6 @@ class CP_Permalink {
 			}
 		}
 	}
+
+// class end
 }
