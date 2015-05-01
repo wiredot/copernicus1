@@ -27,20 +27,6 @@ class CP_Umb {
 	 * @author Piotr Soluch
 	 */
 	public function __construct() {
-
-		// initialize the custom post types
-		$this->_init();
-	}
-
-	/**
-	 * Initiate taxonomies
-	 *
-	 * @access type public
-	 * @return type mixed returns possible errors
-	 * @author Piotr Soluch
-	 */
-	public function _init() {
-		
 		if (isset (CP::$config['umb'])) {
 			$this->umb = CP::$config['umb'];
 			
@@ -84,7 +70,7 @@ class CP_Umb {
 	 * @param $umb array all details of user meta box
 	 * @author Piotr Soluch
 	 */
-	function add_user_meta_box_group($umb, $user_id) {
+	public function add_user_meta_box_group($umb, $user_id) {
 		global $CP_Field;
 		
 		if (!isset($umb['fields']) || !is_array($umb['fields'])) {
@@ -105,6 +91,9 @@ class CP_Umb {
 		echo $return;
 	}
 
+	/**
+	 * 
+	 */
 	public function update_user_meta($user_id) {
 		// if there are meta boxes
 		if (is_array($this->umb)) {
