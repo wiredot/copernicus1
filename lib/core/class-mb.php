@@ -39,7 +39,7 @@ class CP_Mb {
 		add_action('pre_post_update', array($this, 'save_main_box'), 10, 2);
 		
 		// if any meta boxes are configured
-		if (isset (CP::$config['mb'])) {
+		if (isset (CP::$config['mb']) && is_array(CP::$config['mb'])) {
 			
 			// get meta box configuration
 			$this->mb = CP::$config['mb'];
@@ -211,18 +211,15 @@ class CP_Mb {
 	 * @author Piotr Soluch
 	 */
 	public function add_meta_boxes() {
+		// for each meta box
+		foreach ($this->mb AS $key => $mb) {
 
-		// if there are meta boxes
-		if (is_array($this->mb)) {
+			// if meta box is active
+			if ($mb['active']) {
+				// create meta box groups
 
-			// for each meta box
-			foreach ($this->mb AS $mb) {
-
-				// if meta box is active
-				if ($mb['settings']['active']) {
-					// create meta box groups
-					$this->add_meta_box($mb);
-				}
+				$mb['id'] = $key;
+				$this->add_meta_box($mb);
 			}
 		}
 	}
@@ -236,28 +233,28 @@ class CP_Mb {
 	 */
 	public function add_meta_box($mb) {
 
-		if (is_array($mb['settings']['post_type'])) {
-			foreach ($mb['settings']['post_type'] as $post_type) {
+		if (is_array($mb['post_type'])) {
+			foreach ($mb['post_type'] as $post_type) {
 				// add meta group
 				add_meta_box(
-					$mb['settings']['id'], 
-					$mb['settings']['name'], 
+					$mb['id'], 
+					$mb['name'], 
 					array($this, 'add_meta_box_content'), 
 					$post_type, 
-					$mb['settings']['context'],
-					$mb['settings']['priority'], 
+					$mb['context'],
+					$mb['priority'], 
 					$mb
 				);
 			}
 		} else {
 			// add meta group
 			add_meta_box(
-				$mb['settings']['id'], 
-				$mb['settings']['name'], 
+				$mb['id'], 
+				$mb['name'], 
 				array($this, 'add_meta_box_content'), 
-				$mb['settings']['post_type'], 
-				$mb['settings']['context'],
-				$mb['settings']['priority'], 
+				$mb['post_type'], 
+				$mb['context'],
+				$mb['priority'], 
 				$mb
 			);
 		}
@@ -274,9 +271,9 @@ class CP_Mb {
 		$styles = '';
 		$template = '';
 
-		if (isset($meta_box['args']['settings']['template'])) {
-			$template = $meta_box['args']['settings']['template'];
-			echo '<input type="hidden" class="_cp_template_ _cp_template_'.$meta_box['args']['settings']['template'].'">';
+		if (isset($meta_box['args']['template'])) {
+			$template = $meta_box['args']['template'];
+			echo '<input type="hidden" class="_cp_template_ _cp_template_'.$meta_box['args']['template'].'">';
 		}
 
 		// get data from the DB for current post id
@@ -593,8 +590,8 @@ class CP_Mb {
 			// for each field
 			foreach ($this->mb as $meta_box) {
 
-				if (is_array($meta_box['settings']['post_type'])) {
-					foreach ($meta_box['settings']['post_type'] as $post_type) {
+				if (is_array($meta_box['post_type'])) {
+					foreach ($meta_box['post_type'] as $post_type) {
 						// for the post type beeing saved
 						if ($post['post_type'] == $post_type) {
 
@@ -604,7 +601,7 @@ class CP_Mb {
 					}
 				} else {
 					// for the post type beeing saved
-					if ($post['post_type'] == $meta_box['settings']['post_type']) {
+					if ($post['post_type'] == $meta_box['post_type']) {
 
 						// Save all fields in meta box group
 						$this->save_meta_box_fields($meta_box['fields']);
@@ -726,9 +723,9 @@ class CP_Mb {
 		$fields = array();
 		
 		foreach ($this->mb AS $mb) {
-			if ($mb['settings']['active']) {
-				if (!isset($fields[$mb['settings']['post_type']])) {
-					$fields[$mb['settings']['post_type']] = array();
+			if ($mb['active']) {
+				if (!isset($fields[$mb['post_type']])) {
+					$fields[$mb['post_type']] = array();
 				}
 				
 				foreach ($mb['fields'] AS $field) {
@@ -737,7 +734,7 @@ class CP_Mb {
 					if (isset($field['translation']) && $field['translation']) {
 						$fieldName = $field['id'].LANGUAGE_SUFFIX;
 					}
-					$fields[$mb['settings']['post_type']][] = $fieldName;
+					$fields[$mb['post_type']][] = $fieldName;
 				}
 			}
 		}
