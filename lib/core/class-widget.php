@@ -25,20 +25,6 @@ class CP_Widget {
 	 * @author Piotr Soluch
 	 */
 	public function __construct() {
-
-		// initialize the custom post types
-		$this->_init();
-	}
-
-	/**
-	 * Initiate
-	 *
-	 * @access type public
-	 * @return type mixed returns possible errors
-	 * @author Piotr Soluch
-	 */
-	public function _init() {
-		
 		if (isset (CP::$config['widget'])) {
 			$this->widgets = CP::$config['widget'];
 		}
@@ -71,10 +57,12 @@ class CP_Widget {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public function add_widget($widget) {
 		register_sidebar( $widget );
 	}
 
+// class end
 }
-
-?>
