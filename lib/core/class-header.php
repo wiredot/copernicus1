@@ -2,9 +2,15 @@
 
 class CP_Header {
 	
-	function __construct() {
+	/**
+	 * 
+	 */
+	public function __construct() {
 	}
 
+	/**
+	 * 
+	 */
 	public function show_header() {
 		global $CP_Smarty, $CP_Language;
 
@@ -50,6 +56,9 @@ class CP_Header {
 		echo $header."\n";
 	}
 
+	/**
+	 * 
+	 */
 	private static function get_page_title() {
 		global $page, $paged;
 
@@ -79,6 +88,9 @@ class CP_Header {
 		return $title;
 	}
 
+	/**
+	 * 
+	 */
 	private static function get_page_description() {
 
 		$description = '';
@@ -102,14 +114,20 @@ class CP_Header {
 		return $description;
 	}
 
+	/**
+	 * 
+	 */
 	private static function truncate($text, $chars = 155) {
 		$text = $text." ";
 		$text = substr($text,0,$chars);
 		$text = substr($text,0,strrpos($text,' '));
 		$text = $text."…";
 		return $text;
-}
+	}
 
+	/**
+	 * 
+	 */
 	private function get_page_slug() {
 
 		if (is_front_page()) {
@@ -134,4 +152,6 @@ class CP_Header {
 
 		return '';
 	}
+
+// class end
 }
