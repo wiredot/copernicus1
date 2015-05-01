@@ -18,6 +18,9 @@ class CP {
 	
 /* -------------- methods -------------- */	
 	
+	/**
+	 * 
+	 */
 	public static function init() {
 		if(session_id() == '') {
      		session_start(); 
@@ -44,6 +47,9 @@ class CP {
 		self::init_plugins();
 	}
 
+	/**
+	 * 
+	 */
 	private static function init_directories() {
 		self::init_directory(WP_CONTENT_DIR.'/cache');
 		self::init_directory(WP_CONTENT_DIR.'/cache/js');
@@ -51,6 +57,9 @@ class CP {
 		self::init_directory(WP_CONTENT_DIR.'/cache/smarty');
 	}
 
+	/**
+	 * 
+	 */
 	private static function init_directory($dir) {
 		if ( ! file_exists($dir)) {
 			mkdir($dir, 0755);
@@ -59,16 +68,25 @@ class CP {
 
 /* -------------- views -------------- */	
 
+	/**
+	 * 
+	 */
 	public static function header() {
 		global $CP_Header;
 		$CP_Header->show_header();
 	}
 	
+	/**
+	 * 
+	 */
 	public static function footer() {
 		global $CP_Footer;
 		$CP_Footer->show_footer();
 	}
 
+	/**
+	 * 
+	 */
 	public static function view($template) {
 		global $CP_Smarty;
 
@@ -89,6 +107,9 @@ class CP {
 		return true;
 	}
 
+	/**
+	 * 
+	 */
 	public static function template() {
 		global $CP_Template;
 		$post_id = '';
@@ -248,6 +269,9 @@ class CP {
 
 /* -------------- loaders -------------- */
 
+	/**
+	 * 
+	 */
 	private static function init_plugins() {
 		if (isset(CP::$config['plugin'])) {
 			foreach (CP::$config['plugin'] as $plugin) {
@@ -261,6 +285,9 @@ class CP {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private static function load_config() {
 		global $cp_config;
 
@@ -275,6 +302,9 @@ class CP {
 		self::$config = $cp_config;
 	}
 
+	/**
+	 * 
+	 */
 	private static function load_config_directory($directory) {
 		global $cp_config;
 		// get all files from config folder
@@ -318,6 +348,9 @@ class CP {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private static function load_class($file, $class_name) {
 		if (file_exists($file)) {
 			include_once $file;
@@ -327,6 +360,9 @@ class CP {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public static function load_library($library_file) {
 		// check if class file exists and return true if it does
 		if (file_exists($library_file)) {
@@ -339,10 +375,16 @@ class CP {
 		return false;
 	}
 
+	/**
+	 * 
+	 */
 	public static function load_translations() {
 		CP::load_class(CP_PATH.'/lib/core/class-translation.php', 'CP_Translation');
 	}
 
+	/**
+	 * 
+	 */
 	public static function ajax_response($response) {
 		// encode and return response
 		$response_json = json_encode( $response );

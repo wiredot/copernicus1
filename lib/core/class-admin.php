@@ -12,6 +12,9 @@ class CP_Admin {
 	private $templates;
 	private $theme;
 
+	/**
+	 * 
+	 */
 	public function __construct() {
 		
 		$this->custom_media_upload();
@@ -32,12 +35,18 @@ class CP_Admin {
 		add_filter('media_upload_tabs', array($this, 'remove_gallery'), 99);
 	}
 	
+	/**
+	 * 
+	 */
 	public function custom_media_upload() {
 		if (isset ($_GET['cmu'])) {
 			add_action('admin_print_footer_scripts', array($this,'header_f'));
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	public function header_f() {
 		$cmu = $_GET['cmu'];
 		echo '<script type="text/javascript">
@@ -84,17 +93,26 @@ class CP_Admin {
 		</script>';
 	}
 
+	/**
+	 * 
+	 */
 	public function load_js() {
 		// load main admin js file
 		wp_register_script('cp_admin', CP_URL . 'static/js/cp-admin.js', array('jquery','jquery-ui-core', 'jquery-ui-sortable'), $this->theme['version'], 1);
 		wp_enqueue_script('cp_admin');
 	}
 	
+	/**
+	 * 
+	 */
 	public function load_css() {
 		wp_register_style('cp_admin', CP_URL . 'static/css/cp-admin.css', '', $this->theme['version'], 'all');
 		wp_enqueue_style('cp_admin');
 	}
 
+	/**
+	 * 
+	 */
 	public function remove_gallery($array) {
 		unset($array['gallery']);
 		return $array;

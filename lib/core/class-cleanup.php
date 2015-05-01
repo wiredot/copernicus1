@@ -39,6 +39,9 @@ class CP_Cleanup {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private function admin_bar() {
 		if ( isset($this->cleanup['admin']['bar']) && ! $this->cleanup['admin']['bar']) {
 			add_filter('show_admin_bar', '__return_false');
@@ -94,6 +97,9 @@ class CP_Cleanup {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public function unregister_widgets() {
 		if (isset($this->cleanup['widget'])) {
 			foreach ($this->cleanup['widget'] as $widget => $status) {
