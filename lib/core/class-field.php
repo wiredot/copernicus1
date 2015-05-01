@@ -1,13 +1,20 @@
 <?php
 
 class CP_Field {
-	
+
+	/**
+	 * 
+	 */
 	public function __construct() {
 	}
 
+	/**
+	 * 
+	 */
 	public function show_field( $field, $field_id, $field_name, $value ) {
 
 		$fields = array('attributes', 'options', 'values', 'labels', 'filetype', 'multiple', 'exclude', 'arguments');
+
 		foreach ($fields as $f) {
 			if (!isset($field[$f])) {
 				$field[$f] = array();
@@ -99,38 +106,17 @@ class CP_Field {
 		return null;
 	}
 
+	/**
+	 * 
+	 */
 	public function show_multilanguage_field( $field, $field_id, $field_name, $values, $value_key ) {
-		global $CP_Language, $CP_Smarty;
-
-		$languages = $CP_Language->get_languages();
-
-		$fields = array();
-
-		foreach ($languages as $lang) {
-			$value = '';
-			if (isset($values[$field_name.$lang['postmeta_suffix']])) {
-				$value = $values[$field_name.$lang['postmeta_suffix']];
-			}
-			$fields[$lang['short_name']]['field'] = $this->show_field($field, $field_id.$lang['postmeta_suffix'], $field_name.$lang['postmeta_suffix'], $value);
-		}
-
-		if (isset($field['group_name']) && isset($field['group_item']) ) {
-			$field['field_id'] = $field['group_name'].'_'.$field['group_item'].'_'.$field_id.'';
-		} else if ( isset($field['group_name']) ) {
-			$field['field_id'] = $field['group_name'].'_'.$field_id.'';
-		} else {
-			$field['field_id'] = $field_id;
-		}
-
-		$CP_Smarty->smarty->assign('languages', $languages);
-		$CP_Smarty->smarty->assign('fields', $fields);
-		$CP_Smarty->smarty->assign('field', $field);
-
-		return $CP_Smarty->smarty->fetch('fields/multilanguage.html');
 	}
 
-// -------------------- FIELDS --------------------	
+	// -------------------- FIELDS --------------------	
 
+	/**
+	 * 
+	 */
 	private function _get_input($field) {
 		global $CP_Smarty;
 		$CP_Smarty->smarty->assign('field', $field);
@@ -138,6 +124,9 @@ class CP_Field {
 		return $CP_Smarty->smarty->fetch('fields/input.html');
 	}
 
+	/**
+	 * 
+	 */
 	private function _get_textarea($field) {
 		global $CP_Smarty;
 		$CP_Smarty->smarty->assign('field', $field);
@@ -145,6 +134,9 @@ class CP_Field {
 		return $CP_Smarty->smarty->fetch('fields/textarea.html');
 	}
 
+	/**
+	 * 
+	 */
 	private function _get_editor($field) {
 		ob_start();
 		$field['attributes']['textarea_name'] = $field['field_name'];
@@ -152,6 +144,9 @@ class CP_Field {
 		return ob_get_clean();
 	}
 
+	/**
+	 * 
+	 */
 	private function _get_select($field) {
 		global $CP_Smarty;
 
@@ -170,6 +165,9 @@ class CP_Field {
 		return $CP_Smarty->smarty->fetch('fields/select.html');
 	}
 
+	/**
+	 * 
+	 */
 	private function _get_checkbox($field) {
 		global $CP_Smarty;
 
@@ -188,6 +186,9 @@ class CP_Field {
 		return $CP_Smarty->smarty->fetch('fields/checkbox.html');
 	}
 
+	/**
+	 * 
+	 */
 	private function _get_radio($field) {
 		global $CP_Smarty;
 
@@ -196,6 +197,9 @@ class CP_Field {
 		return $CP_Smarty->smarty->fetch('fields/radio.html');
 	}
 
+	/**
+	 * 
+	 */
 	private function _get_post_link($field) {
 		$default_arguments = array(
 			'posts_per_page' => -1,
@@ -224,6 +228,9 @@ class CP_Field {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private function _get_user_role($field) {
 		$roles = new WP_Roles();
 
@@ -245,6 +252,9 @@ class CP_Field {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private function _get_user($field) {
 		$users = get_users($field['arguments']);
 
@@ -264,6 +274,9 @@ class CP_Field {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private function _get_taxonomy($field) {
 		$terms = get_terms($field['taxonomy'], $field['arguments']);
 
@@ -283,6 +296,9 @@ class CP_Field {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private function _get_upload($field) {
 		global $CP_Image, $CP_Smarty;;
 
@@ -347,8 +363,11 @@ class CP_Field {
 		return $CP_Smarty->smarty->fetch('fields/upload.html');
 	}
 
-// -------------------- PUBLIC FIELDS --------------------	
+	// -------------------- PUBLIC FIELDS --------------------	
 
+	/**
+	 * 
+	 */
 	public function get_select($value, $field_id, $field_name, $options) {
 		$field = array(
 			'type' => 'select',
@@ -358,4 +377,5 @@ class CP_Field {
 		return $this->show_field( $field, $field_id, $field_name, $value );
 	}
 
+// end class
 }
