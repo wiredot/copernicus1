@@ -37,10 +37,6 @@ class CP_Menu {
 		
 		// custom walker
 		add_filter('wp_edit_nav_menu_walker', array( $this, 'edit_walker'), 10, 2);
-		
-		add_filter('wp_nav_menu_objects', array($this, 'nav_menu_translate'));
-		
-		
 
 		if (isset (CP::$config['nav_menu'])) {
 			
@@ -49,16 +45,25 @@ class CP_Menu {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public function edit_walker($walker,$menu_id) {
 	    return 'Walker_Nav_Menu_Edit_Copernicus';
 	}
 
+	/**
+	 * 
+	 */
 	private function register_nav_menus($nav_menus) {
 		foreach ($nav_menus as $menu) {
 			register_nav_menu( $menu['location'], $menu['description'] );
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public function get_nav_menu($location) {
 		if (isset (CP::$config['nav_menu'])) {
 			foreach (CP::$config['nav_menu'] as $menu) {
@@ -71,6 +76,9 @@ class CP_Menu {
 		return null;
 	}
 
+	/**
+	 * 
+	 */
 	public function get_page_menu($id) {
 		if (isset (CP::$config['page_menu'])) {
 			foreach (CP::$config['page_menu'] as $menu) {
@@ -83,6 +91,9 @@ class CP_Menu {
 		return null;
 	}
 
+	/**
+	 * 
+	 */
 	public function get_page_list($id) {
 		if (isset (CP::$config['page_list'])) {
 			foreach (CP::$config['page_list'] as $menu) {
@@ -98,6 +109,9 @@ class CP_Menu {
 
 /* -------------- custom nav menu fields -------------- */
 
+	/**
+	 * 
+	 */
 	public function add_custom_nav_fields( $menu_item ) {
 		global $CP_Language;
 		$languages = $CP_Language->get_languages();
@@ -115,6 +129,9 @@ class CP_Menu {
 		return $menu_item;
 	}
 
+	/**
+	 * 
+	 */
 	public function update_custom_nav_fields( $menu_id, $menu_item_db_id, $args ) {
 		global $CP_Language;
 		$languages = $CP_Language->get_languages();
@@ -144,28 +161,6 @@ class CP_Menu {
 				}
 			}
 		}
-	}
-
-	public function nav_menu_translate($output) {
-		foreach ($output as $key => $value) {
-			if (LANGUAGE_SUFFIX != '') {
-				$title_field = 'title'.LANGUAGE_SUFFIX;
-				$attr_title_field = 'attr_title'.LANGUAGE_SUFFIX;
-				if (isset($output[$key]->$title_field) && !empty($output[$key]->$title_field)) {
-					$output[$key]->title = $output[$key]->$title_field;
-				} else {
-					$title = get_post_meta( $value->object_id, 'post_title'.LANGUAGE_SUFFIX, true );
-					if ($title) {
-						$output[$key]->title = $title;
-					}
-				}
-
-				if (isset($output[$key]->$attr_title_field) && !empty($output[$key]->$attr_title_field)) {
-					$output[$key]->attr_title = $output[$key]->$attr_title_field;
-				}
-			}
-		}
-		return $output;
 	}
 }
 

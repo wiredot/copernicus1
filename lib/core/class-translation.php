@@ -33,6 +33,8 @@ class CP_Translation {
 		add_action( 'admin_menu', array(&$this, 'admin_menu') );
 		add_action( 'admin_init', array($this, 'register_settings') );
 
+		add_filter('wp_nav_menu_objects', array($this, 'nav_menu_translate'));
+
 		$this->_init();
 	}
 
@@ -352,6 +354,33 @@ class CP_Translation {
 
 		return null;
 	}
+
+	/**
+	 * 
+	 */
+	public function nav_menu_translate($output) {
+		foreach ($output as $key => $value) {
+			if (LANGUAGE_SUFFIX != '') {
+				$title_field = 'title'.LANGUAGE_SUFFIX;
+				$attr_title_field = 'attr_title'.LANGUAGE_SUFFIX;
+				if (isset($output[$key]->$title_field) && !empty($output[$key]->$title_field)) {
+					$output[$key]->title = $output[$key]->$title_field;
+				} else {
+					$title = get_post_meta( $value->object_id, 'post_title'.LANGUAGE_SUFFIX, true );
+					if ($title) {
+						$output[$key]->title = $title;
+					}
+				}
+
+				if (isset($output[$key]->$attr_title_field) && !empty($output[$key]->$attr_title_field)) {
+					$output[$key]->attr_title = $output[$key]->$attr_title_field;
+				}
+			}
+		}
+		return $output;
+	}
+
+// class end
 }
 
 function __cp($text, $group = '') {
