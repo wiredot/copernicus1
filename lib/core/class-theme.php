@@ -2,14 +2,16 @@
 
 class CP_Theme {
 	
-	function __construct() {
-		$this->_init();
-	}
-
-	private function _init() {
+	/**
+	 * 
+	 */
+	public function __construct() {
 		$this->theme_support();
 	}
 
+	/**
+	 * 
+	 */
 	private static function theme_support() {
 		
 		// add theme support for custom menus
@@ -27,4 +29,6 @@ class CP_Theme {
 			add_theme_support('automatic-feed-links');
 		}
 	}
+
+// class end
 }
