@@ -27,20 +27,6 @@ class CP_Taxonomy {
 	 * @author Piotr Soluch
 	 */
 	public function __construct() {
-
-		// initialize the custom post types
-		$this->_init();
-	}
-
-	/**
-	 * Initiate taxonomies
-	 *
-	 * @access type public
-	 * @return type mixed returns possible errors
-	 * @author Piotr Soluch
-	 */
-	public function _init() {
-
 		if (isset (CP::$config['taxonomy'])) {
 			
 			// create taxonomies
@@ -56,7 +42,7 @@ class CP_Taxonomy {
 	 * @return type mixed returns possible errors
 	 * @author Piotr Soluch
 	 */
-	function create_taxonomies() {
+	public function create_taxonomies() {
 		
 		// if there are taxonomies
 		if (is_array(CP::$config['taxonomy'])) {
@@ -80,7 +66,7 @@ class CP_Taxonomy {
 	 * @return type mixed returns possible errors
 	 * @author Piotr Soluch
 	 */
-	function add_taxonomy($taxonomy) {
+	public function add_taxonomy($taxonomy) {
 
 		$taxonomy['args']['labels'] = $taxonomy['labels'];
 		
@@ -92,6 +78,9 @@ class CP_Taxonomy {
 		);
 	}
 
+	/**
+	 * 
+	 */
 	public function order_posts($wp_query) {
 		if (is_array(CP::$config['taxonomy'])) {
 
@@ -111,4 +100,6 @@ class CP_Taxonomy {
 			}
 		}
 	}
+
+// class end
 }
