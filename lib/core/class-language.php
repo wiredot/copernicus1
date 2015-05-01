@@ -17,6 +17,9 @@
  */
 class CP_Language {
 
+	/**
+	 * 
+	 */
 	private $current_language = array();
 
 	/**
@@ -27,23 +30,13 @@ class CP_Language {
 	 * @author Piotr Soluch
 	 */
 	public function __construct() {
-
-		// initialize the meta boxes
-		$this->_init();
-	}
-
-	/**
-	 * Initiate the meta boxes
-	 *
-	 * @access type public
-	 * @return type mixed returns possible errors
-	 * @author Piotr Soluch
-	 */
-	public function _init() {
 		add_action('init', array($this, 'define_current_language'));
 		add_action('get_pages', array($this, 'pages_translate'));
 	}
 
+	/**
+	 * 
+	 */
 	public function get_current_language() {
 		$user_id =  get_current_user_id();
 		$user_language = get_user_meta( $user_id, 'language', true );
@@ -64,6 +57,9 @@ class CP_Language {
 		return $this->get_default_language();
 	}
 
+	/**
+	 * 
+	 */
 	public function define_current_language() {
 		$current_language = $this->get_current_language();
 		$this->current_language = $current_language;
@@ -74,6 +70,9 @@ class CP_Language {
 		setlocale(LC_MESSAGES, $current_language['iso'].'.UTF8', $current_language['iso']);
 	}
 
+	/**
+	 * 
+	 */
 	public function get_default_language() {
 		if ( $this->current_language )
 			return $this->current_language;
@@ -90,6 +89,9 @@ class CP_Language {
 		return null;
 	}
 
+	/**
+	 * 
+	 */
 	public function pages_translate($output) {
 		foreach ($output as $key => $value) {
 			if (LANGUAGE_SUFFIX != '') {
@@ -102,6 +104,9 @@ class CP_Language {
 		return $output;
 	}
 
+	/**
+	 * 
+	 */
 	public function get_languages( $status = 1 ) {
 		if (!isset(CP::$config['language']))
 			return null;
@@ -120,6 +125,9 @@ class CP_Language {
 		return $languages;
 	}
 
+	/**
+	 * 
+	 */
 	public function get_language( $code = '' ) {
 		if (isset(CP::$config['language'])) {
 			foreach ( CP::$config['language'] as $language ) {
@@ -134,6 +142,9 @@ class CP_Language {
 		return null;
 	}
 
+	/**
+	 * 
+	 */
 	public function get_language_count() {
 		return count($this->get_languages());
 	}
