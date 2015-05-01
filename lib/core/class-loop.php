@@ -28,20 +28,6 @@ class CP_Loop {
 	 * @author Piotr Soluch
 	 */
 	public function __construct() {
-		
-		// initialize the meta boxes
-		$this->_init();
-	}
-
-	/**
-	 * Initiate the meta boxes
-	 *
-	 * @access type public
-	 * @return type mixed returns possible errors
-	 * @author Piotr Soluch
-	 */
-	public function _init() {
-
 		if (isset (CP::$config['loop'])) {
 			
 			// get meta box configuration
@@ -49,6 +35,9 @@ class CP_Loop {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public function get_loop($name) {
 		foreach ($this->loop as $loop) {
 			if ($loop['name'] == $name)
@@ -58,6 +47,9 @@ class CP_Loop {
 		return null;
 	}
 	
+	/**
+	 * 
+	 */
 	public function show_loop($loop) {
 		global $post, $pages, $CP_Smarty;
 		
@@ -108,7 +100,10 @@ class CP_Loop {
 		return $return;
 	}
 
-	function merge_attributes($new_arguments, $old_arguments) {
+	/**
+	 * 
+	 */
+	public function merge_attributes($new_arguments, $old_arguments) {
 		
 		foreach ($new_arguments as $key => $arg) {
 			// for meta query arguments
@@ -129,10 +124,7 @@ class CP_Loop {
 						foreach ($old_arguments[$key] as $loop_key => $loop_value) {
 							
 							if ($arg_value['key'] == $loop_value['key']) {
-								//new dBug($arg_value);
-								//new dBug($old_arguments[$key][$loop_key]);
 								$new_arg = array_merge($old_arguments[$key][$loop_key], $arg_value);
-								//new dBug($new_arg);
 								$old_arguments[$key][$loop_key] = $new_arg;
 								
 								$added = 1;
@@ -153,5 +145,6 @@ class CP_Loop {
 
 		return $old_arguments;
 	}
-	
+
+// class end
 }
