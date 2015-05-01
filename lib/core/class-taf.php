@@ -28,20 +28,6 @@ class CP_Taf {
 	 * @author Piotr Soluch
 	 */
 	public function __construct() {
-
-		// initialize the custom post types
-		$this->_init();
-	}
-
-	/**
-	 * Initiate the theme
-	 *
-	 * @access type public
-	 * @return type mixed returns possible errors
-	 * @author Piotr Soluch
-	 */
-	public function _init() {
-
 		if (isset(CP::$config['taf']) && is_array(CP::$config['taf'])) {
 
 			// for each taxonomy
@@ -57,7 +43,10 @@ class CP_Taf {
 		}
 	}
 
-	function show_taxonomy_custom_fields($taxonomy, $taxonomy_id) {
+	/**
+	 * 
+	 */
+	public function show_taxonomy_custom_fields($taxonomy, $taxonomy_id) {
 		global $CP_Language, $CP_Field;
 		$return = '';
 
@@ -142,7 +131,10 @@ class CP_Taf {
 		echo $return;
 	}
 
-	function get_taxonomy_custom_fields($taxonomy_id) {
+	/**
+	 * 
+	 */
+	public function get_taxonomy_custom_fields($taxonomy_id) {
 		if (is_array(CP::$config['taf'])) {
 
 			// for each taxonomy
@@ -158,7 +150,10 @@ class CP_Taf {
 		return null;
 	}
 
-	function save_taxonomy_custom_fields($term_id, $aa) {
+	/**
+	 * 
+	 */
+	public function save_taxonomy_custom_fields($term_id, $aa) {
 
 		if ( isset( $_POST['cp_term_meta'] ) ) {
 			
@@ -176,4 +171,6 @@ class CP_Taf {
 			}
 		}  
 	}
+
+// class end
 }
