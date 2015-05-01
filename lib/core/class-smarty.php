@@ -4,11 +4,10 @@ class CP_Smarty {
 
 	public $smarty;
 	
-	function __construct() {
-		$this->_init();
-	}
-
-	private function _init() {
+	/**
+	 * 
+	 */
+	public function __construct() {
 		// load smarty
 		CP::load_library(CP_PATH.'/lib/smarty/Smarty.class.php');
 		
@@ -37,14 +36,20 @@ class CP_Smarty {
 		$this->smarty->force_compile = true;
 	}
 
-	function block_loop_literal($tpl_source, $template) {
+	/**
+	 * 
+	 */
+	public function block_loop_literal($tpl_source, $template) {
     	$tpl_source = preg_replace("/({loop .*})/", '$1{literal}', $tpl_source);
     	$tpl_source = preg_replace("/({loop})/", '$1{literal}', $tpl_source);
     	$tpl_source = preg_replace("/({\/loop})/", '{/literal}$1', $tpl_source);
     	return $tpl_source;
 	}
 
-	function default_plugin_handler($name, $type, $template, &$callback, &$script, &$cacheable) {
+	/**
+	 * 
+	 */
+	public function default_plugin_handler($name, $type, $template, &$callback, &$script, &$cacheable) {
 		switch ($type) {
 			case Smarty::PLUGIN_FUNCTION:
 			
@@ -64,6 +69,8 @@ class CP_Smarty {
 		}
 		return false;
 	}
+
+// class end
 }
 
 function autoload_plugins($show, $class_name) {

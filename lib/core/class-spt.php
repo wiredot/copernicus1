@@ -28,24 +28,13 @@ class CP_Spt {
 	 * @author Piotr Soluch
 	 */
 	public function __construct() {
-
-		// initialize the custom post types
-		$this->_init();
-	}
-
-	/**
-	 * Initiate the theme
-	 *
-	 * @access type public
-	 * @return type mixed returns possible errors
-	 * @author Piotr Soluch
-	 */
-	public function _init() {
 		add_action('init', array($this, 'support'));
-		
 	}	
 
-	function support() {
+	/**
+	 * 
+	 */
+	public function support() {
 		global $CP_Language;
 
 		// if more than 1 active language
@@ -57,4 +46,6 @@ class CP_Spt {
 			remove_post_type_support('post', 'editor');
 		}
 	}
+
+// class end
 }
