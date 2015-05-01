@@ -35,7 +35,7 @@ class CP_Translation {
 
 		add_filter('wp_nav_menu_objects', array($this, 'nav_menu_translate'));
 
-		$this->_init();
+		$this->load_translations();
 	}
 
 	/**
@@ -45,7 +45,7 @@ class CP_Translation {
 	 * @return type mixed returns possible errors
 	 * @author Piotr Soluch
 	 */
-	public function _init() {
+	public function load_translations() {
 
 		$translations_dir = get_stylesheet_directory() . '/languages/';
 		// get all files from config dir
@@ -116,6 +116,9 @@ class CP_Translation {
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	public function translate($text, $group = '') {
 
 		if ($group) {
@@ -137,6 +140,9 @@ class CP_Translation {
 		return $text;
 	}
 
+	/**
+	 * 
+	 */
 	public function translate_group($text, $group) {
 		$translations = get_option( 'cp_translation_'.$group );
 		if (defined('LANGUAGE_SUFFIX') && LANGUAGE_SUFFIX) {
@@ -189,13 +195,19 @@ class CP_Translation {
 		return null;
 	}
 
-/* -------------- admin -------------- */
+	/* -------------- admin -------------- */
 
+	/**
+	 * 
+	 */
 	public function get_groups() {
 		$static_texts = $this->get_static_texts();
 		return array_keys($static_texts);
 	}
 
+	/**
+	 * 
+	 */
 	public function register_settings() {
 		$groups = $this->get_groups();
 		foreach ($groups as $group) {
@@ -203,11 +215,17 @@ class CP_Translation {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public function admin_menu() {
 		$general = __cp('general', 'general');
 		add_options_page(__cp('Translations'), __cp('Translations'), 'manage_options', 'cp_translation', array(&$this, 'translation_page'));
 	}
 
+	/**
+	 * 
+	 */
 	public function translation_page() {
 		global $CP_Field;
 		
@@ -272,6 +290,9 @@ class CP_Translation {
 		echo '</div>';
 	}
 
+	/**
+	 * 
+	 */
 	public function get_static_texts() {
 
 		if (count($this->static_texts)) {
@@ -305,6 +326,9 @@ class CP_Translation {
 		return $texts;
 	}
 
+	/**
+	 * 
+	 */
 	public function get_static_texts_dir( $dir ) {
 		$texts = array();
 
@@ -323,6 +347,9 @@ class CP_Translation {
 		return $texts;
 	}
 
+	/**
+	 * 
+	 */
 	public function get_static_texts_file( $filename ) {
 		$results = array();
 		if ( file_exists( $filename ) && preg_match( '/.php/', $filename ) ) {
