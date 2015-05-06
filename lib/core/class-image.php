@@ -77,6 +77,27 @@ class CP_Image {
 	/**
 	 * 
 	 */
+	public function get_image_link($config_id, $params) {
+		
+		return $this->_get_image_link($this->attachment_id, $config_id, $params);
+	}
+
+	/**
+	 * 
+	 */
+	private function _get_image_link($attachment_id, $image_config_id, $params) {
+		$image_config = $this->_get_image_config_by_id($image_config_id);
+
+		$image_config = array_merge($image_config, $params);
+
+		$img = $this->_get_image_url_by_size($image_config_id);
+
+		return $img;
+	}
+
+	/**
+	 * 
+	 */
 	public function get_image_tag($config_id, $params) {
 		
 		return $this->_get_image_tag($this->attachment_id, $config_id, $params);

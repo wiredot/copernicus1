@@ -50,6 +50,10 @@ function smarty_function_image($params, $template) {
 		$params['class'] = null;
 	}
 
+	if ( ! isset($params['link']) ) {
+		$params['link'] = null;
+	}
+
 	$attributes = array(
 		'alt' => $params['alt'],
 		'title' => $params['title'],
@@ -58,13 +62,20 @@ function smarty_function_image($params, $template) {
 
 	$size = $params['size'];
 	$id = $params['id'];
+	$link = $params['link'];
 
 	unset($params['alt']);
 	unset($params['size']);
 	unset($params['class']);
 	unset($params['title']);
 	unset($params['id']);
+	unset($params['link']);
 
 	$image = new CP_Image($id, $attributes);
+
+	if ($link) {
+		return $image->get_image_link($size, $params);
+	}
+	
 	return $image->get_image_tag($size, $params);
 }
