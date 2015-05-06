@@ -289,7 +289,8 @@ class CP_Mb {
 		wp_nonce_field(basename(__FILE__), 'add_meta_box_nonce');
 
 		// for each field in a box
-		foreach ($fields as $field) {
+		foreach ($fields as $key => $field) {
+			$field['id'] = $key;
 			if ($field['type'] == 'group') {
 				echo $this->meta_box_group($field, $values);
 			} else {
