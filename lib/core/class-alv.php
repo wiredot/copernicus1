@@ -133,11 +133,11 @@ class CP_Alv {
 		
 		$fields = array();
 		
-		foreach ($this->mb as $mb) {
+		foreach ($this->mb as $key => $mb) {
 			
 			if (is_array($mb['fields'])) {
 				foreach ($mb['fields'] as $field) {
-					$fields[$field['id']] = $field;
+					$fields[$key] = $field;
 				}
 			}
 		}
@@ -165,7 +165,7 @@ class CP_Alv {
 				$post_thumbnail_id = get_post_thumbnail_id($post_id);
 				
 				if ($post_thumbnail_id) {
-					global $CP_Image;
+					global $CP_Imageold;
 					$params = array(
 						'id' => $post_thumbnail_id,
 						'w' => 50,
@@ -173,7 +173,7 @@ class CP_Alv {
 						'zc' => 1,
 						'q' => 70
 					);
-					echo $CP_Image->image($params);
+					echo $CP_Imageold->image($params);
 				}
 				break;
 			case (preg_match('/taxonomy:(.*)/', $column, $matches) ? true : false) :
@@ -197,7 +197,7 @@ class CP_Alv {
 			case (preg_match('/image:(.*)/', $column, $matches) ? true : false) :
 				$value = get_post_meta($post_id, $matches[1], 1);
 				if (isset($value[0])) {
-					global $CP_Image;
+					global $CP_Imageold;
 					$params = array(
 						'id' => $value[0],
 						'w' => 50,
@@ -205,7 +205,7 @@ class CP_Alv {
 						'zc' => 1,
 						'q' => 70
 					);
-					echo $CP_Image->image($params);
+					echo $CP_Imageold->image($params);
 				}
 				else {
 					echo ' ';

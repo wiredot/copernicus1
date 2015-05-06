@@ -300,7 +300,7 @@ class CP_Field {
 	 * 
 	 */
 	private function _get_upload($field) {
-		global $CP_Image, $CP_Smarty;;
+		global $CP_Imageold, $CP_Smarty;;
 
 		if ($field['multiple']) {
 			$field['go_function'] = 'media_upload_multiple';
@@ -334,7 +334,7 @@ class CP_Field {
 				'echo' => 0
 			);
 
-			$image = $CP_Image->image($params);
+			$image = $CP_Imageold->image($params);
 		
 			$im = wp_get_attachment_metadata($attachment, 1);
 			

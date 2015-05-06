@@ -420,7 +420,8 @@ class CP_Mb {
 
 						$group_field['group_name'] = $field['id'];
 						$group_field['group_item'] = $group_key;
-						$group_field['group_field'] = $group_field['id'];
+						$group_field['group_field'] = $key;
+						$group_field['id'] = $key;
 						
 						$fields.= $this->meta_box_field($group_field, $group_values[$group_key]);
 					}
