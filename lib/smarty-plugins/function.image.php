@@ -46,6 +46,10 @@ function smarty_function_image($params, $template) {
 		$params['title'] = get_the_title( $params['id'] );
 	}
 
+	if ( ! isset($params['class']) ) {
+		$params['class'] = null;
+	}
+
 	$attributes = array(
 		'alt' => $params['alt'],
 		'title' => $params['title'],
