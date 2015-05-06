@@ -468,6 +468,7 @@ class CP_Mb {
 						$group_field['group_name'] = $field['id'];
 						$group_field['group_item'] = $group_key;
 						$group_field['group_field'] = $group_field['id'];
+						$group_field['id'] = $key;
 						
 						$return.= $this->meta_box_field($group_field, $values);
 					}
@@ -500,10 +501,11 @@ class CP_Mb {
 		$return = '';
 
 		if (isset($group_field['fields'])) {
-			foreach ($group_field['fields'] as $group_field) {
+			foreach ($group_field['fields'] as $k => $group_field) {
 
 				$group_field['group_name'] = $group_id;
 				$group_field['group_item'] = $key;
+				$group_field['id'] = $k;
 
 				$return.= $this->meta_box_field( $group_field, array() );
 			}
@@ -528,6 +530,7 @@ class CP_Mb {
 		foreach (CP::$config['mb'] as $key => $mb) {
 			
 			foreach ($mb['fields'] as $fkey => $field) {
+				$field['id'] = $fkey;
 				if ($field['type'] == 'group' && $field['id'] == $group_id) {
 					return $field;
 				}
@@ -643,7 +646,9 @@ class CP_Mb {
 		$languages = $CP_Language->get_languages();
 
 		// for each field in a box
-		foreach ($fields as $field) {
+		foreach ($fields as $k => $field) {
+
+			$field['id'] = $k;
 
 			// Get the meta key.
 			$meta_key = $field['id'];
