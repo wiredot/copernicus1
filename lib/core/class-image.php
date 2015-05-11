@@ -2,307 +2,163 @@
 
 class CP_Image {
 
-	private $attachment_id;
-	private $attributes;
-	private $attachment_metadata;
-	private $image_config;
-	private $upload_dir;
-	private $phpThumb;
-
 	/**
 	 * 
 	 */
-	public function __construct($attachment_id = null, $attributes = array()) {
+	public function __construct() {
 		// load phpThumb
 		CP::load_library(CP_PATH.'/lib/phpThumb/phpthumb.class.php');
 		
 		$this->phpThumb = new phpThumb();
-
-		add_filter('the_content', array($this, 'inline_images'));
-
-		if ( ! $attachment_id ) {
-			return null;
-		}
-
-		$this->_set_attachment_id($attachment_id);
-		$this->_set_attributes($attributes);
-		$this->_set_attachment_metadata($attachment_id);
-		$this->_set_image_config();
-		$this->_set_upload_dir();
 	}
 
-	/**
-	 * 
-	 */
-	public function inline_images($content) {
-		$content = preg_replace_callback('/<img(.*)>/', array($this, 'replace_inline_images') , $content);
-		return $content;
-	}
+	public function get_image($id, $params) {
+		$parameters = $this->get_parameters($params);
 
-	/**
-	 * 
-	 */
-	private function replace_inline_images($image) {
-		$theimage = $image[0];
-		$sizes = $this->_get_image_sizes();
+		$size = $this->get_size($parameters);
+		$options = $this->get_options($parameters);
+		$attributes = $this->get_attributes($parameters);
 
-		preg_match('/wp-image-([0-9]+)/', $theimage, $attachment);
-		if (isset($attachment[1])) {
-			$attachment_id = $attachment[1];
-			$classes_array = array();
-			preg_match('/class="([0-9a-z A-Z\-]+)"/', $theimage, $classes);
-			if (isset($classes[1])) {
-				$classes_array = explode(' ', $classes[1]);
-			}
-
-			$alt = '';
-			preg_match('/alt="([0-9a-z A-Z\-]+)"/', $theimage, $alt);
-			if (isset($alt[1])) {
-				$alt = $alt[1];
-			}
-
-			$size = $this->_find_matching_size($classes_array, $sizes);
-
-			if ( ! $size ) {
-				return $theimage;
-			}
-
-			$new_image = new CP_Imagenew($attachment_id, array('class'=>$classes_array, 'alt'=>$alt));
-			return $new_image->get_image_tag('inline');
-		}
-
-		return $image;
-	}
-
-	/**
-	 * 
-	 */
-	public function get_image_link($config_id, $params) {
-		
-		return $this->_get_image_link($this->attachment_id, $config_id, $params);
-	}
-
-	/**
-	 * 
-	 */
-	private function _get_image_link($attachment_id, $image_config_id, $params) {
-		$image_config = $this->_get_image_config_by_id($image_config_id);
-
-		$image_config = array_merge($image_config, $params);
-
-		$img = $this->_get_image_url_by_size($image_config_id);
-
-		return $img;
-	}
-
-	/**
-	 * 
-	 */
-	public function get_image_tag($config_id, $params) {
-		
-		return $this->_get_image_tag($this->attachment_id, $config_id, $params);
-	}
-
-	/**
-	 * 
-	 */
-	private function _get_image_tag($attachment_id, $image_config_id, $params) {
-		$image_config = $this->_get_image_config_by_id($image_config_id);
-
-		$image_config = array_merge($image_config, $params);
-
-		$img = '<img src="';
-		$img.= $this->_get_image_url_by_size($image_config_id);
-		$img.= '"';
-		if (isset($image_config['srcset']) && $image_config['srcset']) {
-			$srcsets = array();
-			foreach ($image_config['srcset'] as $key => $srcset) {
-				$image_url = $this->_get_image_url_by_size($image_config_id, $key);
-				if ($image_url) {
-					$srcsets[$key] = $image_url;
-				}
-			}
-			$img.= $this->_get_image_srcset_attribute($srcsets);
-		}
-		$img.= $this->_get_image_attributes();
-		$img.= '>';
-
-		return $img;
-	}
-
-	/**
-	 * 
-	 */
-	private function _get_image_url_by_size($size, $srcset = '') {
-		$image_url = '';
-
-		$cp_size = 'cp_'.$size;
-		if ($srcset) {
-			$cp_size.= '_'.$srcset;
-		}
-
-		if (isset($this->attachment_metadata['sizes'][$cp_size])) {
-			$image_url =  $this->attachment_metadata['sizes'][$cp_size]['file'];
+		if ( isset($parameters['link']) && $parameters['link'] ) {
+			return $this->get_image_link($id, $size, $options);
 		} else {
-			$image_url =  $this->_create_image_by_size($size, $srcset);
+			return $this->get_image_tag($id, $size, $options, $attributes);
 		}
+	}
 
-		if ($image_url) {
-			return $this->upload_dir['url'].$image_url;
-		}
+	public function get_size($parameters) {
+		$size = array();
 		
-		return null;
-	}
+		$possible_attr = array('w', 'h', 'q', 'zc');
 
-	/**
-	 * 
-	 */
-	private function _create_image_by_size($size, $srcset) {
-		$cp_size = 'cp_'.$size;
-		if ($srcset) {
-			$cp_size.= '_'.$srcset;
-		}
-
-		$phpThumb = new phpThumb();
-		$attachment_file = basename($this->attachment_metadata['file']);
-		$ext = pathinfo($attachment_file, PATHINFO_EXTENSION);
-
-		$file = basename($attachment_file, '.' . $ext);
-		$new_file = $file . '_' . $cp_size . '.' . $ext;
-
-		$phpThumb->resetObject();
-		$phpThumb->setSourceFilename($this->upload_dir['dir'] . '/' . $attachment_file);
-
-		$image_parameters = $this->_get_image_parameters($size, $srcset);
-
-		if ( isset($image_parameters) && is_array($image_parameters) ) {
-			foreach ($image_parameters as $key => $attr) {
-				$phpThumb->setParameter($key, $attr);
+		foreach ($possible_attr as $attr) {
+			if (isset($parameters[$attr])) {
+				$size[$attr] = $parameters[$attr];
 			}
 		}
 
-		if ($phpThumb->GenerateThumbnail()) {
-			if ($phpThumb->RenderToFile($this->upload_dir['dir'] . '/' . $new_file)) {
-				$image_info = getimagesize($this->upload_dir['dir'] . '/' . $new_file);
 
-				$attachment_metadata = array(
-					'file' => $new_file,
-					'width' => $image_info[0],
-					'height' => $image_info[1],
-					'mime-type' => $image_info['mime']
-				);
+		return $size;
+	}
 
-				$this->_save_image_size($this->attachment_id, $cp_size, $attachment_metadata);
-
-				$phpThumb->purgeTempFiles();
+	public function get_parameters($params) {
+		global $cp_config;
+		
+		if ( isset($params['size']) ) {
+			if (isset($cp_config['image'][$params['size']])) {
+				$params = array_merge($cp_config['image'][$params['size']], $params);
 			}
 		}
 
-		return $new_file;
+		return $params;
 	}
 
-	/**
-	 * 
-	 */
-	private function _get_image_srcset_attribute($srcset) {
-		$srcset_tag = '';
+	public function get_options($parameters) {
+		$options = array();
+		
+		$possible_attr = array('cache', 'size');
 
-		if ($srcset && is_array($srcset) && count($srcset)) {
-			$srcset_tag.= ' srcset="';
-			end($srcset);
-			$last_key = key($srcset);
-			foreach ($srcset as $scrkey => $scrvalue) {
-				$srcset_tag.= $scrvalue . ' ' . $scrkey;
-
-				if ($scrkey != $last_key) {
-					$srcset_tag.= ', ';
-				}
+		foreach ($possible_attr as $attr) {
+			if (isset($parameters[$attr])) {
+				$options[$attr] = $parameters[$attr];
 			}
-			$srcset_tag.= '"';
 		}
-		return $srcset_tag;
+
+
+		return $options;
 	}
 
-	/**
-	 * 
-	 */
-	private function _get_image_attributes() {
-		$attributes = '';
+	
+	public function get_attributes($parameters) {
+		$attributes = array();
 
-		if ($this->attributes) {
-			foreach ($this->attributes as $tag => $attrs) {
-				if ($attrs) {
-					$attributes.= ' '.$tag.'="';
-					if (is_array($attrs)) {
-						end($attrs);
-						$last_key = key($attrs);
-						foreach ($attrs as $key => $attribute) {
-							$attributes.= $attribute;
-							if ($key != $last_key) {
-								$attributes.= ' ';
-							}
-						}
-					} else {
-						$attributes.= $attrs;
-					}
-					$attributes.= '"';
-				}
+		$possible_attr = array('class', 'alt', 'title');
+
+		foreach ($possible_attr as $attr) {
+			if (isset($parameters[$attr])) {
+				$attributes[$attr] = $parameters[$attr];
 			}
 		}
 
 		return $attributes;
 	}
 
-	/**
-	 * 
-	 */
-	private function _get_image_config_by_id($config_id) {
-		if (isset($this->image_config[$config_id])) {
-			return $this->image_config[$config_id];
-		}
+	public function get_image_link($id, $size, $options = array() ) {
+		$img_metadata = wp_get_attachment_metadata( $id );
 
-		return array();
-	}
+		$wp_upload_dir = wp_upload_dir();
+		$upload_url = $wp_upload_dir['baseurl'].'/'.dirname($img_metadata['file']).'/';
+		$upload_dir = $wp_upload_dir['basedir'].'/'.dirname($img_metadata['file']).'/';
 
-	/**
-	 * 
-	 */
-	private function _get_image_parameters($size, $srcset) {
-		$image_parameters = array();
+		$new_filename = $this->get_filename($img_metadata, $size, $options);
 
-		if ($srcset) {
-			if (isset($this->image_config[$size]['srcset'][$srcset])) {
-				$image_parameters = $this->image_config[$size]['srcset'][$srcset];
-			}
+		if (file_exists($upload_dir.$new_filename)) {
+			return $upload_url.$new_filename;
 		} else {
-			$image_parameters = $this->image_config[$size];
-			unset($image_parameters['srcset']);
-		}
-
-		return $image_parameters;
-	}
-
-	/**
-	 * 
-	 */
-	private function _get_image_sizes() {
-		$sizes = array();
-		if (isset (CP::$config['image'])) {
-			foreach (CP::$config['image'] as $key => $image) {
-				$sizes[] = $key;
+			if ($this->create_image($upload_dir.basename($img_metadata['file']), $upload_dir.$new_filename, $size)) {
+				return $upload_url.$new_filename;
 			}
 		}
-		return $sizes;
+
+		return null;
 	}
 
-	/**
-	 * 
-	 */
-	private function _find_matching_size($classes, $sizes) {
-		foreach ($sizes as $size) {
-			foreach ($classes as $class) {
-				if ($class == $size) {
-					return $size;
+	public function get_image_tag($id, $size, $options = array(), $attributes = array()) {
+		$image = '<img src="';
+
+		$image.= $this->get_image_link($id, $size, $options);
+
+		$image.= '"';
+
+		foreach ($attributes as $tag => $attr) {
+			$image.= ' '.$tag.'="';
+			$image.= $attr;
+			$image.= '"';
+		}
+
+		$image.= '>';
+
+		return $image;
+	}
+
+	public function get_filename($img_metadata, $size, $options) {
+		$img = basename($img_metadata['file']);
+		$img_ext = pathinfo($img, PATHINFO_EXTENSION);
+		$img_file = basename($img, '.' . $img_ext);
+
+		if (isset($options['size'])) {
+			return $img_file.'_'.$options['size'].'.'.$img_ext;
+		} else {
+			$filename = $img_file;
+
+			if (isset($size['w'])) {
+				$filename.= '_'.$size['w'];
+			}
+
+			if (isset($size['h'])) {
+				$filename.= '_'.$size['h'];
+			}
+
+			return $filename.'.'.$img_ext;
+		}
+	}
+
+	function create_image($src, $new, $size) {
+		$phpThumb = new phpThumb();
+
+		if (file_exists($src)) {
+			$phpThumb->setSourceFilename($src);
+			
+			foreach ($size as $key => $s) {
+				$phpThumb->setParameter($key, $s);
+			}
+
+			if ($phpThumb->GenerateThumbnail()) {
+				if ($phpThumb->RenderToFile($new)) {
+
+					$phpThumb->purgeTempFiles();
+
+					return 1;
 				}
 			}
 		}
@@ -310,64 +166,6 @@ class CP_Image {
 		return null;
 	}
 
-	// ------------------------------------------------------------ SETTERS
-
-	/**
-	 * 
-	 */
-	private function _set_attachment_id($attachment_id) {
-		$this->attachment_id = $attachment_id;
-	}
-
-	/**
-	 * 
-	 */
-	private function _set_attributes($attributes) {
-		$this->attributes = $attributes;
-	}
-
-	/**
-	 * 
-	 */
-	private function _set_attachment_metadata($attachment_id) {
-		$attachment_metadata = wp_get_attachment_metadata( $attachment_id );
-		$this->attachment_metadata = $attachment_metadata;
-	}
-
-	/**
-	 * 
-	 */
-	private function _set_image_config() {
-		$image_config = null;
-
-		if (isset (CP::$config['image'])) {
-			$image_config = CP::$config['image'];
-		}
-		$this->image_config = $image_config;
-	}
-
-	/**
-	 * 
-	 */
-	private function _set_upload_dir() {
-
-		$wp_upload_dir = wp_upload_dir();
-
-		$upload_dir['url'] = $wp_upload_dir['baseurl'].'/'.dirname($this->attachment_metadata['file']).'/';
-		$upload_dir['dir'] = $wp_upload_dir['basedir'].'/'.dirname($this->attachment_metadata['file']).'/';
-		
-		$this->upload_dir = $upload_dir;
-	}
-
-	/**
-	 * 
-	 */
-	private function _save_image_size($attachment_id, $size, $attachment_metadata) {
-		$new_attachment_metadata = $this->attachment_metadata;
-		$new_attachment_metadata['sizes'][$size] = $attachment_metadata;
-		$this->attachment_metadata = $new_attachment_metadata;
-		wp_update_attachment_metadata( $attachment_id, $new_attachment_metadata );
-	}
 	
 // class end
 }
