@@ -110,6 +110,33 @@ class CP_Field {
 	 * 
 	 */
 	public function show_multilanguage_field( $field, $field_id, $field_name, $values, $value_key ) {
+		global $CP_Language, $CP_Smarty;
+
+		$languages = $CP_Language->get_languages();
+
+		$fields = array();
+
+		foreach ($languages as $lang) {
+			$value = '';
+			if (isset($values[$field_name.$lang['postmeta_suffix']])) {
+				$value = $values[$field_name.$lang['postmeta_suffix']];
+			}
+			$fields[$lang['short_name']]['field'] = $this->show_field($field, $field_id.$lang['postmeta_suffix'], $field_name.$lang['postmeta_suffix'], $value);
+		}
+
+		if (isset($field['group_name']) && isset($field['group_item']) ) {
+			$field['field_id'] = $field['group_name'].'_'.$field['group_item'].'_'.$field_id.'';
+		} else if ( isset($field['group_name']) ) {
+			$field['field_id'] = $field['group_name'].'_'.$field_id.'';
+		} else {
+			$field['field_id'] = $field_id;
+		}
+
+		$CP_Smarty->smarty->assign('languages', $languages);
+		$CP_Smarty->smarty->assign('fields', $fields);
+		$CP_Smarty->smarty->assign('field', $field);
+
+		return $CP_Smarty->smarty->fetch('fields/multilanguage.html');
 	}
 
 	// -------------------- FIELDS --------------------	

@@ -86,6 +86,10 @@ class CP_Image {
 	public function get_image_link($id, $size, $options = array() ) {
 		$img_metadata = wp_get_attachment_metadata( $id );
 
+		if ( ! $img_metadata ) {
+			return null;
+		}
+
 		$wp_upload_dir = wp_upload_dir();
 		$upload_url = $wp_upload_dir['baseurl'].'/'.dirname($img_metadata['file']).'/';
 		$upload_dir = $wp_upload_dir['basedir'].'/'.dirname($img_metadata['file']).'/';
