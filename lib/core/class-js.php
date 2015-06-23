@@ -19,7 +19,6 @@ class CP_Js {
 	 * 
 	 */
 	public function add_js_files() {
-
 		if (isset(CP::$config['js']) && CP::$config['js']) {
 
 			foreach (CP::$config['js'] as $key => $js) {
@@ -32,10 +31,14 @@ class CP_Js {
 	 * 
 	 */
 	public function get_js_file($name, $js) {
+		if ( ! isset($js['plugin'])) {
+			$js['plugin'] = null;
+		}
+			
 		if (isset($js['url']) && $js['url']) {
 			$script = $js['url'];
 		} else if(isset($js['scripts']) && $js['scripts']) {
-			$script = $this->combine_js_files($name, $js['scripts']);
+			$script = $this->combine_js_files($name, $js['scripts'], $js['plugin']);
 		}
 
 		$this->add_js($name, $script, $js['dependencies'], '', $js['footer']);
@@ -44,18 +47,22 @@ class CP_Js {
 	/**
 	 * 
 	 */
-	public function combine_js_files($name, $scripts) {
+	public function combine_js_files($name, $scripts, $plugin = '') {
 		$update_js_details = 0;
 		$js_details = $this->get_js_details($name);
-		$js_details = array();
 		$js_assets = array();
 
 		$all_checksums = '';
 
 		$script_dir = get_template_directory();
 
+		if ($plugin) {
+			$script_dir = $plugin;
+		}
+
 		foreach ($scripts as $key => $script) {
 			$script_file = $script_dir.'/'.$script;
+
 			if (file_exists($script_file)) {
 				$file_checksum = md5_file($script_file);
 				if ( ! isset($js_details[$key]) || $js_details[$key] != $file_checksum ) {

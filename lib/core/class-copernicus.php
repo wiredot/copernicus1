@@ -26,6 +26,9 @@ class CP {
      		session_start(); 
 		}
 
+		// init plugins
+		self::init_plugins();
+		
 		// init folders
 		self::init_directories();
 
@@ -33,6 +36,7 @@ class CP {
 		
 		// load config file
 		self::load_config();
+
 
 		// load composer components
 		require CP_PATH . '/lib/composer/vendor/autoload.php';
@@ -42,9 +46,6 @@ class CP {
 
 		// autoload child theme classes
 		self::autoload_classes(get_template_directory().'/lib');
-
-		// init plugins
-		self::init_plugins();
 	}
 
 	/**
@@ -273,13 +274,22 @@ class CP {
 	 * 
 	 */
 	private static function init_plugins() {
-		if (isset(CP::$config['plugin'])) {
-			foreach (CP::$config['plugin'] as $plugin) {
-				if (isset($plugin['id'])) {
-					$class = strtoupper($plugin['id']);
-					global $$class;
-					
-					$$class->init();
+		global $cp_config;
+
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		$plugins = get_plugins();
+		foreach ($plugins as $key => $plugin) {
+			if (is_plugin_active( $key )) {
+				$plugin_name = dirname($key);
+				$plugin_dir = ABSPATH . 'wp-content/plugins/' . $plugin_name;
+				if (file_exists( $plugin_dir . '/copernicus-plugin.config.php' )) {
+					$cp_config['plugin'][$plugin_name] = array(
+						'id' => $plugin_name,
+						'directory' => $plugin_dir
+					);
 				}
 			}
 		}

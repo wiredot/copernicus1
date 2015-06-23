@@ -6,13 +6,20 @@ class CP_Image {
 	 * 
 	 */
 	public function __construct() {
-		// load phpThumb
-		CP::load_library(CP_PATH.'/lib/phpThumb/phpthumb.class.php');
 		
-		$this->phpThumb = new phpThumb();
+	}
+
+	public function init_phpthumb() {
+		if ( ! class_exists('phpThumb')) {
+			CP::load_library(CP_PATH.'/lib/phpThumb/phpthumb.class.php');
+
+			$this->phpThumb = new phpThumb();
+		}
 	}
 
 	public function get_image($id, $params) {
+		$this->init_phpthumb();
+
 		$parameters = $this->get_parameters($params);
 
 		$size = $this->get_size($parameters);
@@ -64,10 +71,8 @@ class CP_Image {
 			}
 		}
 
-
 		return $options;
 	}
-
 	
 	public function get_attributes($parameters) {
 		$attributes = array();

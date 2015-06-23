@@ -32,10 +32,14 @@ class CP_Css {
 	 * 
 	 */
 	public function get_css_file($name, $css) {
+		if ( ! isset($css['plugin'])) {
+			$css['plugin'] = null;
+		}
+
 		if (isset($css['url']) && $css['url']) {
 			$link = $css['url'];
 		} else if(isset($css['links']) && $css['links']) {
-			$link = $this->combine_css_files($name, $css['links']);
+			$link = $this->combine_css_files($name, $css['links'], $css['plugin']);
 		}
 
 		$this->add_css($name, $link, $css['dependencies'], '', $css['media']);
@@ -44,15 +48,18 @@ class CP_Css {
 	/**
 	 * 
 	 */
-	public function combine_css_files($name, $scripts) {
+	public function combine_css_files($name, $scripts, $plugin = null) {
 		$update_css_details = 0;
 		$css_details = $this->get_css_details($name);
-		$css_details = array();
 		$css_assets = array();
 
 		$all_checksums = '';
 
 		$script_dir = get_template_directory();
+
+		if ($plugin) {
+			$script_dir = $plugin;
+		}
 
 		foreach ($scripts as $key => $script) {
 			$script_file = $script_dir.'/'.$script;

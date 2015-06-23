@@ -30,25 +30,19 @@ class CP_Imageold {
 	 */
 	public function __construct() {
 
-		// initialize the custom post types
-		$this->_init();
 	}
-	
-	/**
-	 * Initiate the theme
-	 *
-	 * @access type public
-	 * @return type mixed returns possible errors
-	 * @author Piotr Soluch
-	 */
-	public function _init() {
-		// load phpThumb
-		CP::load_library(CP_PATH.'/lib/phpThumb/phpthumb.class.php');
-		
-		$this->phpThumb = new phpThumb();
+
+	public function init_phpthumb() {
+		if ( ! class_exists('phpThumb')) {
+			CP::load_library(CP_PATH.'/lib/phpThumb/phpthumb.class.php');
+
+			$this->phpThumb = new phpThumb();
+		}
 	}
 	
 	public function image($params) {
+		$this->init_phpthumb();
+
 		if (!isset ($params['id']) || $params['id'] < 1) {
 			return null;
 		}
@@ -163,5 +157,4 @@ class CP_Imageold {
 		}
 		return false;
 	}
-
 }
