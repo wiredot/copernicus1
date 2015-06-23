@@ -108,8 +108,8 @@ $PHPTHUMB_CONFIG['temp_directory'] = $PHPTHUMB_CONFIG['cache_directory'];  // se
 
 
 // ImageMagick configuration
-$PHPTHUMB_CONFIG['prefer_imagemagick']        = true;  // If true, use ImageMagick to resize thumbnails if possible, since it is usually faster than GD functions; if false only use ImageMagick if PHP memory limit is too low.
-$PHPTHUMB_CONFIG['imagemagick_use_thumbnail'] = true;  // If true, use ImageMagick's "-thumbnail" resizing parameter (if available) which removes extra non-image metadata (profiles, EXIF info, etc) resulting in much smaller filesize; if false, use "-resize" paramter which retains this info
+$PHPTHUMB_CONFIG['prefer_imagemagick']        = false;  // If true, use ImageMagick to resize thumbnails if possible, since it is usually faster than GD functions; if false only use ImageMagick if PHP memory limit is too low.
+$PHPTHUMB_CONFIG['imagemagick_use_thumbnail'] = false;  // If true, use ImageMagick's "-thumbnail" resizing parameter (if available) which removes extra non-image metadata (profiles, EXIF info, etc) resulting in much smaller filesize; if false, use "-resize" paramter which retains this info
 if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
 	// Windows: set absolute pathname
 	$PHPTHUMB_CONFIG['imagemagick_path'] = 'C:/ImageMagick/convert.exe';
@@ -238,7 +238,8 @@ $PHPTHUMB_DEFAULTS_DISABLEGETPARAMS  = false; // if true, GETstring parameters w
 
 /* END DEFAULT PARAMETERS SECTION */
 
-
+$config_prefer_imagemagick = false;
+$config_imagemagick_use_thumbnail = false;
 
 //////////////////////////////////////////////////////////////////////////////
 // Function for generating hashed calls to phpThumb if 'high_security_enabled'

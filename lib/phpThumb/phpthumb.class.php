@@ -117,8 +117,8 @@ class phpthumb {
 	var $allow_local_http_src                        = false;
 
 	var $config_imagemagick_path                     = null;
-	var $config_prefer_imagemagick                   = true;
-	var $config_imagemagick_use_thumbnail            = true;
+	var $config_prefer_imagemagick                   = false;
+	var $config_imagemagick_use_thumbnail            = false;
 
 	var $config_cache_maxage                         = null;
 	var $config_cache_maxsize                        = null;
