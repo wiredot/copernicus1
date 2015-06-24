@@ -101,7 +101,11 @@ class CP_Image {
 
 		$new_filename = $this->get_filename($img_metadata, $size, $options);
 
-		if (file_exists($upload_dir.$new_filename)) {
+		if ( ! isset($options['cache'])) {
+			$options['cache'] = 1;
+		}
+
+		if (file_exists($upload_dir.$new_filename) && $options['cache']) {
 			return $upload_url.$new_filename;
 		} else {
 			if ($this->create_image($upload_dir.basename($img_metadata['file']), $upload_dir.$new_filename, $size)) {
@@ -174,7 +178,6 @@ class CP_Image {
 
 		return null;
 	}
-
 	
 // class end
 }
