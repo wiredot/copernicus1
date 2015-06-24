@@ -174,13 +174,6 @@
 	span {
 		margin-left: 10px;
 	}
-	
-	.cp-remove {
-		margin: 0 0 0 10px;
-		position: absolute;
-		right: 10px;
-		bottom: 10px;
-	}
 }
 
 .mceLayout {
@@ -205,6 +198,46 @@ th#menu_order {
 	&.new {
 		visibility: hidden;
 		display: none;
+	}
+}
+
+.cp-upload-wrapper {
+
+	label {
+		display: block;
+	}
+
+	table {
+		width: 100%;
+	}
+
+	td {
+		vertical-align: top;
+
+		&.left {
+			width: 200px;
+		}
+
+		&.right {
+			padding-left: 10px;
+		}
+	}
+
+	> div {
+		background: #fff;
+
+		&:hover {
+			cursor: move;
+		}
+	}
+
+	input[type=text] {
+		margin-bottom: 3px;
+		display: block;
+	}
+
+	a {
+		margin-top: 5px;
 	}
 }
 

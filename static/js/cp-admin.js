@@ -47,8 +47,9 @@ function media_upload_multiple(filetype, field_id, field_name, title, button) {
 
 function media_upload(filetype, field_id, field_name, title, button, multiple) {
 	
-	if (filetype == 'file')
+	if (filetype == 'file') {
 		filetype = '';
+	}
 	
 	var link_status = jQuery('#button_'+field_id+'').attr('disabled');
 
@@ -179,21 +180,28 @@ function media_upload(filetype, field_id, field_name, title, button, multiple) {
 			var media_attachment = tgm_media_frame.state().get('selection').toJSON();
 			jQuery.each(media_attachment, function( key, value ){
 				var file_field = 
-					'<div id="file-'+value.id+'">';
+					'<div id="file-'+value.id+'"><table><tr><td class="left">';
 				
 				if (value.mime == "image/jpeg") {
 					var file_field = file_field +
-						'<img src="'+value.url+'" width="100">';
+						'<img src="'+value.url+'" width="200">';
 				}
 				else {
 					var file_field = file_field +
 						'<img src="'+value.icon+'">' +
 						'<span>'+value.filename+'</span>';
 				}
-				
+				console.log(value);
 				
 				var file_field = file_field +
-					'<input type="hidden" name="'+field_name+'[]" value="'+value.id+'">' +
+					'</td><td class="right">' +
+					'<label for="'+field_name+'_title_'+value.id+'">title</label>' +
+					'<input type="text" name="'+field_name+'[title][]" id="'+field_name+'_title_'+value.id+'" value="'+value.title+'">' +
+					'<label for="'+field_name+'_caption_'+value.id+'">caption</label>' +
+					'<input type="text" name="'+field_name+'[caption][]" id="'+field_name+'_caption_'+value.id+'" value="'+value.caption+'">' +
+					'<label for="'+field_name+'_alt_'+value.id+'">alt text</label>' +
+					'<input type="text" name="'+field_name+'[alt][]" id="'+field_name+'_alt_'+value.id+'" value="'+value.alt+'">' +
+					'</td></tr></table><input type="hidden" name="'+field_name+'[id][]" value="'+value.id+'">' +
 					'<a href="javascript:remove_image(\''+value.id+'\');" class="cp-remove button">Remove</a>' +
 					'</div>';
 				
@@ -201,8 +209,9 @@ function media_upload(filetype, field_id, field_name, title, button, multiple) {
 		
 				// if multiple images are not allowed
 				// disable after adding one
-				if (!multiple)
+				if (!multiple) {
 					jQuery('#button_'+field_id+'').attr("disabled", "disabled");;
+				}
 			});
 			// Send the attachment URL to our custom input field via jQuery.
 		   // jQuery('#tgm-new-media-image').val(media_attachment.url);
@@ -294,4 +303,5 @@ function cp_templates_metaboxes_show($) {
 
 function cp_sortable($) {
 	$('.cp-mb-group-wrapper').sortable();
+	$('.cp-upload-wrapper').sortable();
 }

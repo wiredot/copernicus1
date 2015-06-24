@@ -1,10 +1,22 @@
-<div id="container_{$field.field_id}" class="cp-files">
+<div id="container_{$field.field_id}" class="cp-files cp-upload-wrapper">
 	<a href="javascript:{$field.go_function}('{$field.filetype}','{$field.field_id}','{$field.field_name}','{$field.labels.title_window}', '{$field.labels.button_window}');" {$field.disabled} class="cp-open-media button button-primary" id="button_{$field['field_id']}" title="{$field.labels.button}">{$field.labels.button}</a>
-	{foreach from=$field.files item=file}
+	{foreach from=$field.files item=file key=k}
 	<div id="file-{$file.attachment}">
-		{$file.file}
-		<input type="hidden" name="{$field.field_name}[]" value="{$file.attachment}">
+		<table>
+			<tr>
+				<td class="left">{$file.file}</td>
+				<td class="right">
+					<label for="{$field.field_name}_title_{$k}">title</label>
+					<input type="text" name="{$field.field_name}[title][]" id="{$field.field_name}_title_{$k}" value="{the_title id={$file.attachment}}">
+					<label for="{$field.field_name}_caption_{$k}">caption</label>
+					<input type="text" name="{$field.field_name}[caption][]" id="{$field.field_name}_caption_{$k}" value="{the_excerpt id={$file.attachment}}">
+					<label for="{$field.field_name}_alt_{$k}">alt text</label>
+					<input type="text" name="{$field.field_name}[alt][]" id="{$field.field_name}_alt_{$k}" value="{post_meta key=alt id={$file.attachment}}">
+				</td>
+			</tr>
+		</table>
 		<a href="javascript:remove_image('{$file.attachment}');" class="cp-remove button">Remove</a>
+		<input type="hidden" name="{$field.field_name}[id][]" value="{$file.attachment}">
 	</div>
 	{/foreach}
 </div>

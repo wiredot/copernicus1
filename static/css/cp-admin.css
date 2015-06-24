@@ -114,11 +114,6 @@ To remove this comment, please support us and upgrade to SiteFlow Pro.
     position: relative; }
   .cp-files span {
     margin-left: 10px; }
-  .cp-files .cp-remove {
-    margin: 0 0 0 10px;
-    position: absolute;
-    right: 10px;
-    bottom: 10px; }
 
 .mceLayout {
   background: #fff; }
@@ -137,3 +132,23 @@ th#menu_order {
   .cp-mb-group.new {
     visibility: hidden;
     display: none; }
+
+.cp-upload-wrapper label {
+  display: block; }
+.cp-upload-wrapper table {
+  width: 100%; }
+.cp-upload-wrapper td {
+  vertical-align: top; }
+  .cp-upload-wrapper td.left {
+    width: 200px; }
+  .cp-upload-wrapper td.right {
+    padding-left: 10px; }
+.cp-upload-wrapper > div {
+  background: #fff; }
+  .cp-upload-wrapper > div:hover {
+    cursor: move; }
+.cp-upload-wrapper input[type=text] {
+  margin-bottom: 3px;
+  display: block; }
+.cp-upload-wrapper a {
+  margin-top: 5px; }

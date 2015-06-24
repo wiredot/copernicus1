@@ -661,11 +661,19 @@ class CP_Mb {
 				
 				foreach ($languages as $language) {
 
-					$this->save_meta_box_field($field['id'].$language['postmeta_suffix'], $post_id);
+					if ($field['type'] == 'upload') {
+						$this->save_meta_box_field_upload($field['id'].$language['postmeta_suffix'], $post_id);
+					} else {
+						$this->save_meta_box_field($field['id'].$language['postmeta_suffix'], $post_id);
+					}
 				}
 			}
 			else {
-				$this->save_meta_box_field($meta_key, $post_id);
+				if ($field['type'] == 'upload') {
+					$this->save_meta_box_field_upload($meta_key, $post_id);
+				} else {
+					$this->save_meta_box_field($meta_key, $post_id);
+				}
 			}
 		}
 	}
@@ -679,8 +687,6 @@ class CP_Mb {
 		
 		// Get the posted data
 		$new_meta_value = ( isset($_POST[$meta_key]) ? $_POST[$meta_key] : '' );
-			//$new_meta_value['2'] = 'asd';
-
 
 		// Get the meta value of the custom field key.
 		$meta_value = get_post_meta($post_id, $meta_key, true);
@@ -696,9 +702,37 @@ class CP_Mb {
 		}
 
 		// If there is no new meta value but an old value exists, delete it.
-		elseif (!$new_meta_value && $meta_value) {
-			//new dBug($new_meta_value);
+		else if ( ! $new_meta_value && $meta_value) {
 			delete_post_meta($post_id, $meta_key, $meta_value);
+		}
+	}
+
+	public function save_meta_box_field_upload($meta_key, $post_id) {
+		
+		// Get the posted data
+		$new_meta_value = ( isset($_POST[$meta_key]) ? $_POST[$meta_key] : '' );
+		
+		update_post_meta($post_id, $meta_key, $new_meta_value['id']);
+
+		foreach ($new_meta_value['id'] as $key => $id) {
+			$title = '';
+			$caption = '';
+			if (isset($new_meta_value['title'][$key])) {
+				$title = $new_meta_value['title'][$key];
+			}
+			if (isset($new_meta_value['caption'][$key])) {
+				$caption = $new_meta_value['caption'][$key];
+			}
+
+			wp_update_post( array(
+				'ID' => $id,
+				'post_title' => $title,
+				'post_excerpt' => $caption,
+			) );
+
+			if (isset($new_meta_value['alt'][$key])) {
+				update_post_meta( $id, 'alt', $new_meta_value['alt'][$key] );
+			}
 		}
 	}
 	
