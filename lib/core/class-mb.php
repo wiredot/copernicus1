@@ -58,7 +58,7 @@ class CP_Mb {
 	 * 
 	 */
 	public function add_main_box() {
-		global $post, $CP_Language, $CP_Cpt;
+		global $post, $CP_Language, $CP_Cpt, $CP_Spt;
 
 		if ($CP_Language->get_language_count() < 2) {
 			return;
@@ -71,7 +71,7 @@ class CP_Mb {
 
 		$return = '';
 
-		if ($post_type == 'page' || $post_type == 'post' || $CP_Cpt->is_supporting( $post_type, 'title' )) {
+		if ( ( ($post_type == 'page' && $CP_Spt->is_supported('page', 'title')) || ($post_type == 'post' && $CP_Spt->is_supported('post', 'title')) || $CP_Cpt->is_supporting( $post_type, 'title' ) ) && ($this->is_to_translate($post_type, 'title')) ) {
 			$return.= '<div id="titlediv" class="cp-titlediv">';
 				
 				$return.= '<div id="titlewrap">';
@@ -147,7 +147,12 @@ class CP_Mb {
 		}
 	
 		
-		if ($post_type == 'page' || $post_type == 'post' || $CP_Cpt->is_supporting( $post_type, 'editor' )) {
+		if ( (($post_type == 'page' && $CP_Spt->is_supported('page', 'editor')) || ($post_type == 'post' && $CP_Spt->is_supported('post', 'editor')) || $CP_Cpt->is_supporting( $post_type, 'editor' ))  && ($this->is_to_translate($post_type, 'editor')) ) {
+			
+			if ( ! ( $post_type == 'page' || $post_type == 'post' || $CP_Cpt->is_supporting( $post_type, 'title' ) ) || ! ($this->is_to_translate($post_type, 'title')) ) {
+				$return.= '<br>';
+			}
+
 			$return.= '<div id="postdivrich" class="postarea edit-form-section">';
 				$return.= '<div class="cp-langs full" id="langs_post_title">';
 
@@ -711,27 +716,32 @@ class CP_Mb {
 		
 		// Get the posted data
 		$new_meta_value = ( isset($_POST[$meta_key]) ? $_POST[$meta_key] : '' );
-		
-		update_post_meta($post_id, $meta_key, $new_meta_value['id']);
+		if ($new_meta_value) {
+			update_post_meta($post_id, $meta_key, $new_meta_value['id']);
+		} else {
+			delete_post_meta($post_id, $meta_key);
+		}
 
-		foreach ($new_meta_value['id'] as $key => $id) {
-			$title = '';
-			$caption = '';
-			if (isset($new_meta_value['title'][$key])) {
-				$title = $new_meta_value['title'][$key];
-			}
-			if (isset($new_meta_value['caption'][$key])) {
-				$caption = $new_meta_value['caption'][$key];
-			}
+		if (isset($new_meta_value['id'])) {
+			foreach ($new_meta_value['id'] as $key => $id) {
+				$title = '';
+				$caption = '';
+				if (isset($new_meta_value['title'][$key])) {
+					$title = $new_meta_value['title'][$key];
+				}
+				if (isset($new_meta_value['caption'][$key])) {
+					$caption = $new_meta_value['caption'][$key];
+				}
 
-			wp_update_post( array(
-				'ID' => $id,
-				'post_title' => $title,
-				'post_excerpt' => $caption,
-			) );
+				wp_update_post( array(
+					'ID' => $id,
+					'post_title' => $title,
+					'post_excerpt' => $caption,
+				) );
 
-			if (isset($new_meta_value['alt'][$key])) {
-				update_post_meta( $id, 'alt', $new_meta_value['alt'][$key] );
+				if (isset($new_meta_value['alt'][$key])) {
+					update_post_meta( $id, 'alt', $new_meta_value['alt'][$key] );
+				}
 			}
 		}
 	}
@@ -781,5 +791,17 @@ class CP_Mb {
 		}
 		
 		return $fields;
+	}
+
+	public function is_to_translate($post_type, $field) {
+		if (isset(CP::$config['cpt'][$post_type]['translate'][$field])) {
+			if (CP::$config['cpt'][$post_type]['translate'][$field]) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+
+		return 1;
 	}
 }

@@ -47,7 +47,9 @@ class CP_Cpt {
 	 */
 	public function create_post_types() {
 		// for each cpt
-		foreach ($this->cpt AS $cpt) {
+		foreach ($this->cpt AS $key => $cpt) {
+			
+			$cpt['name'] = $key;
 
 			// if cpt is active
 			if ($cpt['settings']['active']) {
@@ -73,12 +75,12 @@ class CP_Cpt {
 		if ($CP_Language->get_language_count() > 1) {
 			
 			// if cpt supports title, remove standard title (a special one will be turned on)
-			if ($cpt['support']['title']) {
+			if ($cpt['support']['title'] && $CP_Mb->is_to_translate($cpt['name'], 'title')) {
 				$cpt['support']['title'] = false;
 			}
 
 			// if cpt supports editor, remove standard editor (a special one will be turned on)
-			if ($cpt['support']['editor']) {
+			if ($cpt['support']['editor'] && $CP_Mb->is_to_translate($cpt['name'], 'editor')) {
 				$cpt['support']['editor'] = false;
 			}
 		}

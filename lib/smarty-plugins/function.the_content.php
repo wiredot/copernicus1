@@ -55,7 +55,7 @@ function smarty_function_the_content( $params, $template ) {
 		}
 	}
 
-	if (is_null($content)) {
+	if (strlen($content) < 1) {
 		$content = get_the_content($params['more_link_text'], $params['stripteaser']);
 	}
 

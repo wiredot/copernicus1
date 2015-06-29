@@ -63,13 +63,20 @@ class CP_Header {
 		global $page, $paged;
 
 		$title = '';
+		if (LANGUAGE_SUFFIX != '') {
+			$seo_title.= get_post_meta(get_the_id(), 'meta_title' . LANGUAGE_SUFFIX, true);
+		} else {
+			$seo_title = get_post_meta( get_the_id(), 'meta_title', true );
+		}
 
-		$seo_title = get_post_meta( get_the_id(), 'meta_title', true );
-		
 		if ($seo_title) {
 			$title = $seo_title;
 		} else {
-			$title.= wp_title( '|', false, 'right' );
+			if (LANGUAGE_SUFFIX != '') {
+				$title.= get_post_meta(get_the_id(), 'post_title' . LANGUAGE_SUFFIX, true). ' | ';
+			} else {
+				$title.= wp_title( '|', false, 'right' );
+			}
 			// Add the blog name.
 			$title.= get_bloginfo( 'name' );
 

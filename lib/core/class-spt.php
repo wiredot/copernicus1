@@ -35,16 +35,33 @@ class CP_Spt {
 	 * 
 	 */
 	public function support() {
+		$this->support_type('page', 'title');
+		$this->support_type('page', 'editor');
+
+		$this->support_type('post', 'title');
+		$this->support_type('post', 'editor');
+	}
+
+	public function support_type($post_type, $field) {
 		global $CP_Language;
 
-		// if more than 1 active language
-		if ($CP_Language->get_language_count() > 1) {
-			remove_post_type_support('page', 'title');
-			remove_post_type_support('page', 'editor');
-			
-			remove_post_type_support('post', 'title');
-			remove_post_type_support('post', 'editor');
+		if ( ! $this->is_supported($post_type, $field)) {
+			$this->remove_support($post_type, $field);
+		} else if ($CP_Language->get_language_count() > 1) {
+			$this->remove_support($post_type, $field);
 		}
+	}
+
+	public function remove_support($post_type, $field) {
+		remove_post_type_support($post_type, $field);
+	}
+
+	public function is_supported($post_type, $field) {
+		if (isset(CP::$config['spt'][$post_type]['support'][$field]) && ! CP::$config['spt'][$post_type]['support'][$field]) {
+			return false;
+		}
+
+		return true;
 	}
 
 // class end
