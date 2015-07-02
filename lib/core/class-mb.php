@@ -71,7 +71,7 @@ class CP_Mb {
 
 		$return = '';
 
-		if ( ( ($post_type == 'page' && $CP_Spt->is_supported('page', 'title')) || ($post_type == 'post' && $CP_Spt->is_supported('post', 'title')) || $CP_Cpt->is_supporting( $post_type, 'title' ) ) && ($this->is_to_translate($post_type, 'title')) ) {
+		if ( ( ($post_type == 'page' && $CP_Spt->is_supported('page', 'title') && $CP_Spt->is_translated('page', 'title')) || ($post_type == 'post' && $CP_Spt->is_supported('post', 'title') && $CP_Spt->is_translated('post', 'title')) || $CP_Cpt->is_supporting( $post_type, 'title' ) ) && ($this->is_to_translate($post_type, 'title')) ) {
 			$return.= '<div id="titlediv" class="cp-titlediv">';
 				
 				$return.= '<div id="titlewrap">';
@@ -593,7 +593,6 @@ class CP_Mb {
 	 * @author Piotr Soluch
 	 */
 	public function save_meta_boxes($post_id, $post) {
-		
 		// if custom post type has fields
 		if (is_array($this->mb)) {
 
@@ -630,10 +629,10 @@ class CP_Mb {
 	 */
 	public function save_meta_box_fields($fields) {
 		global $post, $post_id, $CP_Language;
-		
 		// for new posts
-		if ($post === null)
+		if ($post === null) {
 			return;
+		}
 		
 		// get post type from post object
 		$post_type = get_post_type_object($post->post_type);
@@ -693,21 +692,10 @@ class CP_Mb {
 		// Get the posted data
 		$new_meta_value = ( isset($_POST[$meta_key]) ? $_POST[$meta_key] : '' );
 
-		// Get the meta value of the custom field key.
-		$meta_value = get_post_meta($post_id, $meta_key, true);
-
-		// If a new meta value was added and there was no previous value, add it.
-		if ($new_meta_value && $meta_value == '') {
-			add_post_meta($post_id, $meta_key, $new_meta_value, true);
-		}
-
 		// If the new meta value does not match the old value, update it.
-		else if ($new_meta_value && $new_meta_value !== $meta_value) {
+		if ($new_meta_value) {
 			update_post_meta($post_id, $meta_key, $new_meta_value);
-		}
-
-		// If there is no new meta value but an old value exists, delete it.
-		else if ( ! $new_meta_value && $meta_value) {
+		} else {
 			delete_post_meta($post_id, $meta_key, $meta_value);
 		}
 	}
@@ -741,6 +729,8 @@ class CP_Mb {
 
 				if (isset($new_meta_value['alt'][$key])) {
 					update_post_meta( $id, 'alt', $new_meta_value['alt'][$key] );
+				} else {
+					delete_post_meta( $id, 'alt' );
 				}
 			}
 		}

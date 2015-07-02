@@ -45,9 +45,9 @@ class CP_Spt {
 	public function support_type($post_type, $field) {
 		global $CP_Language;
 
-		if ( ! $this->is_supported($post_type, $field)) {
+		if ( ! $this->is_supported($post_type, $field) ) {
 			$this->remove_support($post_type, $field);
-		} else if ($CP_Language->get_language_count() > 1) {
+		} else if ($CP_Language->get_language_count() > 1 && $this->is_translated($post_type, $field) ) {
 			$this->remove_support($post_type, $field);
 		}
 	}
@@ -58,6 +58,14 @@ class CP_Spt {
 
 	public function is_supported($post_type, $field) {
 		if (isset(CP::$config['spt'][$post_type]['support'][$field]) && ! CP::$config['spt'][$post_type]['support'][$field]) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public function is_translated($post_type, $field) {
+		if (isset(CP::$config['spt'][$post_type]['translate'][$field]) && ! CP::$config['spt'][$post_type]['translate'][$field]) {
 			return false;
 		}
 
