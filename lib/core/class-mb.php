@@ -442,54 +442,6 @@ class CP_Mb {
 		$return.= '<a href="#add" class="cp-mb-add-group button" id="group-'.$field['id'].'">add</a>';
 		
 		return $return;
-
-
-
-
-		if (isset($values[$field['id']])) {
-			$group_values = ( maybe_unserialize($values[$field['id']]));
-
-			$return.= '<div class="cp-mb-group-wrapper">';
-
-			$values = array();
-			foreach ($group_values AS $group_key => $group_value) { 
-				$return.= '<fieldset class="cp-mb-group" id="'.$field['id'].'_'.$group_key.'">';
-
-				if (isset($field['fields'])) {
-
-					foreach ($field['fields'] as $key => $group_field) {
-						if (!isset($group_value[$group_field['id']])) {
-							$group_value[$group_field['id']] = '';
-						}
-
-						if (isset($group_field['translation']) && $group_field['translation']) {
-							$value_key = $field['id'].'['.$group_key.']['.$group_field['id'].']';
-							$values[$field['id']] = $group_value;
-						} else {
-							$value_key = $field['id'].'['.$group_key.']['.$group_field['id'].']';
-							$values[$value_key] = $group_value[$group_field['id']];
-						}
-
-						$group_field['group_name'] = $field['id'];
-						$group_field['group_item'] = $group_key;
-						$group_field['group_field'] = $group_field['id'];
-						$group_field['id'] = $key;
-						
-						$return.= $this->meta_box_field($group_field, $values);
-					}
-				}
-
-				$return.= '<a href="#'.$field['id'].'_'.$group_key.'" class="cp-mb-remove-group">remove</a>';
-				$return.= '</fieldset>';
-			}
-			$group_key++;
-
-			$return.= '</div>';
-		}
-		
-		$return.= '<a href="#'.$group_key.'" class="cp-mb-add-group button" id="group-'.$field['id'].'">add</a>';
-
-		return $return;
 	}
 
 	/**
@@ -628,6 +580,7 @@ class CP_Mb {
 	 * @author Piotr Soluch
 	 */
 	public function save_meta_box_fields($fields) {
+
 		global $post, $post_id, $CP_Language;
 		// for new posts
 		if ($post === null) {
@@ -649,8 +602,48 @@ class CP_Mb {
 		
 		$languages = $CP_Language->get_languages();
 
+		
 		// for each field in a box
 		foreach ($fields as $k => $field) {
+
+			if ($field['type'] == 'group') {
+				foreach ($field['fields'] as $f => $fvalue) {
+					if ($fvalue['type'] == 'upload') {
+						foreach ($_POST[$k] AS $kkey => $postvalues) {
+							foreach ($postvalues as $postkey => $postvalue) {
+								if ($postkey == $f) {
+
+									$postvaluearray = array();
+
+									foreach ($postvalue['id'] as $postvaluekey => $postvalueid) {
+										$title = '';
+										$caption = '';
+										$alt = '';
+
+										$postvaluearray[] = $postvalueid;
+										
+										if (isset($postvalue['title'][$postvaluekey])) {
+											$title = $postvalue['title'][$postvaluekey];
+										}
+										
+										if (isset($postvalue['caption'][$postvaluekey])) {
+											$caption = $postvalue['caption'][$postvaluekey];
+										}
+
+										if (isset($postvalue['alt'][$postvaluekey])) {
+											$alt = $postvalue['alt'][$postvaluekey];
+										}
+
+										$this->update_image_data($postvalueid, $title, $caption, $alt);
+									}
+
+									$_POST[$k][$kkey][$f] = $postvaluearray;
+								}
+							}
+						}
+					}
+				}
+			}
 
 			$field['id'] = $k;
 
@@ -660,8 +653,7 @@ class CP_Mb {
 			//can't save during autosave, otherwise it saves blank values (there's a problem that meta box values are not send with POST during autosave. Probably fixable
 			if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
 				return;
-			}
-			else if (isset($field['translation']) && $field['translation']) {
+			} else if (isset($field['translation']) && $field['translation']) {
 				
 				foreach ($languages as $language) {
 
@@ -714,25 +706,43 @@ class CP_Mb {
 			foreach ($new_meta_value['id'] as $key => $id) {
 				$title = '';
 				$caption = '';
+				$alt = '';
+				
 				if (isset($new_meta_value['title'][$key])) {
 					$title = $new_meta_value['title'][$key];
 				}
+				
 				if (isset($new_meta_value['caption'][$key])) {
 					$caption = $new_meta_value['caption'][$key];
 				}
 
-				wp_update_post( array(
-					'ID' => $id,
-					'post_title' => $title,
-					'post_excerpt' => $caption,
-				) );
-
 				if (isset($new_meta_value['alt'][$key])) {
-					update_post_meta( $id, 'alt', $new_meta_value['alt'][$key] );
-				} else {
-					delete_post_meta( $id, 'alt' );
+					$alt = $new_meta_value['alt'][$key];
 				}
+
+				$this->update_image_data($id, $title, $caption, $alt);
 			}
+		}
+	}
+
+	public function update_image_data($id, $title, $caption, $alt = '') {
+		global $wpdb;
+
+		$wpdb->update(
+			$wpdb->posts,
+			array(
+				'post_title' => $title,
+				'post_excerpt' => $caption
+			),
+			array(
+				'ID' => $id
+			)
+		);
+
+		if ($alt) {
+			update_post_meta( $id, 'alt', $alt );
+		} else {
+			delete_post_meta( $id, 'alt' );
 		}
 	}
 	

@@ -24,7 +24,6 @@ function smarty_function_the_author_id($params, $template) {
 	$params = array_merge($default_params, $params);
 	global $wpdb;
 
-
 	$post = get_post($params['id']);
 	return $post->post_author;
 }
