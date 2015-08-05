@@ -59,7 +59,6 @@ class CP_Alv {
 	 * @author Piotr Soluch
 	 */
 	public function modify_list_views() {
-
 		// for each alv
 		foreach ($this->alv AS $alv) {
 
@@ -88,8 +87,9 @@ class CP_Alv {
 	public function modify_list_view($columns) {
 		$new_columns = array();
 		
-		if (isset($columns['cb']))
+		if (isset($columns['cb'])) {
 			$new_columns['cb'] = $columns['cb'];
+		}
 		
 		foreach ($this->alv_fields as $key => $field) {
 			switch($field) {
@@ -119,7 +119,6 @@ class CP_Alv {
 					break;
 			}
 			$new_columns[$field] = $field_name;
-			
 		}
 		
 		return $new_columns;
@@ -130,14 +129,13 @@ class CP_Alv {
 	 * @param type $post_type
 	 */
 	private function get_mb_fields($post_type) {
-		
 		$fields = array();
 		
 		foreach ($this->mb as $key => $mb) {
 			
-			if (is_array($mb['fields'])) {
-				foreach ($mb['fields'] as $field) {
-					$fields[$key] = $field;
+			if (is_array($mb['fields']) && $mb['post_type'] == $post_type) {
+				foreach ($mb['fields'] as $k => $field) {
+					$fields[$k] = $field;
 				}
 			}
 		}
@@ -213,6 +211,16 @@ class CP_Alv {
 				break;
 			default:
 				$value = get_post_meta($post_id, $column, 1);
+				//print_r($value);
+				if (isset($this->mb_fields[$column])) {
+					switch($this->mb_fields[$column]['type']) {
+						case 'select':
+							if (isset($this->mb_fields[$column]['options'][$value])) {
+								echo $this->mb_fields[$column]['options'][$value];
+							}
+						break;
+					}
+				}
 				if ($value) {
 					$field = $this->mb_fields[$column];
 					echo $CP_Mb->get_value($field, $value);

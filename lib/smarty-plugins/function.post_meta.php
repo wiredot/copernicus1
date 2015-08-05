@@ -69,14 +69,20 @@ function smarty_function_post_meta($params, $template) {
 		}
 	}
 
-	if (isset($params['assign']) && $params['assign']) {
-		$template->assign($params['assign'], $post_meta);
-		return;
+	if (is_array($post_meta) && LANGUAGE_SUFFIX != '') {
+		foreach ($post_meta as $key => $value) {
+			
+			foreach ($value as $vkey => $vvalue) {
+				if (isset($value[$vkey.LANGUAGE_SUFFIX])) {
+					$post_meta[$key][$vkey] = $value[$vkey.LANGUAGE_SUFFIX];
+				}
+			}
+
+		}
 	}
 
-	// DEPRICIATED - will be removed
-	if (isset($params['out']) && $params['out']) {
-		$template->assign($params['out'], $post_meta);
+	if (isset($params['assign']) && $params['assign']) {
+		$template->assign($params['assign'], $post_meta);
 		return;
 	}
 	

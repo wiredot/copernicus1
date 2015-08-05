@@ -64,7 +64,7 @@ class CP_Header {
 
 		$title = '';
 		if (LANGUAGE_SUFFIX != '') {
-			$seo_title.= get_post_meta(get_the_id(), 'meta_title' . LANGUAGE_SUFFIX, true);
+			$seo_title = get_post_meta(get_the_id(), 'meta_title' . LANGUAGE_SUFFIX, true);
 		} else {
 			$seo_title = get_post_meta( get_the_id(), 'meta_title', true );
 		}

@@ -18,10 +18,12 @@ function smarty_function_wp_redirect($params, $template) {
 		global $post;
 		if ($post->ID != $params['id']) {
 			$link = get_permalink($params['id']);
-			return '<script>window.location.href = "'.$link.'";</script>';
+			echo '<script>window.location.href = "'.$link.'";</script>';
+			exit;
 		}
 	} else if (isset($params['href']) && $params['href']) {
-		return '<script>window.location.href = "'.$params['href'].'";</script>';
+		echo '<script>window.location.href = "'.$params['href'].'";</script>';
+		exit;
 	}
 	return null;
 	exit;

@@ -237,7 +237,6 @@ class CP_Mb {
 	 * @author Piotr Soluch
 	 */
 	public function add_meta_box($mb) {
-
 		if (is_array($mb['post_type'])) {
 			foreach ($mb['post_type'] as $post_type) {
 				// add meta group
@@ -608,7 +607,7 @@ class CP_Mb {
 
 			if ($field['type'] == 'group') {
 				foreach ($field['fields'] as $f => $fvalue) {
-					if ($fvalue['type'] == 'upload') {
+					if ($fvalue['type'] == 'upload' && isset($_POST[$k])) {
 						foreach ($_POST[$k] AS $kkey => $postvalues) {
 							foreach ($postvalues as $postkey => $postvalue) {
 								if ($postkey == $f) {
@@ -688,7 +687,7 @@ class CP_Mb {
 		if ($new_meta_value) {
 			update_post_meta($post_id, $meta_key, $new_meta_value);
 		} else {
-			delete_post_meta($post_id, $meta_key, $meta_value);
+			delete_post_meta($post_id, $meta_key);
 		}
 	}
 
