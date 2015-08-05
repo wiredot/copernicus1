@@ -14,12 +14,14 @@
  *
  */
 function smarty_function_get_permalink($params, $template) {
-   
-   $permalink = get_permalink();
+	if (isset($params['id'])) {
+		$permalink = get_permalink($params['id']);
+	} else {
+		$permalink = get_permalink();
+	}
 
 	$permalink = str_replace("http://", "", $permalink);
 	$permalink = str_replace("//", "/", $permalink);
 
 	return 'http://'.$permalink;	
-    
 }
