@@ -57,7 +57,10 @@ class CP_Permalink {
 			$wpurl = get_bloginfo( 'wpurl' );
 			$url = preg_replace('/'.str_replace('/', '\/', $wpurl).'/', $wpurl.'/'.$language['prefix'], $url);
 		}
-		//new dBug($url);
+		
+		if (substr("testers", -1) != '/') {
+			$url = $url.'/';
+		}
 
 		return $url;
 	}
