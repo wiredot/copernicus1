@@ -6,6 +6,7 @@ jQuery(document).ready(function($){
    cp_metaboxes_init($);
    cp_templates_metaboxes($);
    cp_sortable($);
+   datepicker($);
 });
 
 function language_tabs($) {
@@ -304,4 +305,11 @@ function cp_templates_metaboxes_show($) {
 function cp_sortable($) {
 	$('.cp-mb-group-wrapper').sortable();
 	$('.cp-upload-wrapper').sortable();
+}
+
+function datepicker($) {
+	$('input.cp_datepicker').Zebra_DatePicker({
+		format: 'Y-m-d',
+		show_icon: false
+	});
 }

@@ -43,8 +43,11 @@ class CP_Field {
 			case 'range':
 			case 'color':
 			case 'url':
-			case 'date':
 				return $this->_get_input($field);
+				break;
+
+			case 'date':
+				return $this->_get_date($field);
 				break;
 
 			case 'textarea':
@@ -149,6 +152,23 @@ class CP_Field {
 		$CP_Smarty->smarty->assign('field', $field);
 
 		return $CP_Smarty->smarty->fetch('fields/input.html');
+	}
+
+	/**
+	 * 
+	 */
+	private function _get_date($field) {
+		global $CP_Smarty;
+
+		if (isset($field['attributes']['class'])) {
+			$field['attributes']['class'] = $field['attributes']['class'] . ' cp_datepicker';
+		} else {
+			$field['attributes']['class'] = 'cp_datepicker';
+		}
+		
+		$CP_Smarty->smarty->assign('field', $field);
+
+		return $CP_Smarty->smarty->fetch('fields/date.html');
 	}
 
 	/**

@@ -51,7 +51,6 @@ class CP_Admin {
 		$cmu = $_GET['cmu'];
 		echo '<script type="text/javascript">
 			jQuery(document).ready(function() {
-				//alert("asda");
 				jQuery("tr.align").hide();
 				jQuery("tr.url").hide();
 				jQuery("tr.image-size").hide();
@@ -98,6 +97,9 @@ class CP_Admin {
 	 */
 	public function load_js() {
 		// load main admin js file
+		wp_register_script('cp_datepicker', CP_URL . 'static/datepicker/js/zebra_datepicker.js', array('jquery'), $this->theme['version'], 1);
+		wp_enqueue_script('cp_datepicker');
+
 		wp_register_script('cp_admin', CP_URL . 'static/js/cp-admin.js', array('jquery','jquery-ui-core', 'jquery-ui-sortable'), $this->theme['version'], 1);
 		wp_enqueue_script('cp_admin');
 	}
@@ -108,6 +110,9 @@ class CP_Admin {
 	public function load_css() {
 		wp_register_style('cp_admin', CP_URL . 'static/css/cp-admin.css', '', $this->theme['version'], 'all');
 		wp_enqueue_style('cp_admin');
+
+		wp_register_style('cp_datepicker', CP_URL . 'static/datepicker/css/metallic.css', '', $this->theme['version'], 'all');
+		wp_enqueue_style('cp_datepicker');
 	}
 
 	/**
