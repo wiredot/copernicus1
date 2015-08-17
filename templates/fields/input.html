@@ -1,1 +1,1 @@
-<input type="{$field.type}" name="{$field.field_name}" value="{$field.value}" id="{$field.field_id}">
+<input type="{$field.type}" name="{$field.field_name}" value="{$field.value}" id="{$field.field_id}"{foreach from=$field.attributes key=k item=attr} {$k}="{$attr}"{/foreach}>

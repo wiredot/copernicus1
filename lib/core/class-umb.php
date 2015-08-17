@@ -51,8 +51,8 @@ class CP_Umb {
 		if (is_array($this->umb)) {
 
 			// for each meta box
-			foreach ($this->umb AS $umb) {
-
+			foreach ($this->umb AS $key => $umb) {
+				$umb['key'] = $key;
 				// if meta box is active
 				if ( $umb['active'] && isset($umb['fields']) && is_array($umb['fields']) ) {
 					// create meta box groups
@@ -72,8 +72,8 @@ class CP_Umb {
 	 */
 	public function add_user_meta_box_group($umb, $user_id) {
 		global $CP_Field;
-
-		$return = '<hr><h3>'.$umb['name'].'</h3><table class="form-table"><tbody>';
+		$return = '<div id="umb_'.$umb['key'].'">';
+		$return.= '<hr><h3>'.$umb['name'].'</h3><table class="form-table"><tbody>';
 
 		foreach ($umb['fields'] as $key => $field) {
 			$return.= '<tr><th>';
@@ -84,6 +84,7 @@ class CP_Umb {
 		}
 
 		$return.= '</tbody></table>';
+		$return.= '</div>';
 
 		echo $return;
 	}

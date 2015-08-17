@@ -37,6 +37,8 @@ class CP_Imageold {
 			CP::load_library(CP_PATH.'/lib/phpThumb/phpthumb.class.php');
 
 			$this->phpThumb = new phpThumb();
+		} else if ( ! $this->phpThumb) {
+			$this->phpThumb = new phpThumb();
 		}
 	}
 	
