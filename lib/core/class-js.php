@@ -36,12 +36,18 @@ class CP_Js {
 		}
 			
 		if (isset($js['url']) && $js['url']) {
-			$script = $js['url'];
+			$this->add_js($name, $js['url'], $js['dependencies'], '', $js['footer']);
 		} else if(isset($js['scripts']) && $js['scripts']) {
-			$script = $this->combine_js_files($name, $js['scripts'], $js['plugin']);
+			
+			if ( defined('CP_DEV') && CP_DEV) {
+				foreach ($js['scripts'] as $js_name => $js_link) {
+					$this->add_js($js_name, get_template_directory_uri().'/'.$js_link, $js['dependencies'], '', $js['footer']);
+				}
+			} else {
+				$script = $this->combine_js_files($name, $js['scripts'], $js['plugin']);
+				$this->add_js($name, $script, $js['dependencies'], '', $js['footer']);
+			}
 		}
-
-		$this->add_js($name, $script, $js['dependencies'], '', $js['footer']);
 	}
 
 	/**
