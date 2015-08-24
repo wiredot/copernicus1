@@ -792,6 +792,21 @@ class CP_Mb {
 		return $fields;
 	}
 
+	public function get_meta_key_fields($mb_search) {
+		$fields = array();
+		
+		foreach ($this->mb AS $mb) {
+			
+			if($mb['post_type'] == $mb_search) {
+				foreach ($mb['fields'] AS $key => $field ) {
+					$fields[$mb['post_type']][] = $key;
+				}		
+			}
+		}
+		
+		return $fields;
+	}
+
 	public function is_to_translate($post_type, $field) {
 		if (isset(CP::$config['cpt'][$post_type]['translate'][$field])) {
 			if (CP::$config['cpt'][$post_type]['translate'][$field]) {
