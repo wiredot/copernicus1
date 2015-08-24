@@ -62,7 +62,10 @@ class CP_Permalink {
 			$url = $url.'/';
 		}
 
-		return $url;
+		$url = str_replace("http://", '', $url);
+		$url = str_replace("//", '/', $url);
+
+		return 'http://'.$url;
 	}
 
 	/**

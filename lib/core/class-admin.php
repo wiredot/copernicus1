@@ -31,8 +31,24 @@ class CP_Admin {
 		// add css files in admin panel
 		add_action('admin_init', array($this, 'load_css'));
 		
-		
 		add_filter('media_upload_tabs', array($this, 'remove_gallery'), 99);
+
+		add_action( 'add_meta_boxes', array($this, 'wpse44966_add_meta_box') );
+	}
+
+	public function wpse44966_add_meta_box($post_type) {
+		global $post, $wpdb;
+
+		if ($post->menu_order == 0 && ! isset($_GET['post'] )) {
+		
+			$max_menu_order = $wpdb->get_var("
+				SELECT max(menu_order)
+				FROM " . $wpdb->posts . "
+				WHERE post_type = '" . $post_type . "'
+			");
+	
+			$post->menu_order = $max_menu_order + 10;
+		}
 	}
 	
 	/**

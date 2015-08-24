@@ -37,12 +37,18 @@ class CP_Css {
 		}
 
 		if (isset($css['url']) && $css['url']) {
-			$link = $css['url'];
+			$this->add_css($name, $css['url'], $css['dependencies'], '', $css['media']);
 		} else if(isset($css['links']) && $css['links']) {
-			$link = $this->combine_css_files($name, $css['links'], $css['plugin']);
-		}
 
-		$this->add_css($name, $link, $css['dependencies'], '', $css['media']);
+			if ( defined('CP_DEV') && CP_DEV) {
+				foreach ($css['links'] as $css_name => $css_link) {
+					$this->add_css($css_name, get_template_directory_uri().'/'.$css_link, $css['dependencies'], '', $css['media']);
+				}
+			} else {
+				$link = $this->combine_css_files($name, $css['links'], $css['plugin']);
+				$this->add_css($name, $link, $css['dependencies'], '', $css['media']);
+			}
+		}
 	}
 
 	/**
@@ -80,17 +86,11 @@ class CP_Css {
 		$combined_css = content_url().'/cache/css/'.$new_css_file;
 
 		if ($update_css_details || ! file_exists(WP_CONTENT_DIR.'/cache/css/'.$new_css_file)) {
-			if (WP_DEBUG) {
-				$css = new AssetCollection(
-					$css_assets
-				);
-			} else {
-				$css = new AssetCollection(
-					$css_assets,
-				array(
-				    new CssMinFilter(),
-				));
-			}
+			$css = new AssetCollection(
+				$css_assets,
+			array(
+			    new CssMinFilter(),
+			));
 			
 			$css->setTargetPath($new_css_file);
 
