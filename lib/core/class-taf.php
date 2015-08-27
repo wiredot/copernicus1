@@ -18,7 +18,7 @@
 class CP_Taf {
 
 	// part of config with all cpts
-	private $cpt = array();
+	private $taf = array();
 
 	/**
 	 * Class constructor
@@ -29,6 +29,8 @@ class CP_Taf {
 	 */
 	public function __construct() {
 		if (isset(CP::$config['taf']) && is_array(CP::$config['taf'])) {
+
+			$this->taf = CP::$config['taf'];
 
 			// for each taxonomy
 			foreach(CP::$config['taf'] AS $taf) {
@@ -153,23 +155,80 @@ class CP_Taf {
 	/**
 	 * 
 	 */
-	public function save_taxonomy_custom_fields($term_id, $aa) {
+	public function save_taxonomy_custom_fields($term_id, $term_taxonomy_id) {
 
-		if ( isset( $_POST['cp_term_meta'] ) ) {
-			
+		$values = array();
+		if ( isset($_POST['cp_term_meta']) ) {
+			$values = $_POST['cp_term_meta'];
+		}
+
+		if (isset($_POST['taxonomy'])) {
+			$taxonomy = $_POST['taxonomy'];
+
 			$term_meta = array();
 
-			foreach ( $_POST['cp_term_meta'] as $key => $field ) {
-				
-				$term_meta[$key] = $_POST['cp_term_meta'][$key];
+			foreach ($this->taf as $taf) {
+				if ($taf['settings']['taxonomy_id'] == $taxonomy) {
+
+					foreach ($taf['fields'] as $key => $field) {
+						$key = $field['id'];
+						if ($field['type'] == 'upload') {
+							$term_meta[$key] = $this->save_user_field_upload($key);
+						} else {
+							if ( ! isset($values[$key])) {
+								$term_meta[$key] = '';
+							} else {
+								$term_meta[$key] = $values[$key];
+							}
+						}
+					}
+				}
 			}
-			//save the option array
+
 			if ( get_option( 'cp_term_meta_'.$term_id ) !== false ) {
 				update_option( 'cp_term_meta_'.$term_id, $term_meta );
 			} else {
 				add_option( 'cp_term_meta_'.$term_id, $term_meta, null, 'no' );
 			}
-		}  
+		}
+	}
+
+	public function save_user_field_upload($key) {
+		// Get the posted data
+		$meta_value = ( isset($_POST['cp_term_meta'][$key]) ? $_POST['cp_term_meta'][$key] : '' );
+		
+		$meta = array();
+
+		if (isset($meta_value['id'])) {
+			foreach ($meta_value['id'] as $key => $id) {
+				
+				$meta[] = $id;
+
+				$title = '';
+				$caption = '';
+				
+				if (isset($meta_value['title'][$key])) {
+					$title = $meta_value['title'][$key];
+				}
+
+				if (isset($meta_value['caption'][$key])) {
+					$caption = $meta_value['caption'][$key];
+				}
+
+				wp_update_post( array(
+					'ID' => $id,
+					'post_title' => $title,
+					'post_excerpt' => $caption,
+				) );
+
+				if (isset($meta_value['alt'][$key])) {
+					update_post_meta( $id, 'alt', $meta_value['alt'][$key] );
+				} else {
+					delete_post_meta( $id, 'alt' );
+				}
+			}
+		}
+		return $meta;
 	}
 
 // class end
