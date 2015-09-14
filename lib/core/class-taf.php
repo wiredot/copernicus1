@@ -174,10 +174,13 @@ class CP_Taf {
 						$key = $field['id'];
 						if ($field['type'] == 'upload') {
 							$term_meta[$key] = $this->save_user_field_upload($key);
+							$this->update_taxonomy_meta($term_id, $key, serialize($term_meta[$key]));
 						} else {
 							if ( ! isset($values[$key])) {
+								$this->update_taxonomy_meta($term_id, $key, '');
 								$term_meta[$key] = '';
 							} else {
+								$this->update_taxonomy_meta($term_id, $key, $values[$key]);
 								$term_meta[$key] = $values[$key];
 							}
 						}
@@ -229,6 +232,86 @@ class CP_Taf {
 			}
 		}
 		return $meta;
+	}
+
+	public function get_taxonomy_meta($term_id, $meta_key) {
+		global $wpdb;
+
+		$exists = $wpdb->get_var("SELECT 1 FROM " . $wpdb->prefix . "termmeta LIMIT 1");
+
+		if($exists === FALSE) {
+			return;
+		}
+
+		$sql = $wpdb->prepare("
+			SELECT meta_value
+			FROM " . $wpdb->prefix . "termmeta
+			WHERE term_id = %d
+				AND meta_key = %s
+		",
+			$term_id,
+			$meta_key
+		);
+
+		$meta_value = $wpdb->get_var($sql);
+
+		return $meta_value;
+	}
+
+	public function update_taxonomy_meta($term_id, $meta_key, $meta_value) {
+		global $wpdb;
+
+		$exists = $wpdb->get_var("SELECT 1 FROM " . $wpdb->prefix . "termmeta LIMIT 1");
+
+		if($exists === FALSE) {
+			return;
+		}
+
+		$sql = $wpdb->prepare("
+			SELECT count(*)
+			FROM " . $wpdb->prefix . "termmeta
+			WHERE term_id = %d
+				AND meta_key = %s
+		",
+			$term_id,
+			$meta_key
+		);
+
+		$exists = $wpdb->get_var($sql);
+
+		if ( ! $exists) {
+			return $this->add_taxonomy_meta($term_id, $meta_key, $meta_value);
+		}
+
+		return $wpdb->update(
+			$wpdb->prefix . "termmeta",
+			array(
+				'meta_value' => $meta_value
+			),
+			array(
+				'term_id' => $term_id,
+				'meta_key' => $meta_key
+			)
+		);
+	}
+
+	public function add_taxonomy_meta($term_id, $meta_key, $meta_value) {
+		global $wpdb;
+
+		$exists = $wpdb->get_var("SELECT 1 FROM " . $wpdb->prefix . "termmeta LIMIT 1");
+
+		if($exists === FALSE) {
+			return;
+		}
+
+		return $wpdb->insert(
+			$wpdb->prefix . "termmeta",
+			array(
+				'meta_value' => $meta_value,
+				'term_id' => $term_id,
+				'meta_key' => $meta_key
+			)
+		);
 	}
 
 // class end

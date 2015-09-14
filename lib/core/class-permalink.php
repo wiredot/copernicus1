@@ -74,6 +74,12 @@ class CP_Permalink {
 	public function generate_rewrite_rules() {
 		global $CP_Language, $wpdb, $wp_query, $wp_rewrite;
 
+		$languages = $CP_Language->get_languages();
+		
+		if (count($languages) < 2) {
+			return;
+		}
+
 		$rules = $wp_rewrite->wp_rewrite_rules();
 		if (is_admin()) {
 			//new dBug($rules);
@@ -85,8 +91,7 @@ class CP_Permalink {
 			SELECT ID FROM ".$wpdb->posts." WHERE post_status = 'publish'
 		", ARRAY_A);
 
-		$languages = $CP_Language->get_languages();
-		
+
 		$wpurl = get_bloginfo( 'wpurl' );
 
 		add_rewrite_tag('%langid%','(.*)', 'langid=');

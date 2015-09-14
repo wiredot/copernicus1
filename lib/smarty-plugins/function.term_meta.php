@@ -28,6 +28,10 @@ function smarty_function_term_meta($params, $template) {
 
 	$metaValue = $meta[$params['key']];
 
+	if ( isset($params['html']) && $params['html']) {
+		$metaValue = apply_filters('the_content', $metaValue);
+	}
+
 	if (isset($params['assign']) && $params['assign']) {
 		$template->assign($params['assign'], $post_meta);
 		return;
