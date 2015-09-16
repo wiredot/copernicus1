@@ -277,7 +277,17 @@ class CP_Mb {
 
 		if (isset($meta_box['args']['template'])) {
 			$template = $meta_box['args']['template'];
-			echo '<input type="hidden" class="_cp_template_ _cp_template_'.$meta_box['args']['template'].'">';
+
+			echo '<input type="hidden" class="_cp_template_';
+			
+			if (is_array($meta_box['args']['template'])) {
+				foreach ($meta_box['args']['template'] as $temp) {
+					echo ' _cp_template_'.$temp;
+				}
+			} else {
+				echo ' _cp_template_'.$meta_box['args']['template'];
+			}
+			echo '">';
 		}
 
 		// get data from the DB for current post id
