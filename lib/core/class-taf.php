@@ -239,7 +239,7 @@ class CP_Taf {
 
 		$exists = $wpdb->get_var("SELECT 1 FROM " . $wpdb->prefix . "termmeta LIMIT 1");
 
-		if($exists === FALSE) {
+		if ($exists === FALSE) {
 			return;
 		}
 
@@ -261,9 +261,19 @@ class CP_Taf {
 	public function update_taxonomy_meta($term_id, $meta_key, $meta_value) {
 		global $wpdb;
 
+		$term_meta = get_option( 'cp_term_meta_'.$term_id );
+		
+		if ( $term_meta ) {
+			$term_meta[$meta_key] = $meta_value;
+			update_option( 'cp_term_meta_'.$term_id, $term_meta );
+		} else {
+			$term_meta = array($meta_key => $meta_value);
+			add_option( 'cp_term_meta_'.$term_id, $term_meta, null, 'no' );
+		}
+
 		$exists = $wpdb->get_var("SELECT 1 FROM " . $wpdb->prefix . "termmeta LIMIT 1");
 
-		if($exists === FALSE) {
+		if ($exists === FALSE) {
 			return;
 		}
 
@@ -278,7 +288,7 @@ class CP_Taf {
 		);
 
 		$exists = $wpdb->get_var($sql);
-
+		
 		if ( ! $exists) {
 			return $this->add_taxonomy_meta($term_id, $meta_key, $meta_value);
 		}
@@ -298,9 +308,12 @@ class CP_Taf {
 	public function add_taxonomy_meta($term_id, $meta_key, $meta_value) {
 		global $wpdb;
 
+		$term_meta = array($meta_key => $meta_value);
+		add_option( 'cp_term_meta_'.$term_id, $term_meta, null, 'no' );
+
 		$exists = $wpdb->get_var("SELECT 1 FROM " . $wpdb->prefix . "termmeta LIMIT 1");
 
-		if($exists === FALSE) {
+		if ($exists === FALSE) {
 			return;
 		}
 
