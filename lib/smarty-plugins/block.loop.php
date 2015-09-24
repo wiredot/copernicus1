@@ -86,6 +86,7 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 function show_pagination($pages = 0) {
 	$pagination = '';
 
+
 	$page_url = $_SERVER['REQUEST_URI'];
 	$page_url = preg_replace('/\/page\/[0-9]+\//', '/', $page_url);
 
@@ -101,20 +102,32 @@ function show_pagination($pages = 0) {
 			$pagination.= '<li><a href="'.$page_url.'"><<</a></li>';
 		}
 
-		for ($i=0; $i < $pages; $i++) {
-			if ($i == 0) {
+		$separator_bottom = false;
+		$separator_top = false;
+
+		for ($i=1; $i <= $pages; $i++) {
+			if ($i == 1) {
 				$pagination.= '<li><a href="'.$page_url.'"';
 				if ($current_page == 1) {
 					$pagination.= ' class="active"';
 				}
 				$pagination.= '>1</a></li>';
-			}
-			else {
-				$pagination.= '<li><a href="'.$page_url.'page/'.($i+1).'/"';
-				if ($current_page == ($i+1)) {
-					$pagination.= ' class="active"';
+			} else {
+				if ($i < 4 || ($i < ($current_page + 3) && $i > ($current_page - 3)) || $i > ($pages - 3) ) {
+					$pagination.= '<li><a href="'.$page_url.'page/'.($i).'/"';
+					if ($current_page == ($i)) {
+						$pagination.= ' class="active"';
+					}
+					$pagination.= '>'.($i).'</a></li>';
+				} else {
+					if ($i < $current_page && ! $separator_bottom) {
+						$separator_bottom = true;
+						$pagination.= '<li>...</li>';
+					} else if ( $i > $current_page && ! $separator_top ) {
+						$separator_top = true;
+						$pagination.= '<li>...</li>';
+					}
 				}
-				$pagination.= '>'.($i+1).'</a></li>';
 			}
 		}
 
