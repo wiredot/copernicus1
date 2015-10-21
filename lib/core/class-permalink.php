@@ -41,7 +41,7 @@ class CP_Permalink {
 		if (isset(CP::$config['rewrite_rule'])) {
 			$this->rewrite_rule = CP::$config['rewrite_rule'];
 
-			add_action('init', array($this, 'add_rewrite_rules'));
+			add_action('save_post', array($this, 'add_rewrite_rules'));
 		}
 	}
 
@@ -85,12 +85,11 @@ class CP_Permalink {
 			//new dBug($rules);
 		}
 
-		//$wp_rewrite->flush_rules( );
+		$wp_rewrite->flush_rules( );
 
 		$pages = $wpdb->get_results("
 			SELECT ID FROM ".$wpdb->posts." WHERE post_status = 'publish'
 		", ARRAY_A);
-
 
 		$wpurl = get_bloginfo( 'wpurl' );
 
