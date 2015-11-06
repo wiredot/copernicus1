@@ -28,7 +28,7 @@ class CP_Permalink {
 	 * @author Piotr Soluch
 	 */
 	public function __construct() {
-		add_action('init', array($this, 'generate_rewrite_rules'));
+		add_action('save_post', array($this, 'generate_rewrite_rules'));
 
 		add_filter('home_url', array($this, 'home_url'));
 
@@ -41,7 +41,7 @@ class CP_Permalink {
 		if (isset(CP::$config['rewrite_rule'])) {
 			$this->rewrite_rule = CP::$config['rewrite_rule'];
 
-			add_action('save_post', array($this, 'add_rewrite_rules'));
+			add_action('init', array($this, 'add_rewrite_rules'));
 		}
 	}
 
@@ -81,11 +81,8 @@ class CP_Permalink {
 		}
 
 		$rules = $wp_rewrite->wp_rewrite_rules();
-		if (is_admin()) {
-			//new dBug($rules);
-		}
 
-		$wp_rewrite->flush_rules( );
+		$wp_rewrite->flush_rules();
 
 		$pages = $wpdb->get_results("
 			SELECT ID FROM ".$wpdb->posts." WHERE post_status = 'publish'
