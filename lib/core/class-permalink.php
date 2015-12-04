@@ -62,6 +62,12 @@ class CP_Permalink {
 			$url = $url.'/';
 		}
 
+		if (preg_match('/https/', $url)) {
+			$url = str_replace("https://", '', $url);
+			$url = str_replace("//", '/', $url);
+			return 'https://'.$url;
+		}
+
 		$url = str_replace("http://", '', $url);
 		$url = str_replace("//", '/', $url);
 

@@ -57,7 +57,7 @@ class CP_Menu {
 	 */
 	private function register_nav_menus($nav_menus) {
 		foreach ($nav_menus as $menu) {
-			register_nav_menu( $menu['location'], $menu['description'] );
+			register_nav_menu( $menu['location'], $menu['name'] );
 		}
 	}
 

@@ -36,7 +36,7 @@ class CP_Image {
 	public function get_size($parameters) {
 		$size = array();
 		
-		$possible_attr = array('w', 'h', 'q', 'zc');
+		$possible_attr = array('w', 'h', 'q', 'zc', 'f');
 
 		foreach ($possible_attr as $attr) {
 			if (isset($parameters[$attr])) {

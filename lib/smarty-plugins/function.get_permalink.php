@@ -20,6 +20,12 @@ function smarty_function_get_permalink($params, $template) {
 		$permalink = get_permalink();
 	}
 
+	if (preg_match('/https/', $permalink)) {
+		$permalink = str_replace("https://", '', $permalink);
+		$permalink = str_replace("//", '/', $permalink);
+		return 'https://'.$permalink;
+	}
+
 	$permalink = str_replace("http://", "", $permalink);
 	$permalink = str_replace("//", "/", $permalink);
 
