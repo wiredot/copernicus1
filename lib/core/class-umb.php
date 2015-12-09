@@ -27,14 +27,19 @@ class CP_Umb {
 	 * @author Piotr Soluch
 	 */
 	public function __construct() {
-		if (isset (CP::$config['umb'])) {
-			$this->umb = CP::$config['umb'];
-			
-			// create taxonomies
-			add_action('edit_user_profile', array($this, 'add_user_meta_boxes'));
-			add_action('show_user_profile', array($this, 'add_user_meta_boxes'));
-			add_action('profile_update', array($this, 'update_user_meta'));
-			//add_action('show_user_profile', array($this, 'add_user_meta_boxes'));
+
+		if (is_admin() && ! defined( 'DOING_AJAX' )) {
+		
+			if (isset (CP::$config['umb'])) {
+				$this->umb = CP::$config['umb'];
+				
+				// create taxonomies
+				add_action('edit_user_profile', array($this, 'add_user_meta_boxes'));
+				add_action('show_user_profile', array($this, 'add_user_meta_boxes'));
+				
+				add_action('profile_update', array($this, 'update_user_meta'));
+				//add_action('show_user_profile', array($this, 'add_user_meta_boxes'));
+			}
 		}
 	}
 	
