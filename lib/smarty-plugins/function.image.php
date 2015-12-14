@@ -22,7 +22,7 @@ function smarty_function_image($params, $template) {
 			return null;
 		}
 
-		$thumbnail_id =  get_post_thumbnail_id( $id );
+		$thumbnail_id = get_post_thumbnail_id( $post_id );
 
 		if ($thumbnail_id) {
 			$params['id'] = $thumbnail_id;
