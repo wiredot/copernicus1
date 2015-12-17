@@ -36,7 +36,7 @@ class CP_Image {
 	public function get_size($parameters) {
 		$size = array();
 		
-		$possible_attr = array('w', 'h', 'q', 'zc', 'f');
+		$possible_attr = array('w', 'h', 'q', 'zc', 'f', 'far', 'bg');
 
 		foreach ($possible_attr as $attr) {
 			if (isset($parameters[$attr])) {
@@ -150,6 +150,14 @@ class CP_Image {
 
 			if (isset($size['h'])) {
 				$filename.= '_'.$size['h'];
+			}
+
+			if (isset($size['far'])) {
+				$filename.= '_'.$size['far'];
+			}
+
+			if (isset($size['bg'])) {
+				$filename.= '_'.$size['bg'];
 			}
 
 			return $filename.'.'.$img_ext;
