@@ -1,7 +1,3 @@
-/*
-This file has been generated with SiteFlow (http://siteflow.witiz.com).
-To remove this comment, please support us and upgrade to SiteFlow Pro.
-*/
 .cp-langs {
   display: inline-block;
   width: 79%;
@@ -152,3 +148,6 @@ th#menu_order {
   display: block; }
 .cp-upload-wrapper a {
   margin-top: 5px; }
+
+.wp-editor-container textarea {
+  max-width: 1000px; }
