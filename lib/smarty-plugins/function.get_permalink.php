@@ -14,6 +14,16 @@
  *
  */
 function smarty_function_get_permalink($params, $template) {
+	global $wpdb;
+
+	if (isset($params['template'])) {
+		$post_id = $wpdb->get_var("SELECT post_id FROM ".$wpdb->postmeta." WHERE meta_key = '_cp_template' AND meta_value = '".$params['template']."' ");
+		if ($post_id) {
+			$params['id'] = $post_id;
+		}
+	}
+
+
 	if (isset($params['id'])) {
 		$permalink = get_permalink($params['id']);
 	} else {
