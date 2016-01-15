@@ -770,6 +770,9 @@ class CP_Mb {
 				$post_link = get_post( $value, ARRAY_A );
 				return '<a href="'.get_permalink($post_link['ID']).'" target="_blank">'.$post_link['post_title'].'</a>';
 				break;
+			case 'user':
+				return get_user_meta( $value, 'first_name', true ) . ' ' . get_user_meta( $value, 'last_name', true );
+				break;
 			default:
 				return $value;
 				break;
