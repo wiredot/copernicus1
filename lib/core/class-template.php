@@ -75,18 +75,23 @@ class CP_Template {
 		$value = get_post_meta( $post->ID, '_cp_template', true );
 
 		echo $CP_Field->get_select($value, '_cp_template', '_cp_template', $values);
+		wp_nonce_field( '_cp_template_'.$post->ID, '_cp_template_'.$post->ID );
 	}
 
 	/**
 	 * 
 	 */
 	public function save_meta_boxes($post_id, $post) {
+
+		if ( ! wp_verify_nonce( $_POST['_cp_template_'.$post_id], '_cp_template_'.$post_id )) {
+			return;
+		} 
 		
 		// get post type from post object
 		$post_type = get_post_type_object($post['post_type']);
 
 		// Check if the current user has permission to edit the post.
-		if (!current_user_can($post_type->cap->edit_post, $post_id)) {
+		if ( ! current_user_can($post_type->cap->edit_post, $post_id) ) {
 			return;
 		}
 
