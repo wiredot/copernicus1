@@ -20,7 +20,7 @@ function smarty_function_svg($params, $template) {
 	if (isset($params['class'])) {
 		$svg.= ' class="'.$params['class'].'"';
 	}
-	
-	$svg.= '><use xlink:href="/wp-content/themes/'.get_template().$params['file'].'"></use></svg>';
+
+	$svg.= '><use xlink:href="'.get_stylesheet_directory_uri().$params['file'].'"></use></svg>';
 	return $svg;
 }
