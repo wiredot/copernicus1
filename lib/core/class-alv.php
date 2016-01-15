@@ -211,16 +211,6 @@ class CP_Alv {
 				break;
 			default:
 				$value = get_post_meta($post_id, $column, 1);
-				//print_r($value);
-				if (isset($this->mb_fields[$column])) {
-					switch($this->mb_fields[$column]['type']) {
-						case 'select':
-							if (isset($this->mb_fields[$column]['options'][$value])) {
-								echo $this->mb_fields[$column]['options'][$value];
-							}
-						break;
-					}
-				}
 				if ($value) {
 					$field = $this->mb_fields[$column];
 					echo $CP_Mb->get_value($field, $value);
