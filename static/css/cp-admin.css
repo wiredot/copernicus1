@@ -151,3 +151,6 @@ th#menu_order {
 
 .wp-editor-container textarea {
   max-width: 1000px; }
+
+#profile-page .form-table .wp-editor-area {
+  width: 100%; }
