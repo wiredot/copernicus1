@@ -7,7 +7,8 @@ global $CP_Smarty;
 function smarty_block_loop($params, $content, $template, &$repeat) {
 	if(!$repeat){
 
-		global $CP_Loop, $CP_Smarty, $post, $pages;
+		global $CP_Loop, $CP_Smarty, $post, $pages, $ccc;
+
 		$main_post = $post;
 		$main_pages = $pages;
 		
@@ -40,12 +41,13 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 				}
 
 				$WP_loop = new WP_Query( $loop['args'] );
-
-			//	new dBug($WP_loop);
+				$ccc = $WP_loop->post_count;
+				//new dBug($WP_loop);
 
 				while ( $WP_loop->have_posts() ) : $WP_loop->the_post();
 					$CP_Smarty->smarty->assign('loop', $WP_loop);
 					$CP_Smarty->smarty->assign('key', $key);
+					$CP_Smarty->smarty->assign('count', $WP_loop->post_count);
 					$return.= $CP_Smarty->smarty->fetch('string:'.$content);
 					$key++;
 				endwhile;
@@ -62,6 +64,7 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 			while ( have_posts() ) : the_post();
 				$CP_Smarty->smarty->assign('key', $key);
 				$CP_Smarty->smarty->assign('post', $post);
+				$CP_Smarty->smarty->assign('count', $WP_loop->post_count);
 				$return.= $CP_Smarty->smarty->fetch('string:'.$content);
 				$key++;
 			endwhile;

@@ -8,6 +8,8 @@ class CP_Smarty {
 	 * 
 	 */
 	public function __construct() {
+		global $ccc;
+		
 		// load smarty
 		CP::load_library(CP_PATH.'/lib/smarty/Smarty.class.php');
 		
