@@ -310,6 +310,7 @@ function cp_sortable($) {
 function datepicker($) {
 	$('input.cp_datepicker').Zebra_DatePicker({
 		format: 'Y-m-d',
-		show_icon: false
+		show_icon: false,
+		default_position: 'below'
 	});
 }
