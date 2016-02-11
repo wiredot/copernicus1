@@ -5,9 +5,8 @@ global $CP_Smarty;
 // register the prefilter
 
 function smarty_block_loop($params, $content, $template, &$repeat) {
-	if(!$repeat){
-
-		global $CP_Loop, $CP_Smarty, $post, $pages, $ccc;
+	if ( ! $repeat) {
+		global $wp_query, $CP_Loop, $CP_Smarty, $post, $pages, $ccc;
 
 		$main_post = $post;
 		$main_pages = $pages;
@@ -33,7 +32,7 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 			if ($loop) {
 
 				if (isset($loop['pages']) && $loop['pages']) {
-					$current_page = get_query_var( 'paged' );
+					$current_page = $wp_query->query_vars['page'];
 
 					if ($current_page) {
 						$loop['args']['paged'] = $current_page;
@@ -87,14 +86,15 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 }
 
 function show_pagination($pages = 0) {
+	global $wp_query;
+	
 	$pagination = '';
-
 
 	$page_url = $_SERVER['REQUEST_URI'];
 	$page_url = preg_replace('/\/page\/[0-9]+\//', '/', $page_url);
 
 	if ($pages) {
-		$current_page = get_query_var( 'paged' );
+		$current_page = $wp_query->query_vars['page'];
 		if ($current_page < 1) {
 			$current_page = 1;
 		}

@@ -19,7 +19,7 @@ function smarty_function_query_vars($params, $template) {
 	if (!isset($params['key'])) {
 		return null;
 	}
-
+	
 	if (isset($wp_query->query_vars[$params['key']])) {
 		return $wp_query->query_vars[$params['key']];
 	}
