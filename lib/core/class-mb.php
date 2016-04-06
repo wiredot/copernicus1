@@ -791,8 +791,8 @@ class CP_Mb {
 					$fields[$mb['post_type']] = array();
 				}
 				
-				foreach ($mb['fields'] AS $field) {
-					
+				foreach ($mb['fields'] AS $field_key => $field) {
+					$field['id'] = $field_key;
 					$fieldName = $field['id'];
 					if (isset($field['translation']) && $field['translation']) {
 						$fieldName = $field['id'].LANGUAGE_SUFFIX;

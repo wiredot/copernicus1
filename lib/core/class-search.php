@@ -48,13 +48,17 @@ class CP_Search {
 			
 			foreach ($type as $tkey => $type_field) {
 				$where.= " (SELECT count(*) FROM ".$wpdb->postmeta." WHERE post_id = wp_posts.ID AND meta_key = '".$type_field."' AND meta_value LIKE '%".$term."%') > 0 ";
-				if ($tkey != end(array_keys($type))) {
+				$arr = array_keys($type);
+				$last_key = end($arr);
+				if ($tkey != $last_key) {
 					$where.= ' OR ';
 					$where.= "\n";
 				}
 			}
 			
-			if ($key != end(array_keys($fields))) {
+			$arr = array_keys($fields);
+				$last_key = end($arr);
+			if ($key != $last_key) {
 				$where.= ' OR ';
 				$where.= "\n\n";
 			}

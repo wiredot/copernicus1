@@ -1,6 +1,5 @@
 <?php
 
-
 global $CP_Smarty;
 // register the prefilter
 
@@ -63,7 +62,11 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 			while ( have_posts() ) : the_post();
 				$CP_Smarty->smarty->assign('key', $key);
 				$CP_Smarty->smarty->assign('post', $post);
-				$CP_Smarty->smarty->assign('count', $WP_loop->post_count);
+				if (isset($WP_loop)) {
+					$CP_Smarty->smarty->assign('count', $WP_loop->post_count);
+				} else {
+					$CP_Smarty->smarty->assign('count', 0);
+				}
 				$return.= $CP_Smarty->smarty->fetch('string:'.$content);
 				$key++;
 			endwhile;

@@ -10,9 +10,6 @@ class CP_Smarty {
 	public function __construct() {
 		global $ccc;
 		
-		// load smarty
-		CP::load_library(CP_PATH.'/lib/smarty/Smarty.class.php');
-		
 		$template_dirs[] = get_stylesheet_directory() . '/templates/';
 		$plugins_dirs[] = get_stylesheet_directory() . '/lib/smarty-plugins/';
 		
