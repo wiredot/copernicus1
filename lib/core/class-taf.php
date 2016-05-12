@@ -172,11 +172,16 @@ class CP_Taf {
 
 					foreach ($taf['fields'] as $key => $field) {
 						$key = $field['id'];
+
+						if ($field['type'] == 'editor'){
+							$values[$key] = stripslashes($values[$key]);
+						}
+
 						if ($field['type'] == 'upload') {
 							$term_meta[$key] = $this->save_user_field_upload($key);
 							$this->update_taxonomy_meta($term_id, $key, serialize($term_meta[$key]));
 						} else {
-							if ( ! isset($values[$key])) {
+							if ( ! isset($values[$key]) ) {
 								$this->update_taxonomy_meta($term_id, $key, '');
 								$term_meta[$key] = '';
 							} else {
