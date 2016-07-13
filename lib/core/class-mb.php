@@ -764,7 +764,11 @@ class CP_Mb {
 		
 		switch($field['type']) {
 			case 'select':
-				//return $field['options'][$value];
+				if (isset($field['options'][$value])) {
+					return $field['options'][$value];
+				} else {
+					return;
+				}
 				break;
 			case 'post_link':
 				$post_link = get_post( $value, ARRAY_A );

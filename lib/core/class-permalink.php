@@ -78,6 +78,14 @@ class CP_Permalink {
 	 * 
 	 */
 	public function generate_rewrite_rules() {
+		global $cp_rewritten;
+
+		if ( $cp_rewritten != 1 ) {
+			$cp_rewritten = 1;
+		} else {
+			return;
+		}
+
 		global $CP_Language, $wpdb, $wp_query, $wp_rewrite;
 
 		$languages = $CP_Language->get_languages();

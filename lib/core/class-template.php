@@ -83,7 +83,7 @@ class CP_Template {
 	 */
 	public function save_meta_boxes($post_id, $post) {
 
-		if ( ! isset($_POST['_cp_template_'.$post_id]) || ! wp_verify_nonce( $_POST['_cp_template_'.$post_id], '_cp_template_'.$post_id )) {
+		if ( ! isset($_POST['_cp_template_'.$post_id]) || ( isset($_POST['_cp_template_'.$post_id]) && ! wp_verify_nonce( $_POST['_cp_template_'.$post_id], '_cp_template_'.$post_id ) ) ) {
 			return;
 		} 
 		

@@ -17,7 +17,7 @@ function smarty_function_the_title($params, $template) {
 
 	// default params
 	$default_params = array(
-		'id' => null
+		'id' => get_the_ID()
 	);
     
     // merge default params with the provided ones
