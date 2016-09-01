@@ -28,18 +28,9 @@ class CP_Imageold {
 	 * @return type mixed returns possible errors
 	 * @author Piotr Soluch
 	 */
-	public function __construct() {
-
-	}
 
 	public function init_phpthumb() {
-		if ( ! class_exists('phpThumb')) {
-			CP::load_library(CP_PATH.'/lib/phpThumb/phpthumb.class.php');
-
-			$this->phpThumb = new phpThumb();
-		} else if ( ! $this->phpThumb) {
-			$this->phpThumb = new phpThumb();
-		}
+		$this->phpThumb = new phpThumb();
 	}
 	
 	public function image($params) {

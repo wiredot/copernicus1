@@ -2,19 +2,8 @@
 
 class CP_Image {
 
-	/**
-	 * 
-	 */
-	public function __construct() {
-		
-	}
-
 	public function init_phpthumb() {
-		if ( ! class_exists('phpThumb')) {
-			CP::load_library(CP_PATH.'/lib/phpThumb/phpthumb.class.php');
-
-			$this->phpThumb = new phpThumb();
-		}
+		$this->phpThumb = new phpThumb();
 	}
 
 	public function get_image($id, $params) {
