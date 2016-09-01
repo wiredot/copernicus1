@@ -749,9 +749,9 @@ class CP_Mb {
 		);
 
 		if ($alt) {
-			update_post_meta( $id, 'alt', $alt );
+			update_post_meta( $id, '_wp_attachment_image_alt', $alt );
 		} else {
-			delete_post_meta( $id, 'alt' );
+			delete_post_meta( $id, '_wp_attachment_image_alt' );
 		}
 	}
 	
