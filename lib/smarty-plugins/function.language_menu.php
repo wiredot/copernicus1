@@ -14,41 +14,37 @@
  *
  */
 function smarty_function_language_menu($params, $template) {
-    global $CP_Language, $CP_Permalink;
+    global $CP_Language;
 	
 	$languages = $CP_Language->get_languages();
-
 	$current_language = $CP_Language->get_current_language();
 
-	$wpurl = get_bloginfo( 'wpurl' );
+	$wpurl = get_option( 'home' );
 
 	$menu = '';
 
-	$id = get_the_ID();
-
 	foreach ($languages as $key => $language) {
-		$menu.= '<li>';
+		$permalink = get_permalink();
 
-		$permalink = get_permalink($id);
-
-		if (isset($current_language['prefix'])) {
-
-			if (isset($language['prefix']) && $language['prefix']) {
-				$new_url = $wpurl.'/'.$language['prefix'].'/';
-			} else {
-				$new_url = $wpurl.'/';
-			}
-
-			$permalink = str_replace($wpurl.'/'.$current_language['prefix'], $new_url, $permalink);
+		if (isset($language['prefix']) && $language['prefix']) {
+			$new_url = $wpurl.'/'.$language['prefix'];
+		} else {
+			$new_url = $wpurl;
 		}
 
-		$permalink = str_replace("http://", "", $permalink);
-		$permalink = str_replace("//", "/", $permalink);
+		if ( isset($current_language['prefix']) && $current_language['prefix']) {
+			$permalink = str_replace($wpurl.'/'.$current_language['prefix'].'/', $new_url.'/', $permalink);
+		} else {
+			$permalink = str_replace($wpurl.'/', $new_url.'/', $permalink);
+		}
 
-		$menu.= '<a href="http://'.$permalink.'"';
+		$menu.= '<li>';
+		$menu.= '<a href="'.$permalink.'"';
+		
 		if ($language['code'] == LANGUAGE) {
 			$menu.= ' class="active"';
 		}
+		
 		$menu.= '>';
 		$menu.= $language['code'];
 		$menu.= '</a>';
@@ -56,6 +52,4 @@ function smarty_function_language_menu($params, $template) {
 	}
 	
 	return $menu;
-	
-    
 }

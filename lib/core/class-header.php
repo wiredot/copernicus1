@@ -73,7 +73,12 @@ class CP_Header {
 			$title = $seo_title;
 		} else {
 			if (LANGUAGE_SUFFIX != '') {
-				$title.= get_post_meta(get_the_id(), 'post_title' . LANGUAGE_SUFFIX, true). ' | ';
+				$post_title = get_post_meta(get_the_id(), 'post_title' . LANGUAGE_SUFFIX, true);
+				if ( ! $post_title ) {
+					$post_title = get_post_meta(get_the_id(), 'post_title', true);
+				}
+
+				$title.= $post_title. ' | ';
 			} else {
 				$title.= wp_title( '|', false, 'right' );
 			}
@@ -102,20 +107,33 @@ class CP_Header {
 
 		$description = '';
 
-		$seo_description = get_post_meta( get_the_id(), 'meta_description', true );
+		if (LANGUAGE_SUFFIX != '') {
+			$seo_description = get_post_meta( get_the_id(), 'meta_description' . LANGUAGE_SUFFIX, true );
+		} else {
+			$seo_description = get_post_meta( get_the_id(), 'meta_description', true );
+		}
 		
 		if ($seo_description) {
 			$description = $seo_description;
 		} else {
-			global $post;
-			if ($post) {
-				$content = $post->post_content;
-				$content = str_replace("<!--more-->", ' ', $content);
-				$content = str_replace("\n", ' ', $content);
-				$content = str_replace("  ", ' ', $content);
-				$content = strip_tags($content);
-				$description = self::truncate($content);
+			$content = '';
+
+			if (LANGUAGE_SUFFIX != '') {
+				$content = get_post_meta( get_the_id(), 'content' . LANGUAGE_SUFFIX, true );
 			}
+
+			if ( ! $content ) {
+				global $post;
+				if ($post) {
+					$content = $post->post_content;
+				}
+			}
+			
+			$content = str_replace("<!--more-->", ' ', $content);
+			$content = str_replace("\n", ' ', $content);
+			$content = str_replace("  ", ' ', $content);
+			$content = strip_tags($content);
+			$description = self::truncate($content);
 		}
 
 		return $description;
@@ -125,6 +143,9 @@ class CP_Header {
 	 * 
 	 */
 	private static function truncate($text, $chars = 155) {
+		if (strlen($text) <= $chars) {
+			return $text;
+		}
 		$text = $text." ";
 		$text = substr($text,0,$chars);
 		$text = substr($text,0,strrpos($text,' '));
