@@ -36,10 +36,6 @@ class CP {
 		
 		// load config file
 		self::load_config();
-
-
-		// load composer components
-		require CP_PATH . '/lib/composer/vendor/autoload.php';
 		
 		// autoload copernicus classes
 		self::autoload_classes(CP_PATH.'/lib/core');

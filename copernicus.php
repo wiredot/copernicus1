@@ -13,6 +13,8 @@
 define( 'CP_PATH', dirname( __FILE__ ) );
 define( 'CP_URL', plugin_dir_url( __FILE__ ) );
 
+require CP_PATH . '/lib/composer/vendor/autoload.php';
+
 // main class file path
 $core_class_filename = CP_PATH . '/lib/core/class-copernicus.php';
 
