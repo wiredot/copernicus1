@@ -31,7 +31,11 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 			if ($loop) {
 
 				if (isset($loop['pages']) && $loop['pages']) {
-					$current_page = $wp_query->query_vars['page'];
+					if ( ! isset($wp_query->query_vars['page']) ) {
+						$current_page = 1;
+					} else {
+						$current_page = $wp_query->query_vars['page'];
+					}
 
 					if ($current_page) {
 						$loop['args']['paged'] = $current_page;
@@ -97,7 +101,12 @@ function show_pagination($pages = 0) {
 	$page_url = preg_replace('/\/page\/[0-9]+\//', '/', $page_url);
 
 	if ($pages) {
-		$current_page = $wp_query->query_vars['page'];
+		if ( ! isset($wp_query->query_vars['page']) ) {
+			$current_page = 1;
+		} else {
+			$current_page = $wp_query->query_vars['page'];
+		}
+
 		if ($current_page < 1) {
 			$current_page = 1;
 		}
@@ -105,7 +114,11 @@ function show_pagination($pages = 0) {
 		$pagination.= '<ul class="pagination">';
 
 		if ($current_page > 1) {
-			$pagination.= '<li><a href="'.$page_url.'"><<</a></li>';
+			if ($current_page > 2) {
+				$pagination.= '<li><a href="'.$page_url.'page/'.($current_page-1).'/">«</a></li>';
+			} else {
+				$pagination.= '<li><a href="'.$page_url.'">«</a></li>';
+			}
 		}
 
 		$separator_bottom = false;
@@ -138,7 +151,7 @@ function show_pagination($pages = 0) {
 		}
 
 		if ($current_page < $pages) {
-			$pagination.= '<li><a href="'.$page_url.'page/'.($current_page+1).'/">>></a></li>';
+			$pagination.= '<li><a href="'.$page_url.'page/'.($current_page+1).'/">»</a></li>';
 		}
 
 		$pagination.= '</ul>';

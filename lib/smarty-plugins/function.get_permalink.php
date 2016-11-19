@@ -23,7 +23,6 @@ function smarty_function_get_permalink($params, $template) {
 		}
 	}
 
-
 	if (isset($params['id'])) {
 		$permalink = get_permalink($params['id']);
 	} else {
