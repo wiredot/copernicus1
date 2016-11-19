@@ -2,12 +2,12 @@
 Contributors: psoluch
 Tags: framework, template, smarty
 Requires at least: 4.2
-Tested up to: 4.2
+Tested up to: 4.7
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Copernicus is a WordPress Framework that makes creating themes more efficient and adds a lot of additional functionality.
+Copernicus is a set of tools that make creating themes more efficient.
 
 Copernicus is in experimental mode. Use at your own risk!
 
@@ -20,24 +20,6 @@ Copernicus has few handy features:
 * Image thumbnail creator with filters and additional tools (phpThumb)
 * Custom Post Types (generated from configuration files)
 * Meta Boxes with multiple fields (generated from configuration files)
-	* text field
-	* password field
-	* number field
-	* color field
-	* email field
-	* url field
-	* date field
-	* textarea
-	* wysiwyg editor
-	* checkbox field
-	* radio field
-	* selectbox (single & multiple)
-	* file upload (single & multiple)
-	* image uplaod (single & multiple)
-	* user list (single & multiple)
-	* user's role list (single & multiple)
-	* post list (single & multiple)
-	* groups of fields
 * Additional fields for Users
 * Additional fields for Taxonomies
 * Admin List View (ability do edit order and add custom columns to list view in wp-admin)
@@ -62,38 +44,3 @@ Copernicus has few handy features:
 To see what Copernicus can do, try one of the demo themes:
 
 * Copernicus Prime - demo theme ([https://github.com/wiredot/copernicus-prime](https://github.com/wiredot/copernicus-prime))
-* Copernics Start - starting theme ([https://github.com/wiredot/copernicus-start](https://github.com/wiredot/copernicus-start))
-
-
-== Changelog ==
-
-= 1.0.0 =
-* Multiple changes and fixes
-
-= 0.9.8 =
-* [fix] bug in loop block
-
-= 0.9.7 =
-* [changed] unique links for each language
-* [fix] several bugs
-
-= 0.9.6 =
-* [fix] language bug in language menu smarty plugin
-
-= 0.9.5 =
-* [new] prefix for languages in urls
-
-= 0.9.4 =
-* [fix] a lot of minor issues
-
-= 0.9.3 =
-* [new] dynamic_sidebar smarty plugin
-
-= 0.9.2 =
-* Maintenance release.
-
-= 0.9.1 =
-* Maintenance release.
-
-= 0.9.0 =
-* Initial version.
