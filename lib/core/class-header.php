@@ -28,10 +28,8 @@ class CP_Header {
 		
 		global $post;
 		if ($post) {
-			
 			if (has_post_thumbnail( $post->ID ) ) {
-				$image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'single-post-thumbnail' );
-				$page['image'] = $image[0];
+				$page['image'] = get_post_thumbnail_id( $post->ID );
 			}
 		}
 

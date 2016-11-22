@@ -1,6 +1,6 @@
 === Plugin Name ===
 Contributors: psoluch
-Tags: framework, template, smarty
+Tags: template, smarty
 Requires at least: 4.2
 Tested up to: 4.7
 Stable tag: trunk
