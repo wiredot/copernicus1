@@ -28,15 +28,18 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 				$loop['args'] = $CP_Loop->merge_attributes($params['args'], $loop['args']);
 			}
 
+			if ( isset($wp_query->query_vars['page']) ) {
+				$current_page = $wp_query->query_vars['page'];
+			} else if ( isset($wp_query->query_vars['paged']) ) {
+				$current_page = $wp_query->query_vars['paged'];
+			} else {
+				$current_page = 1;
+			}
+
 			if ($loop) {
 
 				if (isset($loop['pages']) && $loop['pages']) {
-					if ( ! isset($wp_query->query_vars['page']) ) {
-						$current_page = 1;
-					} else {
-						$current_page = $wp_query->query_vars['page'];
-					}
-
+					
 					if ($current_page) {
 						$loop['args']['paged'] = $current_page;
 					}
@@ -57,11 +60,10 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 				$return = apply_filters("cp_loop", $return);
 
 				if (isset($loop['pages']) && $loop['pages'] && $WP_loop->max_num_pages > 1) {
-					$return.= show_pagination($WP_loop->max_num_pages);
+					$return.= show_pagination($WP_loop->max_num_pages, $current_page);
 				}
 			}
-		}
-		else {
+		} else {
 			rewind_posts();
 			while ( have_posts() ) : the_post();
 				$CP_Smarty->smarty->assign('key', $key);
@@ -82,7 +84,7 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 			}
 
 			if ($params['pages'] && $wp_query->max_num_pages > 1) {
-				$return.= show_pagination($wp_query->max_num_pages);
+				$return.= show_pagination($wp_query->max_num_pages, $current_page);
 			}
 		}
 		
@@ -92,7 +94,7 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 	}
 }
 
-function show_pagination($pages = 0) {
+function show_pagination($pages = 0, $current_page = 1) {
 	global $wp_query;
 	
 	$pagination = '';
@@ -101,15 +103,6 @@ function show_pagination($pages = 0) {
 	$page_url = preg_replace('/\/page\/[0-9]+\//', '/', $page_url);
 
 	if ($pages) {
-		if ( ! isset($wp_query->query_vars['page']) ) {
-			$current_page = 1;
-		} else {
-			$current_page = $wp_query->query_vars['page'];
-		}
-
-		if ($current_page < 1) {
-			$current_page = 1;
-		}
 
 		$pagination.= '<ul class="pagination">';
 
