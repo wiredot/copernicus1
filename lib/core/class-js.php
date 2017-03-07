@@ -13,16 +13,47 @@ class CP_Js {
 	 */
 	public function __construct() {
 		add_filter('wp_enqueue_scripts', array($this,'add_js_files'));
+		add_filter('admin_enqueue_scripts', array($this,'add_js_files_in_admin'));
+		// add_filter('init', array($this,'add_rewrite_rules'));
+	}
+
+	public function show_file($id) {
+		header('Content-Type: text/js');
+		$js_file = WP_CONTENT_DIR.'/cache/js/scripts-'.$id.'.js';
+		if (file_exists($js_file)) {
+			echo file_get_contents($js_file);
+		}
+		exit;
+	}
+
+	public function add_rewrite_rules() {
+		add_rewrite_tag( '%cp_show_js%', '(.+)' );
+		add_rewrite_rule( 'content/themes/'.get_template().'/assets/js/scripts-([^/.]+).js', 'index.php?cp_show_js=$matches[1]', 'top' );
+	}
+
+	public function add_js_files_in_admin() {
+		$this->add_js_files('admin');
 	}
 
 	/**
 	 * 
 	 */
-	public function add_js_files() {
+	public function add_js_files($mode = 'front') {
+		global $wp_query;
+		if ($mode != 'admin') {
+			$mode = 'front';
+		}
+
+		if (isset($wp_query->query_vars['cp_show_js'])) {
+			$this->show_file($wp_query->query_vars['cp_show_js']);
+		}
+
 		if (isset(CP::$config['js']) && CP::$config['js']) {
 
 			foreach (CP::$config['js'] as $key => $js) {
-				$this->get_js_file($key, $js);
+				if (($mode == 'front' && $js['front']) || ($mode == 'admin' && $js['admin'])) {
+					$this->get_js_file($key, $js);
+				}
 			}
 		}
 	}

@@ -231,8 +231,7 @@ class CP_Log {
 			'log_type'     => $type
 		);
 
-		return self::insert_log( $log_data );
-
+		self::insert_log( $log_data );
 	}
 
 

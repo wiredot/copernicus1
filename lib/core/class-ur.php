@@ -33,12 +33,6 @@ class CP_Ur {
 			$this->ur = CP::$config['ur'];
 		}
 		
-		$wp_roles = new WP_Roles();
-
-		foreach ($wp_roles->roles as $key => $value) {
-			$this->wp_ur[] = $key;
-		}
-		
 		// create user roles
 		add_action('admin_init', array($this, 'add_user_roles'));
 	}
@@ -51,6 +45,16 @@ class CP_Ur {
 	 * @author Piotr Soluch
 	 */
 	public function add_user_roles() {
+
+		$wp_roles = new WP_Roles();
+
+		if ( ! is_array($wp_roles) ) {
+			return;
+		}
+
+		foreach ($wp_roles->roles as $key => $value) {
+			$this->wp_ur[] = $key;
+		}
 
 		// if there are user roles
 		if (is_array($this->ur)) {

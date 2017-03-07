@@ -13,6 +13,14 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 		$return = '';
 		$key = 0;
 
+		if ( isset($wp_query->query_vars['page']) && $wp_query->query_vars['page'] > 0) {
+			$current_page = $wp_query->query_vars['page'];
+		} else if ( isset($wp_query->query_vars['paged']) && $wp_query->query_vars['paged'] > 0 ) {
+			$current_page = $wp_query->query_vars['paged'];
+		} else {
+			$current_page = 1;
+		}
+
 		if (isset($params['name']) && $params['name']) {
 			
 			$loop = $CP_Loop->get_loop($params['name']);
@@ -26,14 +34,6 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 
 				global $CP_Loop;
 				$loop['args'] = $CP_Loop->merge_attributes($params['args'], $loop['args']);
-			}
-
-			if ( isset($wp_query->query_vars['page']) && $wp_query->query_vars['page'] > 0) {
-				$current_page = $wp_query->query_vars['page'];
-			} else if ( isset($wp_query->query_vars['paged']) && $wp_query->query_vars['paged'] > 0 ) {
-				$current_page = $wp_query->query_vars['paged'];
-			} else {
-				$current_page = 1;
 			}
 
 			if ($loop) {

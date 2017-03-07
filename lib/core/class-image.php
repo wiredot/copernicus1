@@ -108,7 +108,12 @@ class CP_Image {
 	public function get_image_tag($id, $size, $options = array(), $attributes = array()) {
 		$image = '<img src="';
 
-		$image.= $this->get_image_link($id, $size, $options);
+		$image_link = $this->get_image_link($id, $size, $options);
+		if ( ! $image_link ) {
+			return null;
+		}
+
+		$image.= $image_link;
 
 		$image.= '"';
 
@@ -116,6 +121,15 @@ class CP_Image {
 			$image.= ' '.$tag.'="';
 			$image.= $attr;
 			$image.= '"';
+		}
+
+		$sizes = getimagesize($image_link);
+
+		if (isset($sizes[0])) {
+			$image.= ' width="'.$sizes[0].'"';
+		}
+		if (isset($sizes[1])) {
+			$image.= ' height="'.$sizes[1].'"';
 		}
 
 		$image.= '>';

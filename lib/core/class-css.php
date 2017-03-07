@@ -13,12 +13,31 @@ class CP_Css {
 	 */
 	public function __construct() {
 		add_filter('wp_enqueue_scripts', array($this,'add_css_files'));
+		// add_filter('init', array($this,'add_rewrite_rules'));
+	}
+
+	public function add_rewrite_rules() {
+		add_rewrite_tag( '%cp_show_css%', '(.+)' );
+		add_rewrite_rule( 'content/themes/'.get_template().'/assets/css/style-([^/.]+).css', 'index.php?cp_show_css=$matches[1]', 'top' );
+	}
+
+	public function show_file($id) {
+		header('Content-Type: text/css');
+		$css_file = WP_CONTENT_DIR.'/cache/css/style-'.$id.'.css';
+		if (file_exists($css_file)) {
+			echo file_get_contents($css_file);
+		}
+		exit;
 	}
 
 	/**
 	 * 
 	 */
 	public function add_css_files() {
+		global $wp_query;
+		if (isset($wp_query->query_vars['cp_show_css'])) {
+			$this->show_file($wp_query->query_vars['cp_show_css']);
+		}
 
 		if ( isset(CP::$config['css']) && CP::$config['css'] ) {
 
@@ -83,7 +102,7 @@ class CP_Css {
 		}
 
 		$new_css_file = $name.'-'.md5($all_checksums).'.css';
-		$combined_css = content_url().'/cache/css/'.$new_css_file;
+		$combined_css = content_url().'/cache/css/'.$new_css_file;;
 
 		if ($update_css_details || ! file_exists(WP_CONTENT_DIR.'/cache/css/'.$new_css_file)) {
 			$css = new AssetCollection(
