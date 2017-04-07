@@ -42,6 +42,7 @@ class CP_Field {
 			case 'number':
 			case 'range':
 			case 'color':
+			case 'time':
 			case 'url':
 				return $this->_get_input($field);
 				break;
