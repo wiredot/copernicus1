@@ -255,10 +255,18 @@ class CP_Alv {
 								$wp_query->set('orderby', $orderby);
 								break;
 							default:
-								$wp_query->set('orderby', 'meta_value');
-								$wp_query->set('meta_key', $orderby);
+								if (is_array($orderby)) {
+									$wp_query->set('orderby', $orderby);
+								} else {
+									$wp_query->set('orderby', 'meta_value');
+									$wp_query->set('meta_key', $orderby);
+								}
 								break;
 						}
+					}
+
+					if (isset($alv['settings']['meta_query'])) {
+						$wp_query->set('meta_query', $alv['settings']['meta_query']);
 					}
 
 					if (isset($alv['settings']['order']))
