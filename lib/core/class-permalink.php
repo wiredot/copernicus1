@@ -108,11 +108,11 @@ class CP_Permalink {
 					if (isset($language['prefix']) && $language['prefix']) {
 						$post_type = get_post_type( $value['ID'] );
 						if ($post_type == 'page') {
-							add_rewrite_rule('^'.$language['prefix'].'/'.$url.'/?$',
+							add_rewrite_rule('^'.$language['prefix'].''.$url.'/?$',
 								'index.php?page_id='.$value['ID'].'&langid='.$language['prefix'],
 								'top');
 						} else {
-							add_rewrite_rule('^'.$language['prefix'].'/'.$url.'/?$',
+							add_rewrite_rule('^'.$language['prefix'].''.$url.'/?$',
 								'index.php?p='.$value['ID'].'&post_type='.$post_type.'&langid='.$language['prefix'],
 								'top');
 						}
@@ -131,9 +131,6 @@ class CP_Permalink {
 	public function add_rewrite_tags() {
 		global $wp_rewrite;
 	
-		// add rewrite tokens
-		$keytag_token = '%tagggg%';
-		$wp_rewrite->add_rewrite_tag( $keytag_token, '(.+)', 'tagggg=' );
 		// if there are rewrite_rules
 		if (is_array($this->rewrite_tag)) {
 

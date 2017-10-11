@@ -150,7 +150,7 @@ class CP_Log {
 
 		$log_args = array(
 			'labels'          => array( 'name' => __( 'Logs', 'wp-logging' ) ),
-			'public'          => defined( 'WP_DEBUG' ) && WP_DEBUG,
+			'public'          => true,
 			'query_var'       => false,
 			'rewrite'         => false,
 			'capability_type' => 'post',
@@ -283,7 +283,6 @@ class CP_Log {
 		do_action( 'wp_post_insert_log', $log_id );
 
 		return $log_id;
-
 	}
 
 

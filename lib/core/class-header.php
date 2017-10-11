@@ -49,7 +49,7 @@ class CP_Header {
 		
 		$CP_Smarty->smarty->assign('header', $header);
 		$CP_Smarty->smarty->assign('page', $page);
-		$header = $CP_Smarty->smarty->fetch('_header.html');
+		$header = $CP_Smarty->fetch('_header.html');
 		
 		echo $header."\n";
 	}

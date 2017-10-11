@@ -105,6 +105,33 @@ class CP_Image {
 		return null;
 	}
 
+	public function get_image_path($id, $size, $options = array() ) {
+		$img_metadata = wp_get_attachment_metadata( $id );
+
+		if ( ! $img_metadata ) {
+			return null;
+		}
+
+		$wp_upload_dir = wp_upload_dir();
+		$upload_dir = $wp_upload_dir['basedir'].'/'.dirname($img_metadata['file']).'/';
+
+		$new_filename = $this->get_filename($img_metadata, $size, $options);
+
+		if ( ! isset($options['cache'])) {
+			$options['cache'] = 1;
+		}
+
+		if (file_exists($upload_dir.$new_filename) && $options['cache']) {
+			return $upload_dir.$new_filename;
+		} else {
+			if ($this->create_image($upload_dir.basename($img_metadata['file']), $upload_dir.$new_filename, $size)) {
+				return $upload_dir.$new_filename;
+			}
+		}
+
+		return null;
+	}
+
 	public function get_image_tag($id, $size, $options = array(), $attributes = array()) {
 		$image = '<img src="';
 
@@ -123,7 +150,9 @@ class CP_Image {
 			$image.= '"';
 		}
 
-		$sizes = getimagesize($image_link);
+		$image_path = $this->get_image_path($id, $size, $options);
+
+		$sizes = getimagesize($image_path);
 
 		if (isset($sizes[0])) {
 			$image.= ' width="'.$sizes[0].'"';

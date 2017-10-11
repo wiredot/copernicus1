@@ -1,4 +1,4 @@
-<div class="cp_meta_box field_{$field.type}">
+<div class="cp_meta_box field_{$field.type}{if isset($field.condition) && $field.condition} cp_conditional_row{foreach from=$field.condition.value item=c} cp_condition_{$field.condition.name}_{$c}{/foreach}{/if}">
 	<label for="{$field.field_id}">{$field.name}</label>
 	{$field.field}
 </div>

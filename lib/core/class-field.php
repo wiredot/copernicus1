@@ -140,7 +140,7 @@ class CP_Field {
 		$CP_Smarty->smarty->assign('fields', $fields);
 		$CP_Smarty->smarty->assign('field', $field);
 
-		return $CP_Smarty->smarty->fetch('fields/multilanguage.html');
+		return $CP_Smarty->fetch('fields/multilanguage.html');
 	}
 
 	// -------------------- FIELDS --------------------	
@@ -152,7 +152,7 @@ class CP_Field {
 		global $CP_Smarty;
 		$CP_Smarty->smarty->assign('field', $field);
 
-		return $CP_Smarty->smarty->fetch('fields/input.html');
+		return $CP_Smarty->fetch('fields/input.html');
 	}
 
 	/**
@@ -169,7 +169,7 @@ class CP_Field {
 		
 		$CP_Smarty->smarty->assign('field', $field);
 
-		return $CP_Smarty->smarty->fetch('fields/date.html');
+		return $CP_Smarty->fetch('fields/date.html');
 	}
 
 	/**
@@ -179,7 +179,7 @@ class CP_Field {
 		global $CP_Smarty;
 		$CP_Smarty->smarty->assign('field', $field);
 
-		return $CP_Smarty->smarty->fetch('fields/textarea.html');
+		return $CP_Smarty->fetch('fields/textarea.html');
 	}
 
 	/**
@@ -208,9 +208,17 @@ class CP_Field {
 			}
 		}
 
+		if (isset($field['conditional']) && $field['conditional']) {
+			if ( ! isset($field['attributes']['class']) ) {
+				$field['attributes']['class'] = '';
+			}
+
+			$field['attributes']['class'].= ' cp_conditional_select';
+		}
+
 		$CP_Smarty->smarty->assign('field', $field);
 
-		return $CP_Smarty->smarty->fetch('fields/select.html');
+		return $CP_Smarty->fetch('fields/select.html');
 	}
 
 	/**
@@ -231,7 +239,7 @@ class CP_Field {
 
 		$CP_Smarty->smarty->assign('field', $field);
 
-		return $CP_Smarty->smarty->fetch('fields/checkbox.html');
+		return $CP_Smarty->fetch('fields/checkbox.html');
 	}
 
 	/**
@@ -242,7 +250,7 @@ class CP_Field {
 
 		$CP_Smarty->smarty->assign('field', $field);
 
-		return $CP_Smarty->smarty->fetch('fields/radio.html');
+		return $CP_Smarty->fetch('fields/radio.html');
 	}
 
 	/**
@@ -408,7 +416,7 @@ class CP_Field {
 
 		$CP_Smarty->smarty->assign('field', $field);
 
-		return $CP_Smarty->smarty->fetch('fields/upload.html');
+		return $CP_Smarty->fetch('fields/upload.html');
 	}
 
 	// -------------------- PUBLIC FIELDS --------------------	

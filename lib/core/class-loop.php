@@ -86,7 +86,7 @@ class CP_Loop {
 		
 		while ( $WP_loop->have_posts() ) : $WP_loop->the_post();
 			$CP_Smarty->smarty->assign('key', $key);
-			$return.= $CP_Smarty->smarty->fetch($loop['template']);;
+			$return.= $CP_Smarty->fetch($loop['template']);
 			$key++;
 		endwhile;
 		

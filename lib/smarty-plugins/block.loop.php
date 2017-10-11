@@ -53,7 +53,7 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 					$CP_Smarty->smarty->assign('loop', $WP_loop);
 					$CP_Smarty->smarty->assign('key', $key);
 					$CP_Smarty->smarty->assign('count', $WP_loop->post_count);
-					$return.= $CP_Smarty->smarty->fetch('string:'.$content);
+					$return.= $CP_Smarty->fetch('string:'.$content);
 					$key++;
 				endwhile;
 
@@ -73,7 +73,7 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 				} else {
 					$CP_Smarty->smarty->assign('count', 0);
 				}
-				$return.= $CP_Smarty->smarty->fetch('string:'.$content);
+				$return.= $CP_Smarty->fetch('string:'.$content);
 				$key++;
 			endwhile;
 

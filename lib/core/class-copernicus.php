@@ -85,19 +85,19 @@ class CP {
 	 * 
 	 */
 	public static function view($template) {
-		global $CP_Smarty;
+		global $CP_Smarty, $CP_Template;
 
-		if (!$CP_Smarty->smarty->templateExists($template)) {
-			return false;
+		if ( ! $CP_Template->templateExists($template) ) {
+			return;
 		}
 
 		$view = '';
 		
-		if (have_posts()) {
+		if ( have_posts() ) {
 			the_post();
 		}
 		
-		$view.= $CP_Smarty->smarty->fetch($template);
+		$view.= $CP_Smarty->fetch($template);
 		
 		echo $view."\n";
 

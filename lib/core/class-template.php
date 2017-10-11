@@ -41,7 +41,7 @@ class CP_Template {
 	/**
 	 * 
 	 */
-	function add_meta_boxes() {
+	public function add_meta_boxes() {
 		global $CP_Mb;
 
 		if (isset($this->templates)) {
@@ -62,7 +62,7 @@ class CP_Template {
 	/**
 	 * 
 	 */
-	function add_template_field($post, $meta_box) {
+	public function add_template_field($post, $meta_box) {
 		global $CP_Field;
 
 		$values = array('' => '-- default --');
@@ -104,6 +104,20 @@ class CP_Template {
 		$_cp_template = ( isset($_POST['_cp_template']) ? $_POST['_cp_template'] : '' );
 
 		update_post_meta($post_id, '_cp_template', $_cp_template);
+	}
+
+	public function templateExists($template) {
+		global $CP_Smarty;
+
+		if ( ! $CP_Smarty->smarty->templateExists($template) ) {
+			$template = str_replace('.html', '.twig', $template);
+			
+			if ( ! $CP_Smarty->smarty->templateExists($template) ) {
+				return false;
+			}
+		}
+		
+		return $template;
 	}
 
 // end class

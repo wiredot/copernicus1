@@ -69,6 +69,21 @@ class CP_Smarty {
 		return false;
 	}
 
+	public function fetch($template) {
+		global $CP_Template;
+
+		$template = $CP_Template->templateExists($template);
+		return $this->smarty->fetch($template);
+	}
+
+	public function display($template) {
+		global $CP_Template;
+
+		$template = $CP_Template->templateExists($template);
+		echo $template;
+		$this->smarty->display($template);
+	}
+
 // class end
 }
 

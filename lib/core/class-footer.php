@@ -21,7 +21,7 @@ class CP_Footer {
 		$footer = str_replace("\n", "\n\t", $footer);
 		
 		$CP_Smarty->smarty->assign('footer', $footer);
-		$footer = $CP_Smarty->smarty->display('_footer.html');
+		$footer = $CP_Smarty->fetch('_footer.html');
 		
 		echo $footer."\n";
 	}

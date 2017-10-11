@@ -272,12 +272,21 @@ class CP_Mb {
 	 * @author Piotr Soluch
 	 */
 	public function add_meta_box_content($post, $meta_box) {
-		$styles = '';
-		$template = '';
+		if (isset($meta_box['args']['condition'])) {
+			echo '<input type="hidden" class="cp_conditional_mb';
+
+			if (is_array($meta_box['args']['condition'])) {
+				foreach ($meta_box['args']['condition']['value'] as $value) {
+					echo ' cp_conditional_mb_'.$meta_box['args']['condition']['name'].'_'.$value;
+				}
+			} else {
+				echo ' cp_conditional_mb_'.$meta_box['args']['condition']['name'].'_'.$meta_box['args']['condition']['value'];
+			}
+
+			echo '">';
+		}
 
 		if (isset($meta_box['args']['template'])) {
-			$template = $meta_box['args']['template'];
-
 			echo '<input type="hidden" class="_cp_template_';
 			
 			if (is_array($meta_box['args']['template'])) {
@@ -293,8 +302,8 @@ class CP_Mb {
 		// get data from the DB for current post id
 		$values = get_post_custom($post->ID);
 
-		foreach($values as $key => $value) {
-			if(sizeof($value) == 1) {
+		foreach ($values as $key => $value) {
+			if (sizeof($value) == 1) {
 				$values[$key] = $value[0];
 			}
 		}
@@ -345,7 +354,7 @@ class CP_Mb {
 		}
 
 		$CP_Smarty->smarty->assign('field', $field);
-		return $CP_Smarty->smarty->fetch('mb/row.html');
+		return $CP_Smarty->fetch('mb/row.html');
 
 		$return = '';
 		$return.= '<div class="cp_meta_box field_' . $field['type'] . '">';
@@ -442,12 +451,12 @@ class CP_Mb {
 				}
 				$CP_Smarty->smarty->assign('group_key', $group_key);
 				$CP_Smarty->smarty->assign('fields', $fields);
-				$groups.= $CP_Smarty->smarty->fetch('mb/group.html');
+				$groups.= $CP_Smarty->fetch('mb/group.html');
 			}
 		}
 
 		$CP_Smarty->smarty->assign('groups', $groups);
-		$return = $CP_Smarty->smarty->fetch('mb/groups.html');
+		$return = $CP_Smarty->fetch('mb/groups.html');
 		$return.= '<a href="#add" class="cp-mb-add-group button" id="group-'.$field['id'].'">add</a>';
 		
 		return $return;
@@ -479,7 +488,7 @@ class CP_Mb {
 
 		$CP_Smarty->smarty->assign('fields', $return);
 		$CP_Smarty->smarty->assign('group_key', $key);
-		$group = $CP_Smarty->smarty->fetch('mb/group.html');
+		$group = $CP_Smarty->fetch('mb/group.html');
 
 		$response = array(
 			'type' => 'success',
