@@ -29,7 +29,6 @@ class CP_Translation {
 	 * @author Piotr Soluch
 	 */
 	public function __construct() {
-		
 		add_action( 'admin_menu', array(&$this, 'admin_menu') );
 		add_action( 'admin_init', array($this, 'register_settings') );
 
@@ -46,7 +45,6 @@ class CP_Translation {
 	 * @author Piotr Soluch
 	 */
 	public function load_translations() {
-
 		$translations_dir = get_stylesheet_directory() . '/languages/';
 		// get all files from config dir
 		if (file_exists($translations_dir) && $handle = opendir($translations_dir)) {
@@ -303,7 +301,8 @@ class CP_Translation {
 		$textsa = $this->get_static_texts_dir( get_template_directory()  );
 		$textsb = $this->get_static_texts_dir( get_template_directory() . '/lib/' );
 		$textsc = $this->get_static_texts_dir( get_template_directory() . '/templates/' );
-		$texts_all = array_merge_recursive( $textsa, $textsb, $textsc );
+		$textsd = $this->get_static_texts_dir( get_template_directory() . '/config/' );
+		$texts_all = array_merge_recursive( $textsa, $textsb, $textsc, $textsd );
 		$texts_child = array();
 
 		if (is_child_theme()) {

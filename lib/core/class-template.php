@@ -110,11 +110,7 @@ class CP_Template {
 		global $CP_Smarty;
 
 		if ( ! $CP_Smarty->smarty->templateExists($template) ) {
-			$template = str_replace('.html', '.twig', $template);
-			
-			if ( ! $CP_Smarty->smarty->templateExists($template) ) {
-				return false;
-			}
+			return false;
 		}
 		
 		return $template;
