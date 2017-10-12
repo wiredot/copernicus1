@@ -273,7 +273,7 @@ class CP_Translation {
 					'type' => 'text'
 				);
 				echo '<tr valign="top">';
-				echo '<th scope="row"><label for="cp_translation_'.$text.'">'.$text.'</labe></th>';
+				echo '<th scope="row"><label for="cp_translation_'.$text.'">'.stripslashes($text).'</labe></th>';
 				echo '<td>';
 				$field['group_name'] = 'cp_translation_'.$current_tab;
 				echo $CP_Field->show_multilanguage_field($field, sanitize_title_with_dashes($field['id']), $text, $values, $text);
