@@ -119,7 +119,6 @@ class CP_Field {
 		$languages = $CP_Language->get_languages();
 
 		$fields = array();
-
 		foreach ($languages as $lang) {
 			$value = '';
 			if (isset($values[$field_name.$lang['postmeta_suffix']])) {

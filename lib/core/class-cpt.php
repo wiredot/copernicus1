@@ -75,7 +75,7 @@ class CP_Cpt {
 		if ($CP_Language->get_language_count() > 1) {
 			
 			// if cpt supports title, remove standard title (a special one will be turned on)
-			if ($cpt['support']['title'] && $CP_Mb->is_to_translate($cpt['name'], 'title')) {
+			if ( isset($cpt['support']['title']) && $cpt['support']['title'] && $CP_Mb->is_to_translate($cpt['name'], 'title')) {
 				$cpt['support']['title'] = false;
 			}
 
