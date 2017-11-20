@@ -28,46 +28,46 @@ class CP_Menu {
 	 * @author Piotr Soluch
 	 */
 	public function __construct() {
-		
-		// setup custom fields for nav menu
-		add_filter('wp_setup_nav_menu_item', array($this, 'add_custom_nav_fields'));
-		
-		// update custom fields on save
-		add_action('wp_update_nav_menu_item', array( $this, 'update_custom_nav_fields'), 10, 3 );
-		
-		// custom walker
-		add_filter('wp_edit_nav_menu_walker', array( $this, 'edit_walker'), 10, 2);
 
-		if (isset (CP::$config['nav_menu'])) {
-			
+		// setup custom fields for nav menu
+		add_filter( 'wp_setup_nav_menu_item', array( $this, 'add_custom_nav_fields' ) );
+
+		// update custom fields on save
+		add_action( 'wp_update_nav_menu_item', array( $this, 'update_custom_nav_fields' ), 10, 3 );
+
+		// custom walker
+		add_filter( 'wp_edit_nav_menu_walker', array( $this, 'edit_walker' ), 10, 2 );
+
+		if ( isset( CP::$config['nav_menu'] ) ) {
+
 			// get meta box configuration
-			$this->register_nav_menus(CP::$config['nav_menu']);
+			$this->register_nav_menus( CP::$config['nav_menu'] );
 		}
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	public function edit_walker($walker,$menu_id) {
-	    return 'Walker_Nav_Menu_Edit_Copernicus';
+	public function edit_walker( $walker, $menu_id ) {
+		return 'Walker_Nav_Menu_Edit_Copernicus';
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	private function register_nav_menus($nav_menus) {
-		foreach ($nav_menus as $menu) {
+	private function register_nav_menus( $nav_menus ) {
+		foreach ( $nav_menus as $menu ) {
 			register_nav_menu( $menu['location'], $menu['name'] );
 		}
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	public function get_nav_menu($location) {
-		if (isset (CP::$config['nav_menu'])) {
-			foreach (CP::$config['nav_menu'] as $menu) {
-				if ($menu['location'] == $location) {
+	public function get_nav_menu( $location ) {
+		if ( isset( CP::$config['nav_menu'] ) ) {
+			foreach ( CP::$config['nav_menu'] as $menu ) {
+				if ( $menu['location'] == $location ) {
 					return $menu;
 				}
 			}
@@ -77,12 +77,12 @@ class CP_Menu {
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	public function get_page_menu($id) {
-		if (isset (CP::$config['page_menu'])) {
-			foreach (CP::$config['page_menu'] as $menu) {
-				if ($menu['id'] == $id) {
+	public function get_page_menu( $id ) {
+		if ( isset( CP::$config['page_menu'] ) ) {
+			foreach ( CP::$config['page_menu'] as $menu ) {
+				if ( $menu['id'] == $id ) {
 					return $menu;
 				}
 			}
@@ -92,12 +92,12 @@ class CP_Menu {
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	public function get_page_list($id) {
-		if (isset (CP::$config['page_list'])) {
-			foreach (CP::$config['page_list'] as $menu) {
-				if ($menu['id'] == $id) {
+	public function get_page_list( $id ) {
+		if ( isset( CP::$config['page_list'] ) ) {
+			foreach ( CP::$config['page_list'] as $menu ) {
+				if ( $menu['id'] == $id ) {
 					return $menu;
 				}
 			}
@@ -107,21 +107,21 @@ class CP_Menu {
 	}
 
 
-/* -------------- custom nav menu fields -------------- */
+	/* -------------- custom nav menu fields -------------- */
 
 	/**
-	 * 
+	 *
 	 */
 	public function add_custom_nav_fields( $menu_item ) {
 		global $CP_Language;
 		$languages = $CP_Language->get_languages();
-		if ($languages) {
-			foreach ($languages as $language) {
-				if ($language['postmeta_suffix']) {
-					$title_field = 'title'.$language['postmeta_suffix'];
-					$attr_title_field = 'attr_title'.$language['postmeta_suffix'];
-					$menu_item->$title_field = get_post_meta( $menu_item->ID, '_menu_item_'.$title_field, true );
-					$menu_item->$attr_title_field = get_post_meta( $menu_item->ID, '_menu_item_'.$attr_title_field, true );
+		if ( $languages ) {
+			foreach ( $languages as $language ) {
+				if ( $language['postmeta_suffix'] ) {
+					$title_field = 'title' . $language['postmeta_suffix'];
+					$attr_title_field = 'attr_title' . $language['postmeta_suffix'];
+					$menu_item->$title_field = get_post_meta( $menu_item->ID, '_menu_item_' . $title_field, true );
+					$menu_item->$attr_title_field = get_post_meta( $menu_item->ID, '_menu_item_' . $attr_title_field, true );
 				}
 			}
 		}
@@ -130,34 +130,34 @@ class CP_Menu {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public function update_custom_nav_fields( $menu_id, $menu_item_db_id, $args ) {
 		global $CP_Language;
 		$languages = $CP_Language->get_languages();
-		
-		if ($languages) {
-			foreach ($languages as $language) {
-				if ($language['postmeta_suffix']) {
-					$title = 'title'.$language['postmeta_suffix'];
-					$attr_title = 'attr_title'.$language['postmeta_suffix'];
-					
-					if ( !isset($_REQUEST['menu-item-'.$title]) ) {
-						$title_value = get_post_meta($args['menu-item-object-id'], 'post_title'.$language['postmeta_suffix'], true);
-					} else if ( is_array( $_REQUEST['menu-item-'.$title]) ) {
-						$title_value = $_REQUEST['menu-item-'.$title][$menu_item_db_id];
+
+		if ( $languages ) {
+			foreach ( $languages as $language ) {
+				if ( $language['postmeta_suffix'] ) {
+					$title = 'title' . $language['postmeta_suffix'];
+					$attr_title = 'attr_title' . $language['postmeta_suffix'];
+
+					if ( ! isset( $_REQUEST[ 'menu-item-' . $title ] ) ) {
+						$title_value = get_post_meta( $args['menu-item-object-id'], 'post_title' . $language['postmeta_suffix'], true );
+					} else if ( is_array( $_REQUEST[ 'menu-item-' . $title ] ) ) {
+						$title_value = $_REQUEST[ 'menu-item-' . $title ][ $menu_item_db_id ];
 					}
 
-					if (isset($title_value)) {
-						update_post_meta( $menu_item_db_id, '_menu_item_'.$title, $title_value );
-					}
-					
-					if ( isset($_REQUEST['menu-item-'.$attr_title]) && is_array( $_REQUEST['menu-item-'.$attr_title]) ) {
-						$attr_title_value = $_REQUEST['menu-item-'.$attr_title][$menu_item_db_id];
-						update_post_meta( $menu_item_db_id, '_menu_item_'.$attr_title, $attr_title_value );
+					if ( isset( $title_value ) ) {
+						update_post_meta( $menu_item_db_id, '_menu_item_' . $title, $title_value );
 					}
 
-					unset($title_value);
+					if ( isset( $_REQUEST[ 'menu-item-' . $attr_title ] ) && is_array( $_REQUEST[ 'menu-item-' . $attr_title ] ) ) {
+						$attr_title_value = $_REQUEST[ 'menu-item-' . $attr_title ][ $menu_item_db_id ];
+						update_post_meta( $menu_item_db_id, '_menu_item_' . $attr_title, $attr_title_value );
+					}
+
+					unset( $title_value );
 				}
 			}
 		}

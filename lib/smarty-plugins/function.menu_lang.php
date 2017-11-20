@@ -13,19 +13,19 @@
  * Purpose:  print out a bloginfo information
  *
  */
-function smarty_function_menu_lang($params, $template) {
+function smarty_function_menu_lang( $params, $template ) {
 
 	$navigation = '';
 
-	 if (isset(CP::$config['language'])) {
-	 	$navigation.= '<ul>';
-	 	foreach (CP::$config['language'] as $language) {
-		 	$navigation.= '<li>';
-		 	$navigation.= '<a href="/?lang='.$language['short_name'].'">'.$language['name'].'</a>';
-	 		
-		 	$navigation.= '</li>';
-	 	}
-	 	$navigation.= '</ul>';
-	 }
+	if ( isset( CP::$config['language'] ) ) {
+		 $navigation .= '<ul>';
+		foreach ( CP::$config['language'] as $language ) {
+			$navigation .= '<li>';
+			$navigation .= '<a href="/?lang=' . $language['short_name'] . '">' . $language['name'] . '</a>';
+
+			$navigation .= '</li>';
+		}
+		 $navigation .= '</ul>';
+	}
 	return $navigation;
 }

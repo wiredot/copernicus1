@@ -34,25 +34,25 @@ function smarty_function_nav_menu( $params, $template ) {
 		'link_after'      => '',
 		'items_wrap'      => '<ul id="%1$s" class="%2$s">%3$s</ul>',
 		'depth'           => 0,
-		'walker'          => ''
+		'walker'          => '',
 	);
 
-	if (isset($params['location'])) {
-		$config_params = $CP_Menu->get_nav_menu($params['location']);
-		if ($config_params && is_array($config_params)) {
-			$default_params = array_merge($default_params, $config_params['args']);
+	if ( isset( $params['location'] ) ) {
+		$config_params = $CP_Menu->get_nav_menu( $params['location'] );
+		if ( $config_params && is_array( $config_params ) ) {
+			$default_params = array_merge( $default_params, $config_params['args'] );
 			$default_params['theme_location'] = $params['location'];
 		}
 	}
 
-    // merge default params with the provided ones
-	$params = array_merge($default_params, $params);
+	// merge default params with the provided ones
+	$params = array_merge( $default_params, $params );
 
 	$params['echo'] = false;
 
 	$menu = wp_nav_menu( $params );
 
-	$menu = str_replace("\n", '', $menu);
+	$menu = str_replace( "\n", '', $menu );
 
 	return $menu;
 }

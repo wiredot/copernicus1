@@ -13,8 +13,7 @@
  * Purpose:  print out a title
  *
  */
-function smarty_function_the_author_user_login($params, $template) {
-
-	$user = get_userdata($params['id']);
+function smarty_function_the_author_user_login( $params, $template ) {
+	$user = get_userdata( $params['id'] );
 	return $user->data->user_login;
 }

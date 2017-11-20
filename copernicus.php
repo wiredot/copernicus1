@@ -20,11 +20,11 @@ $core_class_filename = CP_PATH . '/lib/core/class-copernicus.php';
 
 if ( file_exists( $core_class_filename ) ) {
 
-  // load & initialize framework
-  require_once $core_class_filename;
+	// load & initialize framework
+	require_once $core_class_filename;
 
-  CP::init();
+	CP::init();
 
 } else {
-  echo 'error loading plugin';
+	echo 'error loading plugin';
 }

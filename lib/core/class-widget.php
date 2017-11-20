@@ -25,12 +25,12 @@ class CP_Widget {
 	 * @author Piotr Soluch
 	 */
 	public function __construct() {
-		if (isset (CP::$config['widget'])) {
+		if ( isset( CP::$config['widget'] ) ) {
 			$this->widgets = CP::$config['widget'];
 		}
-		
+
 		// create user roles
-		add_action('widgets_init', array($this, 'add_widgets'));
+		add_action( 'widgets_init', array( $this, 'add_widgets' ) );
 	}
 
 	/**
@@ -43,26 +43,27 @@ class CP_Widget {
 	public function add_widgets() {
 
 		// if there are user roles
-		if (is_array($this->widgets)) {
+		if ( is_array( $this->widgets ) ) {
 
 			// for each user role
-			foreach ($this->widgets AS $widget) {
+			foreach ( $this->widgets as $widget ) {
 
 				// if user role is active
-				if ($widget['active'])
+				if ( $widget['active'] ) {
 
-				// create meta box groups
-					$this->add_widget($widget);
+					// create meta box groups
+					$this->add_widget( $widget );
+				}
 			}
 		}
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	public function add_widget($widget) {
+	public function add_widget( $widget ) {
 		register_sidebar( $widget );
 	}
 
-// class end
+	// class end
 }

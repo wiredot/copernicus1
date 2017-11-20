@@ -14,10 +14,10 @@
  * Purpose:  print out a bloginfo information
  *
  */
-function smarty_function_post_meta($params, $template) {
+function smarty_function_post_meta( $params, $template ) {
 
 	$default_id = null;
-	if (@get_the_ID()) {
+	if ( @get_the_ID() ) {
 		$default_id = get_the_ID();
 	}
 
@@ -30,74 +30,73 @@ function smarty_function_post_meta($params, $template) {
 		'more_link_text' => 'read more',
 		'stripteaser' => false,
 		'excerpt' => false,
-		'assign' => null
+		'assign' => null,
 	);
 
-    // merge default params with the provided ones
-	$params = array_merge($default_params, $params);
+	// merge default params with the provided ones
+	$params = array_merge( $default_params, $params );
 
 	$post_meta = '';
 
-	if (LANGUAGE_SUFFIX != '') {
-		$post_meta = get_post_meta($params['id'], $params['key'] . LANGUAGE_SUFFIX);
+	if ( LANGUAGE_SUFFIX != '' ) {
+		$post_meta = get_post_meta( $params['id'], $params['key'] . LANGUAGE_SUFFIX );
 	}
 
-	if (!$post_meta) {
-		$post_meta = get_post_meta($params['id'], $params['key']);
+	if ( ! $post_meta ) {
+		$post_meta = get_post_meta( $params['id'], $params['key'] );
 	}
-	$post_meta = maybe_unserialize($post_meta);
-	$post_meta = strip_array($post_meta);
+	$post_meta = maybe_unserialize( $post_meta );
+	$post_meta = strip_array( $post_meta );
 
-	if ($params['html']) {
-		$post_meta = apply_filters('the_content', $post_meta);
+	if ( $params['html'] ) {
+		$post_meta = apply_filters( 'the_content', $post_meta );
 	}
 
-	if ($params['shortcode']) {
-		$post_meta = do_shortcode($post_meta);
+	if ( $params['shortcode'] ) {
+		$post_meta = do_shortcode( $post_meta );
 	}
-	
-	if ($params['stripteaser'] || $params['excerpt']) {
+
+	if ( $params['stripteaser'] || $params['excerpt'] ) {
 		global $more;
 		$more = 1;
-		$post_parts = preg_split('/<!--more(.*?)?-->/', $post_meta);
-		if ($params['excerpt']) {
+		$post_parts = preg_split( '/<!--more(.*?)?-->/', $post_meta );
+		if ( $params['excerpt'] ) {
 			$post_meta = $post_parts[0];
-			$post_meta.= ' <a href="'.get_permalink($params['id']).'" class=more-link>'.$params['more_link_text'].'</a>';
-		}
-		else {
+			$post_meta .= ' <a href="' . get_permalink( $params['id'] ) . '" class=more-link>' . $params['more_link_text'] . '</a>';
+		} else {
 			$post_meta = $post_parts[1];
 		}
 	}
 
-	if (is_array($post_meta) && LANGUAGE_SUFFIX != '') {
-		
-		foreach ($post_meta as $key => $value) {
-			
-			if (is_array($value)) {
-				foreach ($value as $vkey => $vvalue) {
-					if (isset($value[$vkey.LANGUAGE_SUFFIX]) && $value[$vkey.LANGUAGE_SUFFIX]) {
-						$post_meta[$key][$vkey] = $value[$vkey.LANGUAGE_SUFFIX];
+	if ( is_array( $post_meta ) && LANGUAGE_SUFFIX != '' ) {
+
+		foreach ( $post_meta as $key => $value ) {
+
+			if ( is_array( $value ) ) {
+				foreach ( $value as $vkey => $vvalue ) {
+					if ( isset( $value[ $vkey . LANGUAGE_SUFFIX ] ) && $value[ $vkey . LANGUAGE_SUFFIX ] ) {
+						$post_meta[ $key ][ $vkey ] = $value[ $vkey . LANGUAGE_SUFFIX ];
 					}
 				}
 			}
 		}
 	}
 
-	if (isset($params['assign']) && $params['assign']) {
-		$template->assign($params['assign'], $post_meta);
+	if ( isset( $params['assign'] ) && $params['assign'] ) {
+		$template->assign( $params['assign'], $post_meta );
 		return;
 	}
-	
+
 	return $post_meta;
 }
 
-function strip_array($array) {
+function strip_array( $array ) {
 
-	if (is_array($array)) {
-		if (count($array) == 0) {
+	if ( is_array( $array ) ) {
+		if ( count( $array ) == 0 ) {
 			return null;
-		} else if (count($array) == 1) {
-			$array = $array[key($array)];
+		} else if ( count( $array ) == 1 ) {
+			$array = $array[ key( $array ) ];
 			return $array;
 		}
 	}

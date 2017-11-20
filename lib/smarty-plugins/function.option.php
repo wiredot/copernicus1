@@ -13,22 +13,22 @@
  * Purpose:  print out a bloginfo information
  *
  */
-function smarty_function_option($params, $template) {
-	
-    $options = get_option( $params['option']);
+function smarty_function_option( $params, $template ) {
 
-    if (isset($params['key'])) {
-    	if (isset($options[$params['key']])) {
-    		$option = $options[$params['key']];
-    	}
-    } else {
-    	$option = $options;
-    }
+	$options = get_option( $params['option'] );
 
-    if (isset($params['assign'])) {
-    	$template->assign($params['assign'], $option);
-    	return null;
-    }
+	if ( isset( $params['key'] ) ) {
+		if ( isset( $options[ $params['key'] ] ) ) {
+			$option = $options[ $params['key'] ];
+		}
+	} else {
+		$option = $options;
+	}
 
-    return $option;
+	if ( isset( $params['assign'] ) ) {
+		$template->assign( $params['assign'], $option );
+		return null;
+	}
+
+	return $option;
 }

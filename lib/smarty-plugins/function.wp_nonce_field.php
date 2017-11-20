@@ -4,7 +4,7 @@
  * @package Smarty
  * @subpackage PluginsFunction
  */
- 
+
 /**
  * WP bloginfo function
  *
@@ -13,19 +13,17 @@
  * Purpose:  print out a bloginfo information
  *
  */
-function smarty_function_wp_nonce_field($params, $template) {
-	
+function smarty_function_wp_nonce_field( $params, $template ) {
 	$default_params = array(
 		'action' => '-1',
 		'name' => '_wpnonce',
 		'referer' => true,
-		'echo' => false
+		'echo' => false,
 	);
 
-	$params = array_merge($default_params, $params);
+	$params = array_merge( $default_params, $params );
 
-	$nonce = wp_nonce_field($params['action'], $params['name'], $params['referer'], $params['echo']);
+	$nonce = wp_nonce_field( $params['action'], $params['name'], $params['referer'], $params['echo'] );
 
 	return $nonce;
-
 }

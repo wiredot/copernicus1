@@ -13,16 +13,15 @@
  * Purpose:  print out a bloginfo information
  *
  */
-function smarty_function_user($params, $template) {
-	if (!isset($params['id'])) {
+function smarty_function_user( $params, $template ) {
+	if ( ! isset( $params['id'] ) ) {
 		$params['id'] = get_current_user_id();
 	}
 
-	
-	$user = get_userdata($params['id']);
-	
-	if ($user) {
-		switch($params['key']) {
+	$user = get_userdata( $params['id'] );
+
+	if ( $user ) {
+		switch ( $params['key'] ) {
 			case 'id':
 				return $user->ID;
 				break;

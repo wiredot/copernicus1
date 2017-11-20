@@ -13,15 +13,15 @@
  * Purpose:  print out a bloginfo information
  *
  */
-function smarty_function_dynamic_sidebar($params, $template) {
-	if ( ! isset($params['index'])) {
+function smarty_function_dynamic_sidebar( $params, $template ) {
+	if ( ! isset( $params['index'] ) ) {
 		$params['index'] = '';
 	}
 
 	ob_start();
-	dynamic_sidebar($params['index']);
+	dynamic_sidebar( $params['index'] );
 	$out = ob_get_contents();
 	ob_end_clean();
-	
+
 	return $out;
 }

@@ -28,22 +28,22 @@ class CP_Sidebar {
 	 * @author Piotr Soluch
 	 */
 	public function __construct() {
-		if (isset(CP::$config['sidebar'])) {
+		if ( isset( CP::$config['sidebar'] ) ) {
 			$this->sidebars = CP::$config['sidebar'];
-			add_action( 'widgets_init', array($this,'register_sidebars') );
+			add_action( 'widgets_init', array( $this, 'register_sidebars' ) );
 		}
-		
+
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public function register_sidebars() {
-		
-		foreach ($this->sidebars as $sidebar) {
-			register_sidebar($sidebar);
+
+		foreach ( $this->sidebars as $sidebar ) {
+			register_sidebar( $sidebar );
 		}
 	}
 
-// class end
+	// class end
 }

@@ -13,10 +13,10 @@
  * Purpose:  print out a bloginfo information
  *
  */
-function smarty_function_terms($params, $template) {
+function smarty_function_terms( $params, $template ) {
 
 	// if taxonomies are not defined, return nothing
-	if (!isset($params['taxonomies'])) {
+	if ( ! isset( $params['taxonomies'] ) ) {
 		return null;
 	}
 
@@ -24,26 +24,26 @@ function smarty_function_terms($params, $template) {
 
 	$args = array();
 
-	if (isset($params['args'])) {
-		$args = array_merge($default_args, $params['args']);
+	if ( isset( $params['args'] ) ) {
+		$args = array_merge( $default_args, $params['args'] );
 	}
 
-	if (!isset($params['assign']) || !$params['assign']) {
+	if ( ! isset( $params['assign'] ) || ! $params['assign'] ) {
 		$params['assign'] = $params['taxonomies'];
 	}
 
-	$terms = get_terms($params['taxonomies'], $args);
-	
-	$terms_array = array();
-	
-	if(!isset($terms->errors) && $terms) {
+	$terms = get_terms( $params['taxonomies'], $args );
 
-		foreach ($terms as $key => $term) {
-			$terms[$key]->link = get_term_link( $term );
-			$terms_array[$key] = get_object_vars($terms[$key]);
+	$terms_array = array();
+
+	if ( ! isset( $terms->errors ) && $terms ) {
+
+		foreach ( $terms as $key => $term ) {
+			$terms[ $key ]->link = get_term_link( $term );
+			$terms_array[ $key ] = get_object_vars( $terms[ $key ] );
 		}
 	}
-	
-	$template->assign($params['assign'], $terms_array);
+
+	$template->assign( $params['assign'], $terms_array );
 	return null;
 }

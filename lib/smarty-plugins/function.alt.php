@@ -13,8 +13,8 @@
  * Purpose:  print out a bloginfo information
  *
  */
-function smarty_function_alt($params, $template) {
-	if ( ! isset($params['id'])) {
+function smarty_function_alt( $params, $template ) {
+	if ( ! isset( $params['id'] ) ) {
 		$id = get_the_id();
 	} else {
 		$id = $params['id'];

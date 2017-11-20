@@ -13,6 +13,6 @@
  * Purpose:  print out a bloginfo information
  *
  */
-function smarty_function_current_blog_id($params, $template) {
+function smarty_function_current_blog_id( $params, $template ) {
 	return get_current_blog_id();
 }

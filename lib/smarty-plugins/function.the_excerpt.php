@@ -17,17 +17,16 @@
 function smarty_function_the_excerpt( $params, $template ) {
 	// default params
 	$default_params = array(
-		'id' => null
+		'id' => null,
 	);
 
 	// merge default params with the provided ones
-	$params = array_merge($default_params, $params);
+	$params = array_merge( $default_params, $params );
 
-	if ($params['id']) {
-		$the_post = get_post($params['id']); 
+	if ( $params['id'] ) {
+		$the_post = get_post( $params['id'] );
 		return $the_post->post_excerpt;
 	}
 
-	
 	return get_the_excerpt();
 }

@@ -16,9 +16,9 @@
  * @author Piotr Soluch
  */
 class CP_Taxonomy {
-	
+
 	var $taxonomy = array();
-	
+
 	/**
 	 * Class constructor
 	 *
@@ -27,14 +27,14 @@ class CP_Taxonomy {
 	 * @author Piotr Soluch
 	 */
 	public function __construct() {
-		if (isset (CP::$config['taxonomy'])) {
-			
+		if ( isset( CP::$config['taxonomy'] ) ) {
+
 			// create taxonomies
-			add_action('after_setup_theme', array($this, 'create_taxonomies'));
-			add_filter('pre_get_posts', array($this, 'order_posts'));
+			add_action( 'after_setup_theme', array( $this, 'create_taxonomies' ) );
+			add_filter( 'pre_get_posts', array( $this, 'order_posts' ) );
 		}
 	}
-	
+
 	/**
 	 * Start adding taxonomies
 	 *
@@ -43,22 +43,23 @@ class CP_Taxonomy {
 	 * @author Piotr Soluch
 	 */
 	public function create_taxonomies() {
-		
+
 		// if there are taxonomies
-		if (is_array(CP::$config['taxonomy'])) {
+		if ( is_array( CP::$config['taxonomy'] ) ) {
 
 			// for each taxonomy
-			foreach(CP::$config['taxonomy'] AS $taxonomy) {
-				
+			foreach ( CP::$config['taxonomy'] as $taxonomy ) {
+
 				// if taxonomy is active
-				if ($taxonomy['settings']['active'])
+				if ( $taxonomy['settings']['active'] ) {
 
 					// create meta box groups
-					$this->add_taxonomy($taxonomy);
+					$this->add_taxonomy( $taxonomy );
+				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Add taxonomy
 	 *
@@ -66,10 +67,10 @@ class CP_Taxonomy {
 	 * @return type mixed returns possible errors
 	 * @author Piotr Soluch
 	 */
-	public function add_taxonomy($taxonomy) {
+	public function add_taxonomy( $taxonomy ) {
 
 		$taxonomy['args']['labels'] = $taxonomy['labels'];
-		
+
 		// do the registration
 		register_taxonomy(
 			$taxonomy['settings']['id'],
@@ -79,27 +80,27 @@ class CP_Taxonomy {
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	public function order_posts($wp_query) {
-		if (is_array(CP::$config['taxonomy'])) {
+	public function order_posts( $wp_query ) {
+		if ( is_array( CP::$config['taxonomy'] ) ) {
 
 			// for each alv
-			foreach (CP::$config['taxonomy'] AS $taxonomy) {
-				if (isset($taxonomy['settings']['id']) && isset($wp_query->query_vars[$taxonomy['settings']['id']])) {
-					if (isset($taxonomy['args']['orderby'])) {
-						$wp_query->set('orderby', $taxonomy['args']['orderby']);
+			foreach ( CP::$config['taxonomy'] as $taxonomy ) {
+				if ( isset( $taxonomy['settings']['id'] ) && isset( $wp_query->query_vars[ $taxonomy['settings']['id'] ] ) ) {
+					if ( isset( $taxonomy['args']['orderby'] ) ) {
+						$wp_query->set( 'orderby', $taxonomy['args']['orderby'] );
 					}
-					if (isset($taxonomy['args']['order'])) {
-						$wp_query->set('order', $taxonomy['args']['order']);
+					if ( isset( $taxonomy['args']['order'] ) ) {
+						$wp_query->set( 'order', $taxonomy['args']['order'] );
 					}
-					if (isset($taxonomy['args']['meta_key'])) {
-						$wp_query->set('meta_key', $taxonomy['args']['meta_key']);
+					if ( isset( $taxonomy['args']['meta_key'] ) ) {
+						$wp_query->set( 'meta_key', $taxonomy['args']['meta_key'] );
 					}
 				}
 			}
 		}
 	}
 
-// class end
+	// class end
 }

@@ -13,15 +13,15 @@
  * Purpose:  print out a bloginfo information
  *
  */
-function smarty_function_query_vars($params, $template) {
+function smarty_function_query_vars( $params, $template ) {
 	global $wp_query;
 
-	if (!isset($params['key'])) {
+	if ( ! isset( $params['key'] ) ) {
 		return null;
 	}
-	
-	if (isset($wp_query->query_vars[$params['key']])) {
-		return $wp_query->query_vars[$params['key']];
+
+	if ( isset( $wp_query->query_vars[ $params['key'] ] ) ) {
+		return $wp_query->query_vars[ $params['key'] ];
 	}
 
 	return null;

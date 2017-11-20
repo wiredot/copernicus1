@@ -13,8 +13,6 @@
  * Purpose:  print out a bloginfo information
  *
  */
-function smarty_function_ajax($params, $template) {
-	
-	return admin_url('admin-ajax.php');
-    
+function smarty_function_ajax( $params, $template ) {
+	return admin_url( 'admin-ajax.php' );
 }
