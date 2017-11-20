@@ -12,6 +12,10 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 		
 		$return = '';
 		$key = 0;
+		$page_id = 0;
+		if (isset($post->ID)) {
+			$page_id = $post->ID;
+		}
 
 		if ( isset($wp_query->query_vars['page']) && $wp_query->query_vars['page'] > 0) {
 			$current_page = $wp_query->query_vars['page'];
@@ -52,6 +56,7 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 				while ( $WP_loop->have_posts() ) : $WP_loop->the_post();
 					$CP_Smarty->smarty->assign('loop', $WP_loop);
 					$CP_Smarty->smarty->assign('key', $key);
+					$CP_Smarty->smarty->assign('page_id', $page_id);
 					$CP_Smarty->smarty->assign('count', $WP_loop->post_count);
 					$return.= $CP_Smarty->fetch('string:'.$content);
 					$key++;
@@ -68,6 +73,7 @@ function smarty_block_loop($params, $content, $template, &$repeat) {
 			while ( have_posts() ) : the_post();
 				$CP_Smarty->smarty->assign('key', $key);
 				$CP_Smarty->smarty->assign('post', $post);
+				$CP_Smarty->smarty->assign('page_id', $page_id);
 				if (isset($WP_loop)) {
 					$CP_Smarty->smarty->assign('count', $WP_loop->post_count);
 				} else {
