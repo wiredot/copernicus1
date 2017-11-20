@@ -780,8 +780,20 @@ class CP_Mb {
 				}
 				break;
 			case 'post_link':
-				$post_link = get_post( $value, ARRAY_A );
-				return '<a href="'.get_permalink($post_link['ID']).'" target="_blank">'.$post_link['post_title'].'</a>';
+				if ( is_array($value)) {
+					$content = '';
+					$keys = array_keys($value);
+					$last_key = array_pop($keys);
+					foreach ($value as $key => $page_id) {
+						$content.= $this->get_page_link( $page_id );
+						if ( $key !== $last_key ) {
+							$content.= ', ';
+						}
+					}
+					return $content;
+				} else {
+					return $this->get_page_link( $value );
+				}
 				break;
 			case 'user':
 				return get_user_meta( $value, 'first_name', true ) . ' ' . get_user_meta( $value, 'last_name', true );
@@ -790,6 +802,10 @@ class CP_Mb {
 				return $value;
 				break;
 		}
+	}
+
+	public function get_page_link( $page_id ) {
+		return '<a href="'.get_permalink($page_id).'" target="_blank">'.get_the_title( $page_id ).'</a>';
 	}
 	
 	/**
