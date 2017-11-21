@@ -52,7 +52,7 @@ class CP_Cpt {
 			$cpt['name'] = $key;
 
 			// if cpt is active
-			if ( $cpt['settings']['active'] ) {
+			if ( isset( $cpt['settings']['active'] ) && $cpt['settings']['active'] ) {
 				// create cpt
 				$this->create_post_type( $cpt );
 			}
@@ -75,12 +75,12 @@ class CP_Cpt {
 		if ( $CP_Language->get_language_count() > 1 ) {
 
 			// if cpt supports title, remove standard title (a special one will be turned on)
-			if ( isset( $cpt['support']['title'] ) && $cpt['support']['title'] && $CP_Mb->is_to_translate( $cpt['name'], 'title' ) ) {
+			if ( isset( $cpt['support']['title'] ) && $cpt['support']['title'] && $this->is_to_translate( $cpt['name'], 'title' ) ) {
 				$cpt['support']['title'] = false;
 			}
 
 			// if cpt supports editor, remove standard editor (a special one will be turned on)
-			if ( $cpt['support']['editor'] && $CP_Mb->is_to_translate( $cpt['name'], 'editor' ) ) {
+			if ( $cpt['support']['editor'] && $this->is_to_translate( $cpt['name'], 'editor' ) ) {
 				$cpt['support']['editor'] = false;
 			}
 		}
@@ -164,7 +164,7 @@ class CP_Cpt {
 	/**
 	 *
 	 */
-	public function is_supporting( $post_type, $feature ) {
+	public function is_supported( $post_type, $feature ) {
 
 		foreach ( CP::$config['cpt'] as $key => $cpt ) {
 
@@ -178,5 +178,17 @@ class CP_Cpt {
 		}
 
 		return false;
+	}
+
+	public function is_to_translate( $post_type, $field ) {
+		if ( isset( CP::$config['cpt'][ $post_type ]['translate'][ $field ] ) ) {
+			if ( CP::$config['cpt'][ $post_type ]['translate'][ $field ] ) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+
+		return 1;
 	}
 }

@@ -71,7 +71,7 @@ class CP_Mb {
 
 		$return = '';
 
-		if ( ( ($post_type == 'page' && $CP_Spt->is_supported( 'page', 'title' ) && $CP_Spt->is_translated( 'page', 'title' )) || ($post_type == 'post' && $CP_Spt->is_supported( 'post', 'title' ) && $CP_Spt->is_translated( 'post', 'title' )) || $CP_Cpt->is_supporting( $post_type, 'title' ) ) && ($this->is_to_translate( $post_type, 'title' )) ) {
+		if ( $this->is_supported( $post_type, 'title' ) && $this->is_to_translate( $post_type, 'title' ) ) {
 			$return .= '<div id="titlediv" class="cp-titlediv">';
 
 				$return .= '<div id="titlewrap">';
@@ -86,13 +86,15 @@ class CP_Mb {
 
 			foreach ( $languages as $language ) {
 				$return .= '<span id="_post_title_' . $language['code'] . '" class="option';
+
 				if ( $active == $language['code'] ) {
 					$return .= ' active';
 				}
+
 				$return .= '">' . $language['name'] . '</span>';
 			}
 
-						$return .= '<div class="langs_list">';
+			$return .= '<div class="langs_list">';
 
 			foreach ( $languages as $language ) {
 
@@ -146,9 +148,9 @@ class CP_Mb {
 			$return .= '</div>';
 		}
 
-		if ( (($post_type == 'page' && $CP_Spt->is_supported( 'page', 'editor' )) || ($post_type == 'post' && $CP_Spt->is_supported( 'post', 'editor' )) || $CP_Cpt->is_supporting( $post_type, 'editor' )) && ($this->is_to_translate( $post_type, 'editor' )) ) {
+		if ( $this->is_supported( $post_type, 'editor' ) && $this->is_to_translate( $post_type, 'editor' ) ) {
 
-			if ( ! ( $post_type == 'page' || $post_type == 'post' || $CP_Cpt->is_supporting( $post_type, 'title' ) ) || ! ($this->is_to_translate( $post_type, 'title' )) ) {
+			if ( $this->is_supported( $post_type, 'title' ) ) {
 				$return .= '<br>';
 			}
 
@@ -202,6 +204,26 @@ class CP_Mb {
 		}
 
 		echo $return;
+	}
+
+	public function is_supported( $post_type, $field ) {
+		global $CP_Spt, $CP_Cpt;
+
+		if ( 'post' == $post_type || 'page' == $post_type ) {
+			return $CP_Spt->is_supported( $post_type, $field );
+		}
+
+		return $CP_Cpt->is_supported( $post_type, $field );
+	}
+
+	public function is_to_translate( $post_type, $field ) {
+		global $CP_Spt, $CP_Cpt;
+
+		if ( 'post' == $post_type || 'page' == $post_type ) {
+			return $CP_Spt->is_to_translate( $post_type, $field );
+		}
+
+		return $CP_Cpt->is_to_translate( $post_type, $field );
 	}
 
 	// -------------------- META BOXES --------------------
@@ -850,17 +872,5 @@ class CP_Mb {
 		}
 
 		return $fields;
-	}
-
-	public function is_to_translate( $post_type, $field ) {
-		if ( isset( CP::$config['cpt'][ $post_type ]['translate'][ $field ] ) ) {
-			if ( CP::$config['cpt'][ $post_type ]['translate'][ $field ] ) {
-				return 1;
-			} else {
-				return 0;
-			}
-		}
-
-		return 1;
 	}
 }
