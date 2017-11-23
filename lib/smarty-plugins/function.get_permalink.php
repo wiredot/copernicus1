@@ -19,7 +19,7 @@ function smarty_function_get_permalink( $params, $template ) {
 	if ( isset( $params['name'] ) ) {
 		$post_id = $wpdb->get_var( '
 			SELECT min(ID) 
-			FROM ' . $wpdb->posts . " 
+			FROM ' . $wpdb->posts . ", 
 			WHERE post_name = '" . $params['name'] . "' 
 				AND post_status = 'publish'
 			" );
@@ -32,8 +32,10 @@ function smarty_function_get_permalink( $params, $template ) {
 	if ( isset( $params['template'] ) ) {
 		$post_id = $wpdb->get_var( '
 			SELECT min(post_id) 
-			FROM ' . $wpdb->postmeta . " 
-			WHERE meta_key = '_cp_template' 
+			FROM ' . $wpdb->postmeta . ', ' . $wpdb->posts . " 
+			WHERE ID = post_id
+				AND post_status = 'publish' 
+				AND meta_key = '_cp_template' 
 				AND meta_value = '" . $params['template'] . "' 
 				AND post_status = 'publish'
 		" );
