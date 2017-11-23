@@ -65,16 +65,18 @@ class CP_Template {
 	public function add_template_field( $post, $meta_box ) {
 		global $CP_Field;
 
-		$values = array( '' => '-- default --' );
+		$options = array( '' => '-- default --' );
 		foreach ( $meta_box['args'] as $key => $arg ) {
 			if ( $arg['active'] ) {
-				$values[ $key ] = $arg['name'];
+				$options[ $key ] = $arg['name'];
 			}
 		}
 
+		asort( $options );
+
 		$value = get_post_meta( $post->ID, '_cp_template', true );
 
-		echo $CP_Field->get_select( $value, '_cp_template', '_cp_template', $values );
+		echo $CP_Field->get_select( $value, '_cp_template', '_cp_template', $options );
 		wp_nonce_field( '_cp_template_' . $post->ID, '_cp_template_' . $post->ID );
 	}
 
