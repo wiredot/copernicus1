@@ -59,13 +59,18 @@ class CP_Alv {
 	 * @author Piotr Soluch
 	 */
 	public function modify_list_views() {
-		// for each alv
+		if ( isset( $_GET['post_type'] ) ) {
+			$post_type = $_GET['post_type'];
+		} else {
+			$post_type = 'post';
+		}
+
 		foreach ( $this->alv as $alv ) {
 
 			// if alv is active
 			if ( $alv['settings']['active'] ) {
 
-				if ( isset( $_GET['post_type'] ) && $_GET['post_type'] == $alv['settings']['post_type'] ) {
+				if ( $post_type == $alv['settings']['post_type'] ) {
 
 					$this->alv_fields = $alv['fields'];
 					$this->get_mb_fields( $alv['settings']['post_type'] );
@@ -100,6 +105,9 @@ class CP_Alv {
 					break;
 				case 'ID':
 					$field_name = $field;
+					break;
+				case 'modified':
+					$field_name = 'Modified';
 					break;
 				case 'menu_order':
 					$field_name = 'Order';
@@ -158,6 +166,10 @@ class CP_Alv {
 			case 'menu_order':
 				$post = get_post( $post_id );
 				echo $post->menu_order;
+				break;
+			case 'modified':
+				$post = get_post( $post_id );
+				echo $post->post_modified;
 				break;
 			case 'featured_image':
 				$post_thumbnail_id = get_post_thumbnail_id( $post_id );
