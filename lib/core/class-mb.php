@@ -836,24 +836,39 @@ class CP_Mb {
 	/**
 	 *
 	 */
-	public function get_meta_box_fields() {
+	public function get_meta_box_fields_factory() {
 		$fields = array();
 
 		foreach ( $this->mb as $mb ) {
 			if ( $mb['active'] ) {
-				if ( ! isset( $fields[ $mb['post_type'] ] ) ) {
-					$fields[ $mb['post_type'] ] = array();
-				}
 
-				foreach ( $mb['fields'] as $field_key => $field ) {
-					$field['id'] = $field_key;
-					$fieldName = $field['id'];
-					if ( isset( $field['translation'] ) && $field['translation'] ) {
-						$fieldName = $field['id'] . LANGUAGE_SUFFIX;
+				if ( is_array( $mb['post_type'] ) ) {
+					foreach ( $mb['post_type'] as $post_type ) {
+						$fields = array_merge_recursive( $fields, $this->get_meta_box_fields( $mb, $post_type ) );
 					}
-					$fields[ $mb['post_type'] ][] = $fieldName;
+				} else {
+					$fields = array_merge_recursive( $fields, $this->get_meta_box_fields( $mb, $mb['post_type'] ) );
 				}
 			}
+		}
+
+		return $fields;
+	}
+
+	public function get_meta_box_fields( $mb, $post_type ) {
+		// if ( ! isset( $fields[ $mb['post_type'] ] ) ) {
+		// 	$fields[ $mb['post_type'] ] = array();
+		// }
+
+		$fields = array();
+
+		foreach ( $mb['fields'] as $field_key => $field ) {
+			$field['id'] = $field_key;
+			$field_name = $field['id'];
+			if ( isset( $field['translation'] ) && $field['translation'] ) {
+				$field_name = $field['id'] . LANGUAGE_SUFFIX;
+			}
+			$fields[ $post_type ][] = $field_name;
 		}
 
 		return $fields;
