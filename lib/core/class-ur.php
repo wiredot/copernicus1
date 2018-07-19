@@ -49,7 +49,7 @@ class CP_Ur {
 		$wp_roles = new WP_Roles();
 
 		if ( ! is_array( $wp_roles ) ) {
-			return;
+			// return;
 		}
 
 		foreach ( $wp_roles->roles as $key => $value ) {

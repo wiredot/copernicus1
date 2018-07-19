@@ -470,7 +470,11 @@ class CP_Mb {
 						$group_field['group_field'] = $key;
 						$group_field['id'] = $key;
 
-						$fields .= $this->meta_box_field( $group_field, $group_values[ $group_key ] );
+						if ( $group_field['type'] == 'group' ) {
+							$fields .= $this->meta_box_group( $group_field, $group_values[ $group_key ] );
+						} else {
+							$fields .= $this->meta_box_field( $group_field, $group_values[ $group_key ] );
+						}
 					}
 				}
 				$CP_Smarty->smarty->assign( 'group_key', $group_key );
@@ -658,30 +662,32 @@ class CP_Mb {
 								if ( $postkey == $f ) {
 
 									$postvaluearray = array();
+									if ( isset( $postvalue['id'] ) && is_array( $postvalue['id'] ) ) {
 
-									foreach ( $postvalue['id'] as $postvaluekey => $postvalueid ) {
-										$title = '';
-										$caption = '';
-										$alt = '';
+										foreach ( $postvalue['id'] as $postvaluekey => $postvalueid ) {
+											$title = '';
+											$caption = '';
+											$alt = '';
 
-										$postvaluearray[] = $postvalueid;
+											$postvaluearray[] = $postvalueid;
 
-										if ( isset( $postvalue['title'][ $postvaluekey ] ) ) {
-											$title = $postvalue['title'][ $postvaluekey ];
+											if ( isset( $postvalue['title'][ $postvaluekey ] ) ) {
+												$title = $postvalue['title'][ $postvaluekey ];
+											}
+
+											if ( isset( $postvalue['caption'][ $postvaluekey ] ) ) {
+												$caption = $postvalue['caption'][ $postvaluekey ];
+											}
+
+											if ( isset( $postvalue['alt'][ $postvaluekey ] ) ) {
+												$alt = $postvalue['alt'][ $postvaluekey ];
+											}
+
+											$this->update_image_data( $postvalueid, $title, $caption, $alt );
 										}
 
-										if ( isset( $postvalue['caption'][ $postvaluekey ] ) ) {
-											$caption = $postvalue['caption'][ $postvaluekey ];
-										}
-
-										if ( isset( $postvalue['alt'][ $postvaluekey ] ) ) {
-											$alt = $postvalue['alt'][ $postvaluekey ];
-										}
-
-										$this->update_image_data( $postvalueid, $title, $caption, $alt );
+										$_POST[ $k ][ $kkey ][ $f ] = $postvaluearray;
 									}
-
-									$_POST[ $k ][ $kkey ][ $f ] = $postvaluearray;
 								}
 							}
 						}

@@ -65,7 +65,8 @@ class CP_Settings {
 
 		$settings = $this->settings[ $settings_id ];
 
-		$current_tab = array_shift( array_keys( $settings['tabs'] ) );
+		$array_keys = array_keys( $settings['tabs'] );
+		$current_tab = array_shift( $array_keys );
 		if ( isset( $_GET['tab'] ) ) {
 			$current_tab = $_GET['tab'];
 		}
@@ -102,6 +103,9 @@ class CP_Settings {
 		if ( isset( $current_settings['fields'] ) && is_array( $current_settings['fields'] ) ) {
 
 			foreach ( $current_settings['fields'] as $key => $field ) {
+				if ( ! isset( $field['id'] ) ) {
+					$field['id'] = $key;
+				}
 				echo '<tr valign="top">';
 				echo '<th scope="row"><label for="cp_' . $settings_id . '_' . $current_tab . '_' . $field['id'] . '">' . $field['name'] . '</labe></th>';
 				echo '<td>';

@@ -98,6 +98,10 @@ class CP_Field {
 			case 'upload':
 				return $this->_get_upload( $field );
 				break;
+
+			default:
+				return '';
+				break;
 		}
 
 		// hook used to add additional field type

@@ -38,7 +38,7 @@ function smarty_function_post_meta( $params, $template ) {
 
 	$post_meta = '';
 
-	if ( LANGUAGE_SUFFIX != '' ) {
+	if ( defined( 'LANGUAGE_SUFFIX' ) && LANGUAGE_SUFFIX != '' ) {
 		$post_meta = get_post_meta( $params['id'], $params['key'] . LANGUAGE_SUFFIX );
 	}
 
@@ -68,7 +68,7 @@ function smarty_function_post_meta( $params, $template ) {
 		}
 	}
 
-	if ( is_array( $post_meta ) && LANGUAGE_SUFFIX != '' ) {
+	if ( is_array( $post_meta ) && defined( 'LANGUAGE_SUFFIX' ) && LANGUAGE_SUFFIX != '' ) {
 
 		foreach ( $post_meta as $key => $value ) {
 

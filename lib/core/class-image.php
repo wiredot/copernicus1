@@ -15,6 +15,19 @@ class CP_Image {
 		$options = $this->get_options( $parameters );
 		$attributes = $this->get_attributes( $parameters );
 
+		$filename = get_attached_file( $id );
+		if ( ! file_exists( $filename ) ) {
+			return;
+		}
+
+		$file_format = exif_imagetype( $filename );
+
+		if ( 3 == $file_format ) {
+			$size['f'] = 'png';
+			$size['far'] = 1;
+			unset( $size['zc'] );
+		}
+
 		if ( isset( $parameters['link'] ) && $parameters['link'] ) {
 			return $this->get_image_link( $id, $size, $options );
 		} else {
