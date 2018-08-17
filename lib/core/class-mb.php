@@ -334,7 +334,7 @@ class CP_Mb {
 		// for each field in a box
 		foreach ( $fields as $key => $field ) {
 			$field['id'] = $key;
-			if ( $field['type'] == 'group' ) {
+			if ( 'group' == $field['type'] ) {
 				echo $this->meta_box_group( $field, $values );
 			} else {
 				echo $this->meta_box_field( $field, $values );
@@ -457,7 +457,7 @@ class CP_Mb {
 		$group_values = ( maybe_unserialize( $values[ $field['id'] ] ));
 
 		$groups = '';
-		if ( isset( $group_values ) ) {
+		if ( isset( $group_values ) && is_array( $group_values ) ) {
 			foreach ( $group_values as $group_key => $group_value ) {
 
 				if ( isset( $field['fields'] ) ) {
@@ -470,7 +470,7 @@ class CP_Mb {
 						$group_field['group_field'] = $key;
 						$group_field['id'] = $key;
 
-						if ( $group_field['type'] == 'group' ) {
+						if ( 'group' == $group_field['type'] ) {
 							$fields .= $this->meta_box_group( $group_field, $group_values[ $group_key ] );
 						} else {
 							$fields .= $this->meta_box_field( $group_field, $group_values[ $group_key ] );
@@ -534,7 +534,7 @@ class CP_Mb {
 
 			foreach ( $mb['fields'] as $fkey => $field ) {
 				$field['id'] = $fkey;
-				if ( $field['type'] == 'group' && $field['id'] == $group_id ) {
+				if ( 'group' == $field['type'] && $field['id'] == $group_id ) {
 					return $field;
 				}
 			}
@@ -556,7 +556,7 @@ class CP_Mb {
 		}
 
 		// for new posts
-		if ( $post === null ) {
+		if ( null === $post ) {
 			return;
 		}
 
@@ -632,7 +632,7 @@ class CP_Mb {
 
 		global $post, $post_id, $CP_Language;
 		// for new posts
-		if ( $post === null ) {
+		if ( null === $post ) {
 			return;
 		}
 
@@ -654,9 +654,9 @@ class CP_Mb {
 		// for each field in a box
 		foreach ( $fields as $k => $field ) {
 
-			if ( $field['type'] == 'group' ) {
+			if ( 'group' == $field['type'] ) {
 				foreach ( $field['fields'] as $f => $fvalue ) {
-					if ( $fvalue['type'] == 'upload' && isset( $_POST[ $k ] ) ) {
+					if ( 'upload' == $fvalue['type'] && isset( $_POST[ $k ] ) ) {
 						foreach ( $_POST[ $k ] as $kkey => $postvalues ) {
 							foreach ( $postvalues as $postkey => $postvalue ) {
 								if ( $postkey == $f ) {
@@ -707,14 +707,14 @@ class CP_Mb {
 
 				foreach ( $languages as $language ) {
 
-					if ( $field['type'] == 'upload' ) {
+					if ( 'upload' == $field['type'] ) {
 						$this->save_meta_box_field_upload( $field['id'] . $language['postmeta_suffix'], $post_id );
 					} else {
 						$this->save_meta_box_field( $field['id'] . $language['postmeta_suffix'], $post_id );
 					}
 				}
 			} else {
-				if ( $field['type'] == 'upload' ) {
+				if ( 'upload' == $field['type'] ) {
 					$this->save_meta_box_field_upload( $meta_key, $post_id );
 				} else {
 					$this->save_meta_box_field( $meta_key, $post_id );
