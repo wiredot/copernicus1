@@ -804,10 +804,9 @@ class CP_Mb {
 
 		switch ( $field['type'] ) {
 			case 'select':
+			case 'radio':
 				if ( isset( $field['options'][ $value ] ) ) {
 					return $field['options'][ $value ];
-				} else {
-					return;
 				}
 				break;
 			case 'post_link':
@@ -833,6 +832,8 @@ class CP_Mb {
 				return $value;
 				break;
 		}
+
+		return $value;
 	}
 
 	public function get_page_link( $page_id ) {
