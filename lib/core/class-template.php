@@ -33,7 +33,9 @@ class CP_Template {
 	private function init_templates() {
 		if ( isset( CP::$config['template'] ) ) {
 			foreach ( CP::$config['template'] as $key => $template ) {
-				$this->templates[ $template['post_type'] ][ $key ] = $template;
+				if ( $template['active'] ) {
+					$this->templates[ $template['post_type'] ][ $key ] = $template;
+				}
 			}
 		}
 	}
@@ -43,14 +45,13 @@ class CP_Template {
 	 */
 	public function add_meta_boxes() {
 		global $CP_Mb;
-
 		if ( isset( $this->templates ) ) {
-			foreach ( $this->templates as $key => $template ) {
+			foreach ( $this->templates as $post_type => $template ) {
 				add_meta_box(
-					'1231',
+					'1231_' . $post_type,
 					'Template',
 					array( $this, 'add_template_field' ),
-					'page',
+					$post_type,
 					'side',
 					'default',
 					$template
@@ -65,7 +66,7 @@ class CP_Template {
 	public function add_template_field( $post, $meta_box ) {
 		global $CP_Field;
 
-		$options = array( '' => '-- default --' );
+		// $options = array( '' => '-- default --' );
 		foreach ( $meta_box['args'] as $key => $arg ) {
 			if ( $arg['active'] ) {
 				$options[ $key ] = $arg['name'];
