@@ -21,11 +21,12 @@ class CP_Image {
 		}
 
 		$file_format = exif_imagetype( $filename );
-
 		if ( 3 == $file_format ) {
 			$size['f'] = 'png';
 			$size['far'] = 1;
 			unset( $size['zc'] );
+		} else if ( 1 == $file_format ) {
+			$size['f'] = 'gif';
 		}
 
 		if ( isset( $parameters['link'] ) && $parameters['link'] ) {
@@ -97,6 +98,11 @@ class CP_Image {
 		}
 
 		$wp_upload_dir = wp_upload_dir();
+
+		if ( isset( $size['f'] ) && 'gif' == $size['f'] ) {
+			return $wp_upload_dir['baseurl'] . '/' . $img_metadata['file'];
+		}
+
 		$upload_url = $wp_upload_dir['baseurl'] . '/' . dirname( $img_metadata['file'] ) . '/';
 		$upload_dir = $wp_upload_dir['basedir'] . '/' . dirname( $img_metadata['file'] ) . '/';
 
