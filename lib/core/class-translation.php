@@ -305,17 +305,19 @@ class CP_Translation {
 		$texts = array();
 		$textsa = $this->get_static_texts_dir( get_template_directory() );
 		$textsb = $this->get_static_texts_dir( get_template_directory() . '/lib/' );
-		$textsc = $this->get_static_texts_dir( get_template_directory() . '/templates/' );
-		$textsd = $this->get_static_texts_dir( get_template_directory() . '/config/' );
-		$texts_all = array_merge_recursive( $textsa, $textsb, $textsc, $textsd );
+		$textsc = $this->get_static_texts_dir( get_template_directory() . '/lib/smarty-plugins/' );
+		$textsd = $this->get_static_texts_dir( get_template_directory() . '/templates/' );
+		$textse = $this->get_static_texts_dir( get_template_directory() . '/config/' );
+		$texts_all = array_merge_recursive( $textsa, $textsb, $textsc, $textsd, $textse );
 		$texts_child = array();
 
 		if ( is_child_theme() ) {
 			$textsa = $this->get_static_texts_dir( get_stylesheet_directory() . '/' );
 			$textsb = $this->get_static_texts_dir( get_stylesheet_directory() . '/templates/' );
 			$textsc = $this->get_static_texts_dir( get_stylesheet_directory() . '/lib/' );
-			$textsd = $this->get_static_texts_dir( get_stylesheet_directory() . '/config/' );
-			$texts_child = array_merge_recursive( $textsa, $textsb, $textsc, $textsd );
+			$textsd = $this->get_static_texts_dir( get_stylesheet_directory() . '/lib/smarty-plugin/' );
+			$textse = $this->get_static_texts_dir( get_stylesheet_directory() . '/config/' );
+			$texts_child = array_merge_recursive( $textsa, $textsb, $textsc, $textsd, $textse );
 		}
 
 		$texts = array_merge_recursive( $texts_all, $texts_child );
