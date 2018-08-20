@@ -7,7 +7,7 @@ jQuery(document).ready(function($){
    cp_templates_metaboxes($);
    cp_conditional_rows($);
    cp_sortable($);
-   datepicker($);
+   datepicker();
 });
 
 function language_tabs($) {
@@ -266,6 +266,7 @@ function cp_metaboxes_init($) {
 					cp_metaboxes_remove($);
 					language_tabs($);
 					cp_sortable($);
+					datepicker();
 				}
 			}
 		});
@@ -342,8 +343,12 @@ function cp_sortable($) {
 	$('.cp-upload-wrapper').sortable();
 }
 
-function datepicker($) {
-	$('input.cp_datepicker').Zebra_DatePicker({
+function datepicker() {
+	initDatepicker('input.cp_datepicker');
+}
+
+function initDatepicker(selector) {
+	jQuery(selector).Zebra_DatePicker({
 		format: 'Y-m-d',
 		show_icon: false,
 		default_position: 'below'
