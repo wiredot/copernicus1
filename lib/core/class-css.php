@@ -59,7 +59,7 @@ class CP_Css {
 			$this->add_css( $name, $css['url'], $css['dependencies'], '', $css['media'] );
 		} else if ( isset( $css['links'] ) && $css['links'] ) {
 
-			if ( defined( 'CP_DEV' ) && CP_DEV ) {
+			if ( defined( 'CP_DEV' ) && CP_DEV ||  defined( 'CP_DEBUG' ) && CP_DEBUG  ) {
 				foreach ( $css['links'] as $css_name => $css_link ) {
 					$this->add_css( $css_name, get_template_directory_uri() . '/' . $css_link, $css['dependencies'], '', $css['media'] );
 				}

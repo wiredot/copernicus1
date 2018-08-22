@@ -70,7 +70,7 @@ class CP_Js {
 			$this->add_js( $name, $js['url'], $js['dependencies'], '', $js['footer'] );
 		} else if ( isset( $js['scripts'] ) && $js['scripts'] ) {
 
-			if ( defined( 'CP_DEV' ) && CP_DEV ) {
+			if ( defined( 'CP_DEV' ) && CP_DEV || defined( 'CP_DEBUG' ) && CP_DEBUG ) {
 				foreach ( $js['scripts'] as $js_name => $js_link ) {
 					$this->add_js( $js_name, get_template_directory_uri() . '/' . $js_link, $js['dependencies'], '', $js['footer'] );
 				}
