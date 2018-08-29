@@ -34,6 +34,9 @@ class CP_Template {
 		if ( isset( CP::$config['template'] ) ) {
 			foreach ( CP::$config['template'] as $key => $template ) {
 				if ( $template['active'] ) {
+					if ( ! isset( $template['post_type'] ) ) {
+						$template['post_type'] = 'page';
+					}
 					$this->templates[ $template['post_type'] ][ $key ] = $template;
 				}
 			}

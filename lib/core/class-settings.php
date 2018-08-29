@@ -89,7 +89,7 @@ class CP_Settings {
 					echo ' class="current"';
 				}
 				echo '>' . $tab['name'] . '</a>';
-				if ( $key != key( array_slice( $settings['tabs'], -1, 1, true ) ) ) {
+				if ( key( array_slice( $settings['tabs'], -1, 1, true ) ) != $key ) {
 					echo ' | ';
 				}
 				echo '</li>';
