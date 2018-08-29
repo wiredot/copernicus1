@@ -51,7 +51,6 @@ function smarty_block_loop( $params, $content, $template, &$repeat ) {
 
 				$WP_loop = new WP_Query( $loop['args'] );
 				$ccc = $WP_loop->post_count;
-				//new dBug($WP_loop);
 
 				while ( $WP_loop->have_posts() ) :
 					$WP_loop->the_post();
@@ -60,6 +59,10 @@ function smarty_block_loop( $params, $content, $template, &$repeat ) {
 					$CP_Smarty->smarty->assign( 'page_id', $page_id );
 					$CP_Smarty->smarty->assign( 'count', $WP_loop->post_count );
 					$return .= $CP_Smarty->fetch( 'string:' . $content );
+
+					if ( isset( $params['global'] ) ) {
+						$template->tpl_vars[ $params['global'] ]->value = $CP_Smarty->smarty->getVariable( $params['global'] )->value;
+					}
 					$key++;
 				endwhile;
 
@@ -126,16 +129,16 @@ function show_pagination( $pages = 0, $current_page = 1 ) {
 		$separator_top = false;
 
 		for ( $i = 1; $i <= $pages; $i++ ) {
-			if ( $i == 1 ) {
+			if ( 1 == $i ) {
 				$pagination .= '<li><a href="' . $page_url . '"';
-				if ( $current_page == 1 ) {
+				if ( 1 == $current_page ) {
 					$pagination .= ' class="active"';
 				}
 				$pagination .= '>1</a></li>';
 			} else {
 				if ( $i < 4 || ($i < ($current_page + 3) && $i > ($current_page - 3)) || $i > ($pages - 3) ) {
 					$pagination .= '<li><a href="' . $page_url . 'page/' . ($i) . '/"';
-					if ( $current_page == ($i) ) {
+					if ( $i == $current_page ) {
 						$pagination .= ' class="active"';
 					}
 					$pagination .= '>' . ($i) . '</a></li>';
