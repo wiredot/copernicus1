@@ -31,6 +31,7 @@ function smarty_function_post_meta( $params, $template ) {
 		'stripteaser' => false,
 		'excerpt' => false,
 		'assign' => null,
+		'fallback' => true,
 	);
 
 	// merge default params with the provided ones
@@ -40,11 +41,14 @@ function smarty_function_post_meta( $params, $template ) {
 
 	if ( defined( 'LANGUAGE_SUFFIX' ) && LANGUAGE_SUFFIX != '' ) {
 		$post_meta = get_post_meta( $params['id'], $params['key'] . LANGUAGE_SUFFIX );
-	}
 
-	if ( ! $post_meta ) {
+		if ( ! $post_meta && $params['fallback'] ) {
+			$post_meta = get_post_meta( $params['id'], $params['key'] );
+		}
+	} else {
 		$post_meta = get_post_meta( $params['id'], $params['key'] );
 	}
+
 	$post_meta = maybe_unserialize( $post_meta );
 	$post_meta = strip_array( $post_meta );
 
