@@ -193,7 +193,6 @@ function media_upload(filetype, field_id, field_name, title, button, multiple) {
 						'<img src="'+value.icon+'">' +
 						'<span>'+value.filename+'</span>';
 				}
-				console.log(value);
 				
 				var file_field = file_field +
 					'</td><td class="right">' +
@@ -250,9 +249,7 @@ function cp_metaboxes_init($) {
 		});
 		
 		var groupId = $(this).attr('id').replace('group-', '');
-		//console.log(key);
 		var newKey = (key*1+1*1);
-		//console.log(newKey);
 		var button = $(this);
 
 		$.ajax({
@@ -286,7 +283,7 @@ function cp_templates_metaboxes($) {
 	$('._cp_template_').each(function(index, el) {
 		$(this).parents(".postbox").hide();    
 	});
-   
+
 	cp_templates_metaboxes_show($);
 
 	$('#_cp_template').change(function(event) {
@@ -297,9 +294,21 @@ function cp_templates_metaboxes($) {
 function cp_templates_metaboxes_show($) {
 	var template = $('#_cp_template').val();
 	$('._cp_template_').parents(".postbox").hide();
+
+	$('._cp_template_exclude_').each(function(index, el) {
+		var postbox = $(this).parents(".postbox");
+		if ( ! postbox.find('._cp_template_').length ) {
+			postbox.show();
+		}    
+	});
+	
 	if (template) {
 		if ($('#_cp_template').length) {
 			$('._cp_template_'+template).parents(".postbox").show();
+		}
+
+		if ( $('._cp_template_exclude_' + template ).length) {
+			$('._cp_template_exclude_' + template).parents(".postbox").hide();
 		}
 	}
 }

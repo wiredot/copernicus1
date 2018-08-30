@@ -316,6 +316,21 @@ class CP_Mb {
 			} else {
 				echo ' _cp_template_' . $meta_box['args']['template'];
 			}
+
+			echo '">';
+		}
+
+		if ( isset( $meta_box['args']['template_exclude'] ) ) {
+			echo '<input type="hidden" class="_cp_template_exclude_';
+
+			if ( is_array( $meta_box['args']['template_exclude'] ) ) {
+				foreach ( $meta_box['args']['template_exclude'] as $temp ) {
+					echo ' _cp_template_exclude_' . $temp;
+				}
+			} else {
+				echo ' _cp_template_exclude_' . $meta_box['args']['template_exclude'];
+			}
+
 			echo '">';
 		}
 
