@@ -55,9 +55,12 @@ class CP_Header {
 		global $page, $paged;
 
 		$title = '';
+		$seo_title = '';
 		if ( LANGUAGE_SUFFIX != '' ) {
 			$seo_title = get_post_meta( get_the_id(), 'meta_title' . LANGUAGE_SUFFIX, true );
-		} else {
+		}
+
+		if ( ! $seo_title ) {
 			$seo_title = get_post_meta( get_the_id(), 'meta_title', true );
 		}
 
@@ -66,14 +69,14 @@ class CP_Header {
 		} else {
 			if ( LANGUAGE_SUFFIX != '' ) {
 				$post_title = get_post_meta( get_the_id(), 'post_title' . LANGUAGE_SUFFIX, true );
-				if ( ! $post_title ) {
-					$post_title = get_post_meta( get_the_id(), 'post_title', true );
-				}
-
-				$title .= $post_title . ' | ';
-			} else {
-				$title .= wp_title( '|', false, 'right' );
 			}
+
+			if ( ! $post_title ) {
+				$title .= wp_title( '|', false, 'right' );
+			} else {
+				$title .= $post_title . ' | ';
+			}
+
 			// Add the blog name.
 			$title .= get_bloginfo( 'name' );
 
