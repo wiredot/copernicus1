@@ -30,6 +30,17 @@ class CP_Taf {
 	public function __construct() {
 		if ( isset( CP::$config['taf'] ) && is_array( CP::$config['taf'] ) ) {
 
+			// for each taxonomy
+			foreach ( CP::$config['taf'] as $key => $taf ) {
+				if ( isset( $taf['active'] ) ) {
+					CP::$config['taf'][ $key ]['settings']['active'] = $taf['active'];
+				}
+
+				if ( isset( $taf['taxonomy'] ) ) {
+					CP::$config['taf'][ $key ]['settings']['taxonomy_id'] = $taf['taxonomy'];
+				}
+			}
+
 			$this->taf = CP::$config['taf'];
 
 			// for each taxonomy
@@ -63,8 +74,10 @@ class CP_Taf {
 			return null;
 		}
 
-		foreach ( $fields as $field ) {
-
+		foreach ( $fields as $key_id => $field ) {
+			if ( ! isset( $field['id'] ) ) {
+				$field['id'] = $key_id;
+			}
 			$return .= '<tr class="form-field">';
 				$return .= '<th scope="row" valign="top">';
 					$return .= '<label for="cp_term_meta[' . $field['id'] . ']">' . $field['name'] . '</label>';
@@ -172,13 +185,17 @@ class CP_Taf {
 				if ( $taf['settings']['taxonomy_id'] == $taxonomy ) {
 
 					foreach ( $taf['fields'] as $key => $field ) {
-						$key = $field['id'];
+						if ( ! isset( $field['id'] ) ) {
+							$field['id'] = $key;
+						} else {
+							$key = $field['id'];
+						}
 
-						if ( $field['type'] == 'editor' ) {
+						if ( 'editor' == $field['type'] ) {
 							$values[ $key ] = stripslashes( $values[ $key ] );
 						}
 
-						if ( $field['type'] == 'upload' ) {
+						if ( 'upload' == $field['type'] ) {
 							$term_meta[ $key ] = $this->save_user_field_upload( $key );
 							$this->update_taxonomy_meta( $term_id, $key, serialize( $term_meta[ $key ] ) );
 						} else {
