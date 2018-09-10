@@ -45,11 +45,10 @@ class CP_Ur {
 	 * @author Piotr Soluch
 	 */
 	public function add_user_roles() {
-
 		$wp_roles = new WP_Roles();
 
-		if ( ! is_array( $wp_roles ) ) {
-			// return;
+		if ( ! isset( $wp_roles->roles ) || ! is_array( $wp_roles->roles ) ) {
+			return;
 		}
 
 		foreach ( $wp_roles->roles as $key => $value ) {
