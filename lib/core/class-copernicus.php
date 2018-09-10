@@ -84,7 +84,7 @@ class CP {
 	/**
 	 *
 	 */
-	public static function view( $template ) {
+	public static function view( $template, $loop = 1 ) {
 		global $CP_Smarty, $CP_Template;
 
 		if ( ! $CP_Template->templateExists( $template ) ) {
@@ -93,7 +93,7 @@ class CP {
 
 		$view = '';
 
-		if ( have_posts() ) {
+		if ( $loop && have_posts() ) {
 			the_post();
 		}
 
