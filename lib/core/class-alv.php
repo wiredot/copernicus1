@@ -77,9 +77,30 @@ class CP_Alv {
 
 					// create alv
 					add_filter( 'manage_edit-' . $alv['settings']['post_type'] . '_columns', array( $this, 'modify_list_view' ) );
+					add_filter( 'manage_edit-' . $alv['settings']['post_type'] . '_sortable_columns', array( $this, 'set_sortable_column' ) );
 				}
 			}
 		}
+	}
+
+	public function set_sortable_column( $columns ) {
+		if ( isset( $_GET['post_type'] ) ) {
+			$post_type = $_GET['post_type'];
+		} else {
+			$post_type = 'post';
+		}
+
+		foreach ( $this->alv as $alv ) {
+
+			// if alv is active
+			if ( $post_type == $alv['settings']['post_type'] && $alv['settings']['active'] && isset( $alv['sortable'] ) && is_array( $alv['sortable'] ) ) {
+				foreach ( $alv['sortable'] as $field ) {
+					$columns[ $field ] = $field;
+				}
+			}
+		}
+
+		return $columns;
 	}
 
 	/**
@@ -115,10 +136,10 @@ class CP_Alv {
 				case 'featured_image':
 					$field_name = 'Image';
 					break;
-				case (preg_match( '/image:(.*)/', $field, $matches ) ? true : false):
+				case ( preg_match( '/image:(.*)/', $field, $matches ) ? true : false ):
 					$field_name = 'Image';
 					break;
-				case (preg_match( '/taxonomy:(.*)/', $field, $matches ) ? true : false):
+				case ( preg_match( '/taxonomy:(.*)/', $field, $matches ) ? true : false ):
 					$taxonomy = get_taxonomy( $matches[1] );
 					$field_name = $taxonomy->labels->name;
 					break;
@@ -141,7 +162,7 @@ class CP_Alv {
 
 		foreach ( $this->mb as $key => $mb ) {
 
-			if ( is_array( $mb['fields'] ) && ( $mb['post_type'] == $post_type || ( is_array( $mb['post_type'] ) && in_array( $post_type, $mb['post_type'] )) ) ) {
+			if ( is_array( $mb['fields'] ) && ( $mb['post_type'] == $post_type || ( is_array( $mb['post_type'] ) && in_array( $post_type, $mb['post_type'] ) ) ) ) {
 				foreach ( $mb['fields'] as $k => $field ) {
 					$fields[ $k ] = $field;
 				}
@@ -186,7 +207,7 @@ class CP_Alv {
 					echo $CP_Imageold->image( $params );
 				}
 				break;
-			case (preg_match( '/taxonomy:(.*)/', $column, $matches ) ? true : false):
+			case ( preg_match( '/taxonomy:(.*)/', $column, $matches ) ? true : false ):
 				$terms = get_the_terms( $post_id, $matches[1] );
 				if ( ! isset( $terms->errors ) && $terms ) {
 
@@ -203,7 +224,7 @@ class CP_Alv {
 					echo ' ';
 				}
 				break;
-			case (preg_match( '/image:(.*)/', $column, $matches ) ? true : false):
+			case ( preg_match( '/image:(.*)/', $column, $matches ) ? true : false ):
 				$value = get_post_meta( $post_id, $matches[1], 1 );
 				if ( isset( $value[0] ) ) {
 					global $CP_Imageold;
@@ -237,8 +258,19 @@ class CP_Alv {
 		// Get the post type from the query
 		$post_type = $wp_query->query['post_type'];
 
+		$orderby = null;
+		$order = null;
+
+		if ( isset( $_GET['orderby'] ) ) {
+			$orderby = $_GET['orderby'];
+		}
+
+		if ( isset( $_GET['order'] ) ) {
+			$order = $_GET['order'];
+		}
+
 		// if there are alvs
-		if ( is_array( $this->alv ) && ! isset( $_GET['orderby'] ) ) {
+		if ( is_array( $this->alv ) ) {
 
 			// for each alv
 			foreach ( $this->alv as $alv ) {
@@ -246,10 +278,15 @@ class CP_Alv {
 				// if alv is active
 				if ( $alv['settings']['post_type'] == $post_type ) {
 
-					if ( isset( $alv['settings']['orderby'] ) ) {
-
+					if ( ! $orderby && isset( $alv['settings']['orderby'] ) ) {
 						$orderby = $alv['settings']['orderby'];
+					}
 
+					if ( ! $order && isset( $alv['settings']['order'] ) ) {
+						$order = $alv['settings']['order'];
+					}
+
+					if ( $orderby ) {
 						switch ( $orderby ) {
 							case 'none':
 							case 'ID':
@@ -279,8 +316,8 @@ class CP_Alv {
 						$wp_query->set( 'meta_query', $alv['settings']['meta_query'] );
 					}
 
-					if ( isset( $alv['settings']['order'] ) ) {
-						$wp_query->set( 'order', $alv['settings']['order'] );
+					if ( $order ) {
+						$wp_query->set( 'order', $order );
 					}
 				}
 			}
