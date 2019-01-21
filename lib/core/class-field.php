@@ -102,7 +102,6 @@ class CP_Field {
 
 		// hook used to add additional field type
 		$field_hook = apply_filters( 'cp_show_field_after', $field, $field_id, $field_name, $value );
-
 		if ( $field_hook ) {
 			return $field_hook;
 		}

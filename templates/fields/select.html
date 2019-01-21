@@ -7,8 +7,23 @@
 {else}
 <select name="{$field.field_name}" id="{$field.field_id}"{if isset($field.attributes.class) && $field.attributes.class} class="{$field.attributes.class}"{/if}>
 	<option value="">-- select --</option>
+	{$group = null}
 	{foreach from=$field.options item=option key=k}
-	<option value="{$k}"{if $k == $field.value} selected="selected"{/if}>{$option}</option>
+		{if isset($option.group) && $option.group != $group}
+			{if $option.group}</optgroup>{/if}
+			{$group = $option.group}
+			<optgroup label="{$group}">
+		{/if}
+		<option value="{$k}"{if $k == $field.value} selected="selected"{/if}>
+		{if isset($option.title)}
+			{$option.title}
+		{else}
+			{$option}
+		{/if}
+		</option>
 	{/foreach}
+	{if $option.group}
+	</optgroup>
+	{/if}
 </select>
 {/if}

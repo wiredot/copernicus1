@@ -84,15 +84,15 @@
     display: inline-block;
     width: 75%;
     min-width: 484px; }
-  .cp_meta_box.field_checkbox span.clm, .cp_meta_box.field_radio span.clm, .cp_meta_box.field_user_role span.clm, .cp_meta_box.field_user span.clm, .cp_meta_box.field_taxonomy span.clm, .cp_meta_box.field_post_link span.clm {
+  .cp_meta_box.field_checkbox span.clm, .cp_meta_box.field_radio span.clm, .cp_meta_box.field_user_role span.clm, .cp_meta_box.field_user span.clm, .cp_meta_box.field_taxonomy span.clm, .cp_meta_box.field_post_link span.clm, .cp_meta_box.field_post_link_combined span.clm {
     width: 20%;
     display: inline-block;
     vertical-align: top; }
-  .cp_meta_box.field_checkbox ul, .cp_meta_box.field_radio ul, .cp_meta_box.field_user_role ul, .cp_meta_box.field_user ul, .cp_meta_box.field_taxonomy ul, .cp_meta_box.field_post_link ul {
+  .cp_meta_box.field_checkbox ul, .cp_meta_box.field_radio ul, .cp_meta_box.field_user_role ul, .cp_meta_box.field_user ul, .cp_meta_box.field_taxonomy ul, .cp_meta_box.field_post_link ul, .cp_meta_box.field_post_link_combined ul {
     display: inline-block;
     width: 65%;
     margin: 0 0 0 5%; }
-    .cp_meta_box.field_checkbox ul label, .cp_meta_box.field_radio ul label, .cp_meta_box.field_user_role ul label, .cp_meta_box.field_user ul label, .cp_meta_box.field_taxonomy ul label, .cp_meta_box.field_post_link ul label {
+    .cp_meta_box.field_checkbox ul label, .cp_meta_box.field_radio ul label, .cp_meta_box.field_user_role ul label, .cp_meta_box.field_user ul label, .cp_meta_box.field_taxonomy ul label, .cp_meta_box.field_post_link ul label, .cp_meta_box.field_post_link_combined ul label {
       width: auto; }
 
 .cp-files {
@@ -131,21 +131,26 @@ th#menu_order {
 
 .cp-upload-wrapper label {
   display: block; }
+
 .cp-upload-wrapper table {
   width: 100%; }
+
 .cp-upload-wrapper td {
   vertical-align: top; }
   .cp-upload-wrapper td.left {
     width: 200px; }
   .cp-upload-wrapper td.right {
     padding-left: 10px; }
+
 .cp-upload-wrapper > div {
   background: #fff; }
   .cp-upload-wrapper > div:hover {
     cursor: move; }
+
 .cp-upload-wrapper input[type=text] {
   margin-bottom: 3px;
   display: block; }
+
 .cp-upload-wrapper a {
   margin-top: 5px; }
 
@@ -154,3 +159,5 @@ th#menu_order {
 
 #profile-page .form-table .wp-editor-area {
   width: 100%; }
+
+/*# sourceMappingURL=cp-admin.css.map */
