@@ -2,3 +2,6 @@ lib/composer/vendor
 .siteflow
 cache
 lib/composer/composer.lock
+/node_modules
+*.lock
+*.map
