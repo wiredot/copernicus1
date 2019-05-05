@@ -204,7 +204,8 @@ th#menu_order {
 .cp-upload-wrapper {
 
 	label {
-		display: block;
+		display: inline-block;
+		width: 100px;
 	}
 
 	table {
@@ -233,7 +234,7 @@ th#menu_order {
 
 	input[type=text] {
 		margin-bottom: 3px;
-		display: block;
+		display: inline-block;
 	}
 
 	a {

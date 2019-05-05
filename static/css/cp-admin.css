@@ -130,7 +130,8 @@ th#menu_order {
     display: none; }
 
 .cp-upload-wrapper label {
-  display: block; }
+  display: inline-block;
+  width: 100px; }
 
 .cp-upload-wrapper table {
   width: 100%; }
@@ -149,7 +150,7 @@ th#menu_order {
 
 .cp-upload-wrapper input[type=text] {
   margin-bottom: 3px;
-  display: block; }
+  display: inline-block; }
 
 .cp-upload-wrapper a {
   margin-top: 5px; }

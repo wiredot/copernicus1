@@ -469,7 +469,7 @@ class CP_Mb {
 			$values[ $field['id'] ] = array();
 		}
 
-		$group_values = ( maybe_unserialize( $values[ $field['id'] ] ));
+		$group_values = ( maybe_unserialize( $values[ $field['id'] ] ) );
 
 		$groups = '';
 		if ( isset( $group_values ) && is_array( $group_values ) ) {
@@ -758,9 +758,13 @@ class CP_Mb {
 	}
 
 	public function save_meta_box_field_upload( $meta_key, $post_id ) {
+		global $CP_Language;
+
+		$languages = $CP_Language->get_languages();
 
 		// Get the posted data
 		$new_meta_value = ( isset( $_POST[ $meta_key ] ) ? $_POST[ $meta_key ] : '' );
+		// print_r( $new_meta_value );
 		if ( $new_meta_value ) {
 			update_post_meta( $post_id, $meta_key, $new_meta_value['id'] );
 		} else {
@@ -769,20 +773,19 @@ class CP_Mb {
 
 		if ( isset( $new_meta_value['id'] ) ) {
 			foreach ( $new_meta_value['id'] as $key => $id ) {
-				$title = '';
-				$caption = '';
-				$alt = '';
 
-				if ( isset( $new_meta_value['title'][ $key ] ) ) {
-					$title = $new_meta_value['title'][ $key ];
-				}
+				foreach ( $languages as $lang ) {
+					if ( isset( $new_meta_value['title'][ $lang['short_name'] ][ $key ] ) ) {
+						$title[ $lang['short_name'] ] = $new_meta_value['title'][ $lang['short_name'] ][ $key ];
+					}
 
-				if ( isset( $new_meta_value['caption'][ $key ] ) ) {
-					$caption = $new_meta_value['caption'][ $key ];
-				}
+					if ( isset( $new_meta_value['caption'][ $lang['short_name'] ][ $key ] ) ) {
+						$caption[ $lang['short_name'] ] = $new_meta_value['caption'][ $lang['short_name'] ][ $key ];
+					}
 
-				if ( isset( $new_meta_value['alt'][ $key ] ) ) {
-					$alt = $new_meta_value['alt'][ $key ];
+					if ( isset( $new_meta_value['alt'][ $lang['short_name'] ][ $key ] ) ) {
+						$alt[ $lang['short_name'] ] = $new_meta_value['alt'][ $lang['short_name'] ][ $key ];
+					}
 				}
 
 				$this->update_image_data( $id, $title, $caption, $alt );
@@ -791,23 +794,52 @@ class CP_Mb {
 	}
 
 	public function update_image_data( $id, $title, $caption, $alt = '' ) {
-		global $wpdb;
+		global $wpdb, $CP_Language;
 
-		$wpdb->update(
-			$wpdb->posts,
-			array(
-				'post_title' => $title,
-				'post_excerpt' => $caption,
-			),
-			array(
-				'ID' => $id,
-			)
-		);
+		// print_r( $caption );
 
-		if ( $alt ) {
-			update_post_meta( $id, '_wp_attachment_image_alt', $alt );
-		} else {
-			delete_post_meta( $id, '_wp_attachment_image_alt' );
+		$languages = $CP_Language->get_languages();
+
+		foreach ( $languages as $lang ) {
+			$prefix = $lang['short_name'];
+			if ( isset( $title[ $prefix ] ) ) {
+				$t = $title[ $prefix ];
+			} else {
+				$t = '';
+			}
+
+			if ( isset( $caption[ $prefix ] ) ) {
+				$c = $caption[ $prefix ];
+			} else {
+				$c = '';
+			}
+
+
+			if ( isset( $alt[ $prefix ] ) ) {
+				$a = $alt[ $prefix ];
+			} else {
+				$a = '';
+			}
+			
+			if ( $lang['default'] ) {
+
+
+				$wpdb->update(
+					$wpdb->posts,
+					array(
+						'post_title' => $t,
+						'post_excerpt' => $c,
+					),
+					array(
+						'ID' => $id,
+					)
+				);
+			} else {
+				update_post_meta( $id, 'post_title' . $lang['postmeta_suffix'], $t );
+				update_post_meta( $id, 'post_excerpt' . $lang['postmeta_suffix'], $c );
+			}
+
+			update_post_meta( $id, '_wp_attachment_image_alt' . $lang['postmeta_suffix'], $a );
 		}
 	}
 

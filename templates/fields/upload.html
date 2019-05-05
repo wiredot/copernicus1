@@ -6,12 +6,18 @@
 			<tr>
 				<td class="left">{$file.file}</td>
 				<td class="right">
-					<label for="{$field.field_name}_title_{$k}">title</label>
-					<input type="text" name="{$field.field_name}[title][]" id="{$field.field_name}_title_{$k}" value="{the_title id={$file.attachment}}">
-					<label for="{$field.field_name}_caption_{$k}">caption</label>
-					<input type="text" name="{$field.field_name}[caption][]" id="{$field.field_name}_caption_{$k}" value="{the_excerpt id={$file.attachment}}">
-					<label for="{$field.field_name}_alt_{$k}">alt text</label>
-					<input type="text" name="{$field.field_name}[alt][]" id="{$field.field_name}_alt_{$k}" value="{post_meta key=_wp_attachment_image_alt id={$file.attachment}}">
+					{foreach from=$languages item=lang key=k}
+						<label for="{$field.field_name}_title_{$k}_{$lang.short_name}">title {$lang.short_name}</label>
+						<input type="text" name="{$field.field_name}[title][{$lang.short_name}][]" id="{$field.field_name}_title_{$k}_{$lang.short_name}" value="{the_title id={$file.attachment} lang={$lang.short_name}}">
+					{/foreach}
+					{foreach from=$languages item=lang key=k}
+						<label for="{$field.field_name}_caption_{$k}_{$lang.short_name}">caption {$lang.short_name}</label>
+						<input type="text" name="{$field.field_name}[caption][{$lang.short_name}][]" id="{$field.field_name}_caption_{$k}_{$lang.short_name}" value="{the_excerpt id={$file.attachment} lang={$lang.short_name}}">
+					{/foreach}
+					{foreach from=$languages item=lang key=k}
+						<label for="{$field.field_name}_alt_{$k}_{$lang.short_name}">alt text {$lang.short_name}</label>
+						<input type="text" name="{$field.field_name}[alt][{$lang.short_name}][]" id="{$field.field_name}_alt_{$k}_{$lang.short_name}" value="{alt id={$file.attachment} lang={$lang.short_name}}">
+					{/foreach}
 				</td>
 			</tr>
 		</table>

@@ -354,8 +354,9 @@ class CP_Field {
 	 *
 	 */
 	private function _get_upload( $field ) {
-		global $CP_Imageold, $CP_Smarty;
-		;
+		global $CP_Imageold, $CP_Language, $CP_Smarty;
+
+		$languages = $CP_Language->get_languages();
 
 		if ( $field['multiple'] ) {
 			$field['go_function'] = 'media_upload_multiple';
@@ -411,6 +412,7 @@ class CP_Field {
 		}
 
 		$CP_Smarty->smarty->assign( 'field', $field );
+		$CP_Smarty->smarty->assign( 'languages', $languages );
 
 		return $CP_Smarty->fetch( 'fields/upload.html' );
 	}
