@@ -596,7 +596,6 @@ class CP_Mb {
 		}
 
 		foreach ( $languages as $language ) {
-
 			$this->save_meta_box_field( 'post_title' . $language['postmeta_suffix'], $post_id );
 			$this->save_meta_box_field( 'content' . $language['postmeta_suffix'], $post_id );
 		}
@@ -645,8 +644,10 @@ class CP_Mb {
 	 * @author Piotr Soluch
 	 */
 	public function save_meta_box_fields( $fields ) {
-
 		global $post, $post_id, $CP_Language;
+
+		$languages = $CP_Language->get_languages();
+
 		// for new posts
 		if ( null === $post ) {
 			return;
@@ -673,31 +674,61 @@ class CP_Mb {
 			if ( 'group' == $field['type'] ) {
 				foreach ( $field['fields'] as $f => $fvalue ) {
 					if ( 'upload' == $fvalue['type'] && isset( $_POST[ $k ] ) ) {
+						// print_r( $k );
+						// print_r( $field );
+						// print_r( $_POST[ $k ] );
 						foreach ( $_POST[ $k ] as $kkey => $postvalues ) {
 							foreach ( $postvalues as $postkey => $postvalue ) {
+								// print_r( $postkey );
+								// print_r( $postvalue );
 								if ( $postkey == $f ) {
 
 									$postvaluearray = array();
 									if ( isset( $postvalue['id'] ) && is_array( $postvalue['id'] ) ) {
 
 										foreach ( $postvalue['id'] as $postvaluekey => $postvalueid ) {
-											$title = '';
-											$caption = '';
-											$alt = '';
+											foreach ( $languages as $lang ) {
+												if ( isset( $postvalue['title'][ $lang['short_name'] ][ $postvaluekey ] ) ) {
+													$title[ $lang['short_name'] ] = $postvalue['title'][ $lang['short_name'] ][ $postvaluekey ];
+												}
+
+												if ( isset( $postvalue['caption'][ $lang['short_name'] ][ $postvaluekey ] ) ) {
+													$caption[ $lang['short_name'] ] = $postvalue['caption'][ $lang['short_name'] ][ $postvaluekey ];
+												}
+
+												if ( isset( $postvalue['alt'][ $lang['short_name'] ][ $postvaluekey ] ) ) {
+													$alt[ $lang['short_name'] ] = $postvalue['alt'][ $lang['short_name'] ][ $postvaluekey ];
+												}
+
+												// if ( isset( $new_meta_value['caption'][ $lang['short_name'] ][ $key ] ) ) {
+												// 	$caption[ $lang['short_name'] ] = $new_meta_value['caption'][ $lang['short_name'] ][ $key ];
+												// }
+
+												// if ( isset( $new_meta_value['alt'][ $lang['short_name'] ][ $key ] ) ) {
+												// 	$alt[ $lang['short_name'] ] = $new_meta_value['alt'][ $lang['short_name'] ][ $key ];
+												// }
+											}
+
+											// $this->update_image_data( $id, $title, $caption, $alt );
+											// $title = '';
+											// $caption = '';
+											// $alt = '';
 
 											$postvaluearray[] = $postvalueid;
 
-											if ( isset( $postvalue['title'][ $postvaluekey ] ) ) {
-												$title = $postvalue['title'][ $postvaluekey ];
-											}
+											// if ( isset( $postvalue['title'][ $postvaluekey ] ) ) {
+											// 	$title = $postvalue['title'][ $postvaluekey ];
+											// }
 
-											if ( isset( $postvalue['caption'][ $postvaluekey ] ) ) {
-												$caption = $postvalue['caption'][ $postvaluekey ];
-											}
+											// if ( isset( $postvalue['caption'][ $postvaluekey ] ) ) {
+											// 	$caption = $postvalue['caption'][ $postvaluekey ];
+											// }
 
-											if ( isset( $postvalue['alt'][ $postvaluekey ] ) ) {
-												$alt = $postvalue['alt'][ $postvaluekey ];
-											}
+											// if ( isset( $postvalue['alt'][ $postvaluekey ] ) ) {
+											// 	$alt = $postvalue['alt'][ $postvaluekey ];
+											// }
+
+											// print_r( $title );
 
 											$this->update_image_data( $postvalueid, $title, $caption, $alt );
 										}
@@ -709,31 +740,31 @@ class CP_Mb {
 						}
 					}
 				}
-			}
-
-			$field['id'] = $k;
-
-			// Get the meta key.
-			$meta_key = $field['id'];
-
-			//can't save during autosave, otherwise it saves blank values (there's a problem that meta box values are not send with POST during autosave. Probably fixable
-			if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-				return;
-			} else if ( isset( $field['translation'] ) && $field['translation'] ) {
-
-				foreach ( $languages as $language ) {
-
-					if ( 'upload' == $field['type'] ) {
-						$this->save_meta_box_field_upload( $field['id'] . $language['postmeta_suffix'], $post_id );
-					} else {
-						$this->save_meta_box_field( $field['id'] . $language['postmeta_suffix'], $post_id );
-					}
-				}
 			} else {
-				if ( 'upload' == $field['type'] ) {
-					$this->save_meta_box_field_upload( $meta_key, $post_id );
+				$field['id'] = $k;
+
+				// Get the meta key.
+				$meta_key = $field['id'];
+
+				//can't save during autosave, otherwise it saves blank values (there's a problem that meta box values are not send with POST during autosave. Probably fixable
+				if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+					return;
+				} else if ( isset( $field['translation'] ) && $field['translation'] ) {
+
+					foreach ( $languages as $language ) {
+
+						if ( 'upload' == $field['type'] ) {
+							$this->save_meta_box_field_upload( $field['id'] . $language['postmeta_suffix'], $post_id );
+						} else {
+							$this->save_meta_box_field( $field['id'] . $language['postmeta_suffix'], $post_id );
+						}
+					}
 				} else {
-					$this->save_meta_box_field( $meta_key, $post_id );
+					if ( 'upload' == $field['type'] ) {
+						$this->save_meta_box_field_upload( $meta_key, $post_id );
+					} else {
+						$this->save_meta_box_field( $meta_key, $post_id );
+					}
 				}
 			}
 		}
@@ -814,15 +845,13 @@ class CP_Mb {
 				$c = '';
 			}
 
-
 			if ( isset( $alt[ $prefix ] ) ) {
 				$a = $alt[ $prefix ];
 			} else {
 				$a = '';
 			}
-			
-			if ( $lang['default'] ) {
 
+			if ( $lang['default'] ) {
 
 				$wpdb->update(
 					$wpdb->posts,
