@@ -22,7 +22,7 @@
 		{/if}
 		</option>
 	{/foreach}
-	{if $option.group}
+	{if isset($option.group) && $option.group}
 	</optgroup>
 	{/if}
 </select>

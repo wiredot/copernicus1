@@ -499,8 +499,9 @@ class CP_Mb {
 		}
 
 		$CP_Smarty->smarty->assign( 'groups', $groups );
+		$CP_Smarty->smarty->assign( 'group_name', $field['name'] );
 		$return = $CP_Smarty->fetch( 'mb/groups.html' );
-		$return .= '<a href="#add" class="cp-mb-add-group button" id="group-' . $field['id'] . '">add</a>';
+		$return .= '<a href="#add" class="cp-mb-add-group button" id="group-' . $field['id'] . '">add</a><br><br>';
 
 		return $return;
 	}
