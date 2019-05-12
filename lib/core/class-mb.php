@@ -644,6 +644,10 @@ class CP_Mb {
 	 * @author Piotr Soluch
 	 */
 	public function save_meta_box_fields( $fields ) {
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
 		global $post, $post_id, $CP_Language;
 
 		$languages = $CP_Language->get_languages();
@@ -740,6 +744,7 @@ class CP_Mb {
 						}
 					}
 				}
+				$this->save_meta_box_field( $k, $post_id );
 			} else {
 				$field['id'] = $k;
 
@@ -747,9 +752,7 @@ class CP_Mb {
 				$meta_key = $field['id'];
 
 				//can't save during autosave, otherwise it saves blank values (there's a problem that meta box values are not send with POST during autosave. Probably fixable
-				if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-					return;
-				} else if ( isset( $field['translation'] ) && $field['translation'] ) {
+				if ( isset( $field['translation'] ) && $field['translation'] ) {
 
 					foreach ( $languages as $language ) {
 
