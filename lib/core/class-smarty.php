@@ -10,16 +10,16 @@ class CP_Smarty {
 	public function __construct() {
 		global $ccc;
 
-		$template_dirs[] = get_stylesheet_directory() . '/templates/';
+		$template_dirs[] = get_stylesheet_directory() . '/cp-templates/';
 		$plugins_dirs[] = get_stylesheet_directory() . '/lib/smarty-plugins/';
 
-		$template_dirs[] = CP_PATH . '/templates/';
+		$template_dirs[] = CP_PATH . '/cp-templates/';
 		$plugins_dirs[] = CP_PATH . '/lib/smarty-plugins/';
 
 		if ( isset( CP::$config['plugin'] ) ) {
 			foreach ( CP::$config['plugin'] as $plugin ) {
 				if ( isset( $plugin['directory'] ) ) {
-					$template_dirs[] = $plugin['directory'] . '/templates/';
+					$template_dirs[] = $plugin['directory'] . '/cp-templates/';
 					$plugins_dirs[] = $plugin['directory'] . '/lib/smarty-plugins/';
 				}
 			}
