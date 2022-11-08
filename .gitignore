@@ -5,3 +5,4 @@ lib/composer/composer.lock
 /node_modules
 *.lock
 *.map
+package-lock.json
