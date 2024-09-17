@@ -1,8 +1,8 @@
 === Plugin Name ===
 Contributors: psoluch
 Tags: template, smarty
-Requires at least: 6.1
-Tested up to: 6.1
+Requires at least: 6.6.2
+Tested up to: 6.6.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
