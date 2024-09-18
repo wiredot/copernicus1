@@ -1,6 +1,9 @@
 <?php
 
+use Smarty\Smarty;
+
 class CP_Smarty {
+
 
 	public $smarty;
 
@@ -26,6 +29,8 @@ class CP_Smarty {
 		}
 
 		$this->smarty = new Smarty();
+		$this->smarty->registerPlugin( 'modifier', 'floatval', 'floatval' );
+		$this->smarty->registerPlugin( 'modifier', 'intval', 'intval' );
 		$this->smarty->addPluginsDir( $plugins_dirs );
 		$this->smarty->setTemplateDir( $template_dirs );
 		$this->smarty->setCompileDir( WP_CONTENT_DIR . '/smarty/templates_c/' );

@@ -2,7 +2,7 @@
 
 class CP_Template {
 
-	var $templaes = array();
+	var $templates = array();
 
 	/**
 	 *
