@@ -23,7 +23,7 @@ class CP {
 	 */
 	public static function init() {
 		if ( session_id() == '' ) {
-			 session_start();
+			session_start();
 		}
 
 		// init plugins
@@ -154,68 +154,68 @@ class CP {
 		if ( is_date() ) {
 			if ( CP::view( 'date.html' ) ) {
 				return;
-			} else if ( CP::view( 'archive.html' ) ) {
+			} elseif ( CP::view( 'archive.html' ) ) {
 				return;
 			}
 		}
 
 		if ( is_author() ) {
 			$user_nicename = get_the_author_meta( 'nickname' );
-			$user_id = get_the_author_meta( 'ID' );
+			$user_id       = get_the_author_meta( 'ID' );
 
 			if ( $user_nicename && CP::view( 'author-' . $user_nicename . '.html' ) ) {
 				return;
-			} else if ( $user_id && CP::view( 'author-' . $user_id . '.html' ) ) {
+			} elseif ( $user_id && CP::view( 'author-' . $user_id . '.html' ) ) {
 				return;
-			} else if ( CP::view( 'author.html' ) ) {
+			} elseif ( CP::view( 'author.html' ) ) {
 				return;
-			} else if ( CP::view( 'archive.html' ) ) {
+			} elseif ( CP::view( 'archive.html' ) ) {
 				return;
 			}
 		}
 
 		if ( is_category() ) {
-			$category_id = get_query_var( 'cat' );
+			$category_id      = get_query_var( 'cat' );
 			$current_category = get_category( $category_id );
-			$category_slug = $current_category->slug;
+			$category_slug    = $current_category->slug;
 			if ( $category_slug && CP::view( 'category-' . $category_slug . '.html' ) ) {
 				return;
-			} else if ( $category_id && CP::view( 'category-' . $category_id . '.html' ) ) {
+			} elseif ( $category_id && CP::view( 'category-' . $category_id . '.html' ) ) {
 				return;
-			} else if ( CP::view( 'category.html' ) ) {
+			} elseif ( CP::view( 'category.html' ) ) {
 				return;
-			} else if ( CP::view( 'archive.html' ) ) {
+			} elseif ( CP::view( 'archive.html' ) ) {
 				return;
 			}
 		}
 
 		if ( is_tag() ) {
-			$current_tag_id = get_queried_object()->term_id;
+			$current_tag_id   = get_queried_object()->term_id;
 			$current_tag_slug = get_queried_object()->slug;
 			if ( $current_tag_slug && CP::view( 'tag-' . $current_tag_slug . '.html' ) ) {
 				return;
-			} else if ( $current_tag_id && CP::view( 'tag-' . $current_tag_id . '.html' ) ) {
+			} elseif ( $current_tag_id && CP::view( 'tag-' . $current_tag_id . '.html' ) ) {
 				return;
-			} else if ( CP::view( 'tag.html' ) ) {
+			} elseif ( CP::view( 'tag.html' ) ) {
 				return;
-			} else if ( CP::view( 'archive.html' ) ) {
+			} elseif ( CP::view( 'archive.html' ) ) {
 				return;
 			}
 		}
 
 		if ( is_tax() ) {
-			$current_tag_id = get_queried_object()->term_id;
-			$current_tag_slug = get_queried_object()->slug;
+			$current_tag_id       = get_queried_object()->term_id;
+			$current_tag_slug     = get_queried_object()->slug;
 			$current_tag_taxonomy = get_queried_object()->taxonomy;
 			if ( $current_tag_taxonomy && $current_tag_slug && CP::view( 'taxonomy-' . $current_tag_taxonomy . '-' . $current_tag_slug . '.html' ) ) {
 				return;
-			} else if ( $current_tag_taxonomy && $current_tag_id && CP::view( 'taxonomy-' . $current_tag_taxonomy . '-' . $current_tag_id . '.html' ) ) {
+			} elseif ( $current_tag_taxonomy && $current_tag_id && CP::view( 'taxonomy-' . $current_tag_taxonomy . '-' . $current_tag_id . '.html' ) ) {
 				return;
-			} else if ( $current_tag_taxonomy && CP::view( 'taxonomy-' . $current_tag_taxonomy . '.html' ) ) {
+			} elseif ( $current_tag_taxonomy && CP::view( 'taxonomy-' . $current_tag_taxonomy . '.html' ) ) {
 				return;
-			} else if ( CP::view( 'taxonomy.html' ) ) {
+			} elseif ( CP::view( 'taxonomy.html' ) ) {
 				return;
-			} else if ( CP::view( 'archive.html' ) ) {
+			} elseif ( CP::view( 'archive.html' ) ) {
 				return;
 			}
 		}
@@ -223,7 +223,7 @@ class CP {
 		if ( is_archive() ) {
 			if ( CP::view( 'archive-' . get_post_type() . '.html' ) ) {
 				return;
-			} else if ( CP::view( 'archive.html' ) ) {
+			} elseif ( CP::view( 'archive.html' ) ) {
 				return;
 			}
 		}
@@ -231,23 +231,23 @@ class CP {
 		if ( is_single() ) {
 			if ( CP::view( 'single-' . get_post_type() . '.html' ) ) {
 				return;
-			} else if ( CP::view( 'single.html' ) ) {
+			} elseif ( CP::view( 'single.html' ) ) {
 				return;
 			}
 		}
 
 		if ( is_attachment() ) {
-			$mime_type = get_post_mime_type();
+			$mime_type       = get_post_mime_type();
 			$mime_type_parts = explode( '/', $mime_type );
 			if ( $mime_type_parts[0] && $mime_type_parts[1] && CP::view( $mime_type_parts[0] . '_' . $mime_type_parts[1] . '.html' ) ) {
 				return;
-			} else if ( $mime_type_parts[0] && CP::view( $mime_type_parts[0] . '.html' ) ) {
+			} elseif ( $mime_type_parts[0] && CP::view( $mime_type_parts[0] . '.html' ) ) {
 				return;
-			} else if ( $mime_type_parts[1] && CP::view( $mime_type_parts[1] . '.html' ) ) {
+			} elseif ( $mime_type_parts[1] && CP::view( $mime_type_parts[1] . '.html' ) ) {
 				return;
-			} else if ( CP::view( 'attachment.html' ) ) {
+			} elseif ( CP::view( 'attachment.html' ) ) {
 				return;
-			} else if ( CP::view( 'single.html' ) ) {
+			} elseif ( CP::view( 'single.html' ) ) {
 				return;
 			}
 		}
@@ -256,9 +256,9 @@ class CP {
 			global $post;
 			if ( CP::view( 'page-' . $post->post_name . '.html' ) ) {
 				return;
-			} else if ( CP::view( 'page-' . $post_id . '.html' ) ) {
+			} elseif ( CP::view( 'page-' . $post_id . '.html' ) ) {
 				return;
-			} else if ( CP::view( 'page.html' ) ) {
+			} elseif ( CP::view( 'page.html' ) ) {
 				return;
 			}
 		}
@@ -280,10 +280,10 @@ class CP {
 		foreach ( $plugins as $key => $plugin ) {
 			if ( is_plugin_active( $key ) ) {
 				$plugin_name = dirname( $key );
-				$plugin_dir = ABSPATH . 'wp-content/plugins/' . $plugin_name;
+				$plugin_dir  = ABSPATH . 'wp-content/plugins/' . $plugin_name;
 				if ( file_exists( $plugin_dir . '/copernicus-plugin.config.php' ) ) {
 					$cp_config['plugin'][ $plugin_name ] = array(
-						'id' => $plugin_name,
+						'id'        => $plugin_name,
 						'directory' => $plugin_dir,
 					);
 				}
@@ -317,7 +317,7 @@ class CP {
 		if ( file_exists( $directory ) && $handle = opendir( $directory ) ) {
 
 			// for each file with .config.php extension
-			while ( false !== ($filename = readdir( $handle )) ) {
+			while ( false !== ( $filename = readdir( $handle ) ) ) {
 
 				if ( preg_match( '/.config.php$/', $filename ) ) {
 					//reset config array
@@ -340,11 +340,10 @@ class CP {
 	private static function autoload_classes( $folder_name ) {
 		if ( file_exists( $folder_name ) ) {
 			$handle = opendir( $folder_name );
-
-			while ( false !== ($entry = readdir( $handle )) ) {
-				if ( preg_match( '/^class-((?!copernicus).*).php/', $entry, $matches ) ) {
-					$file = $folder_name . '/' . $matches[0];
-					$class_name = 'CP_' . ucfirst( $matches[1] );
+			while ( false !== ( $entry = readdir( $handle ) ) ) {
+				if ( preg_match( '/^class(-cp)?-((?!.*copernicus)[a-z]+)\.php/', $entry, $matches ) ) {
+					$file       = $folder_name . '/' . $matches[0];
+					$class_name = 'CP_' . ucfirst( $matches[2] );
 
 					if ( ! class_exists( $class_name ) ) {
 						CP::load_class( $file, $class_name );
@@ -362,7 +361,7 @@ class CP {
 			include_once $file;
 
 			global $$class_name;
-			$$class_name = new $class_name;
+			$$class_name = new $class_name();
 		}
 	}
 
@@ -385,7 +384,7 @@ class CP {
 	 *
 	 */
 	public static function load_translations() {
-		CP::load_class( CP_PATH . '/lib/core/class-translation.php', 'CP_Translation' );
+		CP::load_class( CP_PATH . '/lib/core/class-cp-translation.php', 'CP_Translation' );
 	}
 
 	/**

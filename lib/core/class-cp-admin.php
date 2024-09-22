@@ -18,6 +18,9 @@ class CP_Admin {
 	public function __construct() {
 
 		$this->custom_media_upload();
+		$this->theme = array(
+			'version' => '',
+		);
 
 		if ( isset( CP::$config['theme'] ) ) {
 
