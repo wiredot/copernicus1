@@ -2,7 +2,8 @@
 Contributors: psoluch
 Tags: template, smarty
 Requires at least: 6.6.2
-Tested up to: 6.6.2
+Tested up to: 7.0.0
+Requires PHP: 8.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -40,7 +41,3 @@ Copernicus has few handy features:
 1. Upload the Copernicus plugin to your plugins folder.
 2. Activate it.
 3. You're done!
-
-To see what Copernicus can do, try one of the demo themes:
-
-* Copernicus Prime - demo theme ([https://github.com/wiredot/copernicus-prime](https://github.com/wiredot/copernicus-prime))
