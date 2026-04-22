@@ -4,6 +4,7 @@
 		"lmammino/jsmin4assetic": "^1.0.0",
 		"natxet/cssmin": "^3.0.6",
 		"smarty/smarty": "^5.8",
-		"james-heinrich/phpthumb": "^1.7.24"
+		"james-heinrich/phpthumb": "^1.7.24",
+        "wikimedia/minify": "^2.10"
     }
 }

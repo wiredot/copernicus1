@@ -2,9 +2,11 @@
 
 use Assetic\AssetWriter;
 use Assetic\AssetManager;
+use Assetic\FilterManager;
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
-use Assetic\Filter\CssMinFilter as CssMinFilter;
+use Assetic\Asset\GlobAsset;
+use Assetic\Filter\CssMinFilter;
 
 class CP_Css {
 
@@ -57,9 +59,9 @@ class CP_Css {
 
 		if ( isset( $css['url'] ) && $css['url'] ) {
 			$this->add_css( $name, $css['url'], $css['dependencies'], '', $css['media'] );
-		} else if ( isset( $css['links'] ) && $css['links'] ) {
+		} elseif ( isset( $css['links'] ) && $css['links'] ) {
 
-			if ( defined( 'CP_DEV' ) && CP_DEV ||  defined( 'CP_DEBUG' ) && CP_DEBUG  ) {
+			if ( defined( 'CP_DEV' ) && CP_DEV || defined( 'CP_DEBUG' ) && CP_DEBUG ) {
 				foreach ( $css['links'] as $css_name => $css_link ) {
 					$this->add_css( $css_name, get_template_directory_uri() . '/' . $css_link, $css['dependencies'], '', $css['media'] );
 				}
@@ -75,8 +77,8 @@ class CP_Css {
 	 */
 	public function combine_css_files( $name, $scripts, $plugin = null ) {
 		$update_css_details = 0;
-		$css_details = $this->get_css_details( $name );
-		$css_assets = array();
+		$css_details        = $this->get_css_details( $name );
+		$css_assets         = array();
 
 		$all_checksums = '';
 
@@ -96,23 +98,20 @@ class CP_Css {
 				}
 
 				$css_details[ $key ] = $file_checksum;
-				$all_checksums .= $file_checksum;
-				$css_assets[] = new FileAsset( $script_file );
+				$all_checksums      .= $file_checksum;
+				$css_assets[]        = new FileAsset( $script_file );
 			}
 		}
 
 		$new_css_file = $name . '-' . md5( $all_checksums ) . '.css';
 		$combined_css = content_url() . '/cache/css/' . $new_css_file;
-		;
+		// new dBug( $new_css_file, $combined_css );
 
 		if ( $update_css_details || ! file_exists( WP_CONTENT_DIR . '/cache/css/' . $new_css_file ) ) {
-			$css = new AssetCollection(
-				$css_assets,
-				array(
-					new CssMinFilter(),
-				)
-			);
+			$fm = new FilterManager();
+			$fm->set( 'cssmin', new CssMinFilter() );
 
+			$css = new AssetCollection( $css_assets, array( $fm->get( 'cssmin' ) ) );
 			$css->setTargetPath( $new_css_file );
 
 			$am = new AssetManager();
@@ -120,6 +119,7 @@ class CP_Css {
 
 			$writer = new AssetWriter( WP_CONTENT_DIR . '/cache/css' );
 			$writer->writeManagerAssets( $am );
+			// exit;
 
 			$this->update_css_details( $name, $css_details );
 		}

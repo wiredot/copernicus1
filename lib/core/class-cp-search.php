@@ -29,6 +29,8 @@ class CP_Search {
 			return $where;
 		}
 
+		$term_escaped = esc_sql( $wpdb->esc_like( $term ) );
+
 		$where = 'AND ' . $wpdb->posts . ".post_status = 'publish'";
 
 		// post types
@@ -47,7 +49,7 @@ class CP_Search {
 		foreach ( $fields as $key => $type ) {
 
 			foreach ( $type as $tkey => $type_field ) {
-				$where .= ' (SELECT count(*) FROM ' . $wpdb->postmeta . ' WHERE post_id = ' . $wpdb->posts . ".ID AND meta_key = '" . $type_field . "' AND meta_value LIKE '%" . $term . "%') > 0 ";
+				$where .= ' (SELECT count(*) FROM ' . $wpdb->postmeta . ' WHERE post_id = ' . $wpdb->posts . ".ID AND meta_key = '" . esc_sql( $type_field ) . "' AND meta_value LIKE '%" . $term_escaped . "%') > 0 ";
 				$arr = array_keys( $type );
 				$last_key = end( $arr );
 				if ( $tkey != $last_key ) {
@@ -64,7 +66,7 @@ class CP_Search {
 			}
 		}
 
-		$where .= ' OR ' . $wpdb->posts . ".post_title LIKE '%" . $term . "%'";
+		$where .= ' OR ' . $wpdb->posts . ".post_title LIKE '%" . $term_escaped . "%'";
 
 		$where .= ')';
 

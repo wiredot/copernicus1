@@ -4,7 +4,7 @@ use Assetic\AssetWriter;
 use Assetic\AssetManager;
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
-use Assetic\Filter\JSMinFilter as JSMinFilter;
+use Assetic\Filter\JavaScriptMinifierFilter;
 
 class CP_Js {
 
@@ -123,7 +123,7 @@ class CP_Js {
 				$js = new AssetCollection(
 					$js_assets,
 					array(
-						new JSMinFilter(),
+						new JavaScriptMinifierFilter(),
 					)
 				);
 			}
