@@ -24,7 +24,6 @@ if ( file_exists( $core_class_filename ) ) {
 	require_once $core_class_filename;
 
 	CP::init();
-
 } else {
 	echo 'error loading plugin';
 }
