@@ -33,11 +33,11 @@ function smarty_function_the_excerpt( $params, $template ) {
 					$excerpt = get_post_meta( $params['id'], 'post_excerpt' . $language['postmeta_suffix'], true );
 				}
 			}
-		} else if ( LANGUAGE_SUFFIX != '' ) {
+		} elseif ( LANGUAGE_SUFFIX != '' ) {
 			$excerpt = get_post_meta( $params['id'], 'post_excerpt' . LANGUAGE_SUFFIX, true );
 		}
 
-		if ( $excerpt ) {
+		if ( isset( $excerpt ) && $excerpt ) {
 			return $excerpt;
 		}
 

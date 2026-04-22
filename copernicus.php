@@ -1,16 +1,16 @@
 <?php
 /*
-  Plugin Name: Copernicus
-  Plugin URI:  http://copernicus.wiredot.com/
-  Description: WordPress Framework
-  Author: wiredot
-  Version: 1.6.0
-  Author URI: http://wiredot.com/
-  License: GPLv2 or later
+	Plugin Name: Copernicus
+	Plugin URI:  http://copernicus.wiredot.com/
+	Description: WordPress Framework
+	Author: wiredot
+	Version: 1.6.0
+	Author URI: http://wiredot.com/
+	License: GPLv2 or later
  */
 
 // define path to the plugin
-define( 'CP_PATH', dirname( __FILE__ ) );
+define( 'CP_PATH', __DIR__ );
 define( 'CP_URL', plugin_dir_url( __FILE__ ) );
 
 require CP_PATH . '/lib/composer/vendor/autoload.php';

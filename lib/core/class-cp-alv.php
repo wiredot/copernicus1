@@ -93,7 +93,7 @@ class CP_Alv {
 		foreach ( $this->alv as $alv ) {
 
 			// if alv is active
-			if ( $post_type == $alv['settings']['post_type'] && $alv['settings']['active'] && isset( $alv['sortable'] ) && is_array( $alv['sortable'] ) ) {
+			if ( $post_type === $alv['settings']['post_type'] && $alv['settings']['active'] && isset( $alv['sortable'] ) && is_array( $alv['sortable'] ) ) {
 				foreach ( $alv['sortable'] as $field ) {
 					$columns[ $field ] = $field;
 				}

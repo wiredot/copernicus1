@@ -49,6 +49,11 @@ function smarty_block_loop( $params, $content, $template, &$repeat ) {
 					}
 				}
 
+                if ( isset( $loop['args']['tax_query'][0]['terms'] ) ) {
+                    $term = get_query_var('term');
+                    $loop['args']['tax_query'][0]['terms'] = $term;
+                }
+
 				$WP_loop = new WP_Query( $loop['args'] );
 				$ccc = $WP_loop->post_count;
 
@@ -73,7 +78,7 @@ function smarty_block_loop( $params, $content, $template, &$repeat ) {
 				}
 			}
 		} else {
-			rewind_posts();
+			// rewind_posts();
 			while ( have_posts() ) :
 				the_post();
 				$CP_Smarty->smarty->assign( 'key', $key );

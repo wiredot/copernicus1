@@ -306,14 +306,14 @@ class CP_Translation {
 		$textsa = $this->get_static_texts_dir( get_template_directory() );
 		$textsb = $this->get_static_texts_dir( get_template_directory() . '/lib/' );
 		$textsc = $this->get_static_texts_dir( get_template_directory() . '/lib/smarty-plugins/' );
-		$textsd = $this->get_static_texts_dir( get_template_directory() . '/templates/' );
+		$textsd = $this->get_static_texts_dir( get_template_directory() . '/cp-templates/' );
 		$textse = $this->get_static_texts_dir( get_template_directory() . '/config/' );
 		$texts_all = array_merge_recursive( $textsa, $textsb, $textsc, $textsd, $textse );
 		$texts_child = array();
 
 		if ( is_child_theme() ) {
 			$textsa = $this->get_static_texts_dir( get_stylesheet_directory() . '/' );
-			$textsb = $this->get_static_texts_dir( get_stylesheet_directory() . '/templates/' );
+			$textsb = $this->get_static_texts_dir( get_stylesheet_directory() . '/cp-templates/' );
 			$textsc = $this->get_static_texts_dir( get_stylesheet_directory() . '/lib/' );
 			$textsd = $this->get_static_texts_dir( get_stylesheet_directory() . '/lib/smarty-plugin/' );
 			$textse = $this->get_static_texts_dir( get_stylesheet_directory() . '/config/' );
@@ -372,15 +372,14 @@ class CP_Translation {
 		} else if ( file_exists( $filename ) && preg_match( '/.html/', $filename ) ) {
 			$text = file_get_contents( $filename );
 			preg_match_all( "/{['\"]([^\{\}\|)]+)['\"]\|translate:([a-zA-Z0-9_]+)([:\$a-zA-Z_]+)?}/", $text, $matches );
-
 			foreach ( $matches[2] as $key => $match ) {
-				$results[ $match ][ $matches[1][ $key ] ] = '';
-			}
+                $results[ $match ][ $matches[1][ $key ] ] = '';
+            }
 
-			preg_match_all( "/{['\"]([^\{\}\|)]+)['\"]\|translate}/", $text, $matches );
-			foreach ( $matches[1] as $key => $match ) {
-				$results['default'][ $match ] = '';
-			}
+            preg_match_all( "/{['\"]([^\{\}\|)]+)['\"]\|translate}/", $text, $matches );
+            foreach ( $matches[1] as $key => $match ) {
+                $results['default'][ $match ] = '';
+            }
 			return $results;
 		}
 
