@@ -1,4 +1,4 @@
-=== Plugin Name ===
+=== Copernicus ===
 Contributors: psoluch
 Tags: template, smarty
 Requires at least: 6.6.2
